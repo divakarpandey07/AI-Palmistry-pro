@@ -19,9 +19,3 @@ data class ReadingEntity(
     val fateLineScore: Float,
     val confidenceScore: Float
 )
-
-/** Request model for the encrypted API call */
-data class EncryptedRequest(val payload: String)
-
-/** Response model from the encrypted API call */
-data class EncryptedResponse(val payload: String)
