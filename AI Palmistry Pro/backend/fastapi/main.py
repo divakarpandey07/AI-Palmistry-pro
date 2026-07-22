@@ -40,11 +40,11 @@ async def global_exception_handler(request, exc: Exception):
     )
 
 @app.get("/health")
-async def health():
+def health():
     return {"status": "ok"}
 
 @app.post("/api/v1/readings/generate")
-async def generate(req: GenerateRequest):
+def generate(req: GenerateRequest):
     try:
         decrypted_data = decrypt_payload(req.payload)
         question = decrypted_data.get("question", "Mera haath padhiye")
@@ -59,7 +59,7 @@ async def generate(req: GenerateRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/v1/readings/feedback")
-async def feedback(req: FeedbackRequest):
+def feedback(req: FeedbackRequest):
     try:
         save_experience_to_memory(req.question, req.answer)
         return {"status": "success"}
