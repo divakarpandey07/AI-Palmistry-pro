@@ -13,6 +13,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.palmistry.data.model.ReadingEntity
+import com.example.palmistry.ui.theme.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,38 +25,58 @@ fun ReadingHistoryScreen(
     readings: List<ReadingEntity>,
     onDelete: (Int) -> Unit
 ) {
-    if (readings.isEmpty()) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            Text(
-                "Abhi koi reading nahi hai.\nPehle apna haath scan karein!",
-                color = SoftWhite.copy(alpha = 0.6f),
-                fontSize = 16.sp,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
-            )
-        }
-        return
-    }
-
-    LazyColumn(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp),
-        contentPadding = PaddingValues(vertical = 16.dp)
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = DeepPurple
     ) {
-        items(readings, key = { it.id }) { reading ->
-            ReadingHistoryCard(reading = reading, onDelete = { onDelete(reading.id) })
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Past Palm Readings",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold,
+                color = SoftWhite,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            if (readings.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No readings saved yet.\nScan your palm to get started!",
+                        color = SoftWhite.copy(alpha = 0.6f),
+                        fontSize = 16.sp
+                    )
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    items(readings, key = { it.id }) { reading ->
+                        ReadingItemCard(reading = reading, onDelete = { onDelete(reading.id) })
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
-fun ReadingHistoryCard(reading: ReadingEntity, onDelete: () -> Unit) {
-    val date = remember(reading.timestamp) {
-        SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
-            .format(Date(reading.timestamp))
-    }
+private fun ReadingItemCard(
+    reading: ReadingEntity,
+    onDelete: () -> Unit
+) {
+    val dateFormat = remember { SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()) }
+    val formattedDate = remember(reading.timestamp) { dateFormat.format(Date(reading.timestamp)) }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(16.dp),
+        shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = CardDark)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -64,32 +85,35 @@ fun ReadingHistoryCard(reading: ReadingEntity, onDelete: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(date, color = GoldAccent, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                TextButton(onClick = onDelete) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error, fontSize = 12.sp)
+                Text(
+                    text = formattedDate,
+                    fontSize = 12.sp,
+                    color = GoldAccent
+                )
+                IconButton(onClick = onDelete) {
+                    Text("🗑️", fontSize = 16.sp)
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = reading.readingResult,
-                color = SoftWhite,
                 fontSize = 14.sp,
-                lineHeight = 22.sp,
-                maxLines = 4,
+                color = SoftWhite,
+                maxLines = 3,
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(modifier = Modifier.height(8.dp))
-            LinearProgressIndicator(
-                progress = { reading.confidenceScore },
-                modifier = Modifier.fillMaxWidth().height(4.dp),
-                color = NeonViolet,
-                trackColor = SoftWhite.copy(alpha = 0.1f)
-            )
-            Text(
-                "Confidence: ${(reading.confidenceScore * 100).toInt()}%",
-                color = SoftWhite.copy(alpha = 0.5f),
-                fontSize = 11.sp
-            )
+            Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                AssistChip(
+                    onClick = {},
+                    label = { Text("Life: ${(reading.lifeLineScore * 100).toInt()}%", color = SoftWhite) },
+                    colors = AssistChipDefaults.assistChipColors(containerColor = NeonViolet.copy(alpha = 0.3f))
+                )
+                AssistChip(
+                    onClick = {},
+                    label = { Text("Confidence: ${(reading.confidenceScore * 100).toInt()}%", color = SoftWhite) }
+                )
+            }
         }
     }
 }
