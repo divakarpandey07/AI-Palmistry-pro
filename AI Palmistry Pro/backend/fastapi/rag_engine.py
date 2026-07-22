@@ -1,13 +1,14 @@
 # rag_engine.py
 import os
 import httpx
+import base64
 from datetime import datetime
 import logging
 
 logger = logging.getLogger("rag_engine")
 
 HF_API_URL = 'https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2'
-SIMILARITY_THRESHOLD = 0.2
+SIMILARITY_THRESHOLD = 0.15
 
 def get_embedding(text: str) -> list[float]:
     hf_token = os.getenv("HF_API_KEY", "").strip()
@@ -34,7 +35,7 @@ def get_embedding(text: str) -> list[float]:
         logger.warning(f"HF embedding failed: {e}")
     return []
 
-def semantic_search(embedding: list[float], top_k: int = 5) -> list[str]:
+def semantic_search(embedding: list[float], top_k: int = 6) -> list[str]:
     if not embedding:
         return []
     
@@ -62,32 +63,37 @@ def semantic_search(embedding: list[float], top_k: int = 5) -> list[str]:
     return []
 
 def generate_reading(question: str, metadata: dict) -> str:
-    # 1. Try vector embedding & search
+    # 1. Try vector embedding & search across 1,940 Samudrik Shastra chunks
     embedding = get_embedding(question)
     context_chunks = semantic_search(embedding) if embedding else []
     
-    context_text = "\n---\n".join(context_chunks) if context_chunks else "Samudrik Shastra & Hastrekha Science Reference"
+    context_text = "\n---\n".join(context_chunks) if context_chunks else "Vrihad Samudrik Shastra & Hastrekha Vigyan Classical Knowledge Base"
     
-    # 2. Build prompt for Groq Llama-3
-    prompt = f"""You are an expert Vedic Palm Reader (Hastrekha Specialist) trained in Samudrik Shastra.
-Analyze the user's palm features and question, and provide an insightful, encouraging, and highly detailed reading in Hindi/Hinglish.
+    # 2. Build deep, rich prompt for Llama 3.1
+    prompt = f"""Aap Samudrik Shastra aur Hastrekha Vigyan ke sabse param gyaani Acharya hain.
+Aapka uddeshya hai user ke dwara pooche gaye sabhi prakaar ke prashno (Jaise: Shadi kab hogi, Job/Naukri kab lagegi, Dhan-Daulat, Swasthya, Videsh Yatra, ya Jeevan ke Anya Prashn) ka aatyantik vistaar aur Shastra-sammata shuddhta ke saath prashasta uttar dena.
 
-[Palm Analysis Metadata]:
+[Palm Analysis Data]:
 {metadata}
 
-[Reference Knowledge Context]:
+[Samudrik Shastra Authentic Knowledge Context]:
 {context_text}
 
-[User Question]:
+[User Query / Prashn]:
 {question}
 
-Instructions:
-1. Provide a detailed, respectful, and authentic palmistry analysis.
-2. Structure the answer clearly into 3 sections: 
-   - ✋ Rekha Vishleshan (Line Analysis)
-   - 🔮 Bhavishya Vani & Predictions
-   - 💡 Upay & Advice (Practical Tips)
-3. Keep the tone warm, wise, and spiritual. Use clear bullet points."""
+CRITICAL RULES:
+1. Uttar Hindi/Hinglish mein Aatyantik Vistar (Comprehensive & In-Depth) hona chahiye. Koi bhi sankshept ya aadha uttar mat dein.
+2. Sabhi prakaar ke prashno ka aadhar Samudrik Shastra ki Rekhaon (Jeevan, Hriday, Mastak, Bhagya, Vivah, Surya Rekha) aur Parvaton (Guru, Shani, Surya, Budh, Shukra, Mangal, Chandra) par aadharit hona chahiye.
+3. Uttaron mein bilkul bhi repetition (overlapping) nahi honi chahiye.
+
+PROPER STRUCTURE FOR RESPONSE:
+- 📌 **Prashn Vishleshan aur Samudrik Aadhar** (Context & Line Correlation)
+- ✋ **Hastrekha Evam Parvat Sthiti** (Detailed Analysis of relevant lines & mounts)
+- 🔮 **Nishkarsh Evam Kaal Nirdharan (Timeline & Prediction)** (Clear answers to when/how events like marriage, job, prosperity will occur)
+- 💡 **Shastra-Sammata Upay Evam Margadarshan** (Practical astrological & lifestyle remedies)
+
+Provide a rich, exhaustive, encouraging response now:"""
 
     groq_key = os.getenv("GROQ_API_KEY", "").strip().strip('"').strip("'")
     if not groq_key or len(groq_key) < 10:
@@ -100,15 +106,15 @@ Instructions:
     payload = {
         "model": "llama-3.1-8b-instant",
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.7,
-        "max_tokens": 1024
+        "temperature": 0.6,
+        "max_tokens": 2048
     }
     
     response = httpx.post(
         "https://api.groq.com/openai/v1/chat/completions",
         headers=headers,
         json=payload,
-        timeout=30.0
+        timeout=35.0
     )
     response.raise_for_status()
     
