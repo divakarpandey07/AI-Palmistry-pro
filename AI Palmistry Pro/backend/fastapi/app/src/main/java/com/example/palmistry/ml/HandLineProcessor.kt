@@ -2,78 +2,91 @@ package com.example.palmistry.ml
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.RectF
 import android.util.Log
-import com.google.gson.Gson
-import com.google.gson.annotations.SerializedName
+import com.google.mediapipe.framework.image.BitmapImageBuilder
+import com.google.mediapipe.tasks.core.BaseOptions
+import com.google.mediapipe.tasks.vision.core.RunningMode
+import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarker
+import com.google.mediapipe.tasks.vision.handlandmarker.HandLandmarkerResult
 import dagger.hilt.android.qualifiers.ApplicationContext
-import org.tensorflow.lite.Interpreter
-import org.tensorflow.lite.support.common.FileUtil
-import org.tensorflow.lite.support.image.ImageProcessor
-import org.tensorflow.lite.support.image.TensorImage
-import org.tensorflow.lite.support.image.ops.NormalizeOp
-import org.tensorflow.lite.support.image.ops.ResizeOp
-import org.tensorflow.lite.support.tensorbuffer.TensorBuffer
 import javax.inject.Inject
 import javax.inject.Singleton
 
-data class PalmLineResult(
-    @SerializedName("lines") val lines: List<Float>,
-    @SerializedName("mounts") val mounts: List<Float>,
-    @SerializedName("confidence") val confidence: Float
-)
-
 @Singleton
-class HandLineProcessor @Inject constructor(
+class HandLandmarkerHelper @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
-    private val gson = Gson()
-    private val interpreter: Interpreter? by lazy { loadModel() }
+    private val handLandmarker: HandLandmarker? by lazy { buildLandmarker() }
 
-    private val imageProcessor: ImageProcessor = ImageProcessor.Builder()
-        .add(ResizeOp(224, 224, ResizeOp.ResizeMethod.BILINEAR))
-        .add(NormalizeOp(0f, 255f))
-        .build()
-
-    private fun loadModel(): Interpreter? {
+    private fun buildLandmarker(): HandLandmarker? {
         return try {
-            val modelFile = FileUtil.loadMappedFile(context, "hand_lines.tflite")
-            Interpreter(modelFile)
+            val baseOptions = BaseOptions.builder()
+                .setModelAssetPath("hand_landmarker.task")
+                .build()
+            val options = HandLandmarker.HandLandmarkerOptions.builder()
+                .setBaseOptions(baseOptions)
+                .setNumHands(1)
+                .setMinHandDetectionConfidence(0.6f)
+                .setMinHandPresenceConfidence(0.6f)
+                .setMinTrackingConfidence(0.6f)
+                .setRunningMode(RunningMode.IMAGE)
+                .build()
+            HandLandmarker.createFromOptions(context, options)
         } catch (e: Exception) {
-            Log.w("HandLineProcessor", "Model hand_lines.tflite not found in assets, using heuristic palm extraction: ${e.message}")
+            Log.w("HandLandmarkerHelper", "MediaPipe task file not found, using center crop fallback: ${e.message}")
             null
         }
     }
 
-    fun process(bitmap: Bitmap): String {
-        val interp = interpreter
-        if (interp != null) {
+    fun extractPalmRegion(bitmap: Bitmap): Bitmap {
+        val landmarker = handLandmarker
+        if (landmarker != null) {
             try {
-                val tensorImage = TensorImage.fromBitmap(bitmap)
-                val processed = imageProcessor.process(tensorImage)
-                val outputShape = interp.getOutputTensor(0).shape()
-                val outputBuffer = TensorBuffer.createFixedSize(outputShape, interp.getOutputTensor(0).dataType())
-                interp.run(processed.tensorBuffer.buffer, outputBuffer.buffer.rewind())
-                
-                val array = outputBuffer.floatArray
-                val lines = array.take(4).toList()
-                val mounts = array.drop(4).take(4).toList()
-                return gson.toJson(PalmLineResult(lines = lines, mounts = mounts, confidence = 0.88f))
+                val mpImage = BitmapImageBuilder(bitmap).build()
+                val result: HandLandmarkerResult = landmarker.detect(mpImage)
+                val landmarks = result.landmarks().firstOrNull()
+
+                if (!landmarks.isNullOrEmpty()) {
+                    var minX = Float.MAX_VALUE
+                    var minY = Float.MAX_VALUE
+                    var maxX = Float.MIN_VALUE
+                    var maxY = Float.MIN_VALUE
+
+                    for (landmark in landmarks) {
+                        minX = minOf(minX, landmark.x())
+                        minY = minOf(minY, landmark.y())
+                        maxX = maxOf(maxX, landmark.x())
+                        maxY = maxOf(maxY, landmark.y())
+                    }
+
+                    val width = bitmap.width
+                    val height = bitmap.height
+
+                    val cropLeft = (minX * width).coerceIn(0f, width.toFloat()).toInt()
+                    val cropTop = (minY * height).coerceIn(0f, height.toFloat()).toInt()
+                    val cropWidth = ((maxX - minX) * width).coerceIn(1f, (width - cropLeft).toFloat()).toInt()
+                    val cropHeight = ((maxY - minY) * height).coerceIn(1f, (height - cropTop).toFloat()).toInt()
+
+                    return Bitmap.createBitmap(bitmap, cropLeft, cropTop, cropWidth, cropHeight)
+                }
             } catch (e: Exception) {
-                Log.e("HandLineProcessor", "Inference error: ${e.message}")
+                Log.w("HandLandmarkerHelper", "Landmark extraction error, falling back to center crop: ${e.message}")
             }
         }
 
-        // Resilient Heuristic Fallback
-        val lifeLine = 0.82f
-        val heartLine = 0.76f
-        val headLine = 0.71f
-        val fateLine = 0.64f
-        return gson.toJson(
-            PalmLineResult(
-                lines = listOf(lifeLine, heartLine, headLine, fateLine),
-                mounts = listOf(0.70f, 0.75f, 0.68f, 0.80f),
-                confidence = 0.85f
-            )
+        // Fallback: 60% center crop of input image
+        val marginX = (bitmap.width * 0.2f).toInt()
+        val marginY = (bitmap.height * 0.2f).toInt()
+        val cropW = (bitmap.width * 0.6f).toInt()
+        val cropH = (bitmap.height * 0.6f).toInt()
+
+        return Bitmap.createBitmap(
+            bitmap,
+            marginX.coerceIn(0, bitmap.width - 1),
+            marginY.coerceIn(0, bitmap.height - 1),
+            cropW.coerceIn(1, bitmap.width - marginX),
+            cropH.coerceIn(1, bitmap.height - marginY)
         )
     }
 }
