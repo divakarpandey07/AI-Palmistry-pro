@@ -1,5 +1,10 @@
 package com.example.palmistry.ui
 
+import android.content.Intent
+import android.os.Bundle
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
 import android.util.Log
 import android.view.ViewGroup
 import androidx.camera.core.Camera
@@ -24,6 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.example.palmistry.ui.theme.*
+import java.util.*
 
 @Composable
 fun CameraScreen(
@@ -35,8 +41,36 @@ fun CameraScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     var isFlashOn by remember { mutableStateOf(false) }
+    var selectedHand by remember { mutableStateOf("Right (Present Karma)") } // Dual Hand Selector
     var cameraControl: Camera? by remember { mutableStateOf(null) }
     var userQuestionText by remember { mutableStateOf("") }
+    var isListeningVoice by remember { mutableStateOf(false) }
+
+    // Speech-To-Text Voice Input Recognizer
+    var speechRecognizer by remember { mutableStateOf<SpeechRecognizer?>(null) }
+
+    DisposableEffect(context) {
+        val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
+        recognizer.setRecognitionListener(object : RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle?) { isListeningVoice = true }
+            override fun onBeginningOfSpeech() {}
+            override fun onRmsChanged(rmsdB: Float) {}
+            override fun onBufferReceived(buffer: ByteArray?) {}
+            override fun onEndOfSpeech() { isListeningVoice = false }
+            override fun onError(error: Int) { isListeningVoice = false }
+            override fun onResults(results: Bundle?) {
+                val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                if (!matches.isNullOrEmpty()) {
+                    userQuestionText = matches[0]
+                }
+                isListeningVoice = false
+            }
+            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onEvent(eventType: Int, params: Bundle?) {}
+        })
+        speechRecognizer = recognizer
+        onDispose { recognizer.destroy() }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
@@ -74,46 +108,71 @@ fun CameraScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Animated Palm Overlay Guide
-        AnimatedPalmOverlay()
+        // Animated Palm Overlay Guide with Visual Line Highlighting
+        AnimatedPalmOverlay(isHighlighterMode = true)
 
-        // Top Action Bar: Home Button & Flashlight Toggle Button
-        Row(
+        // Top Action Bar: Home, Flashlight, Dual Hand Selector (Left/Right)
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .padding(16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+                .padding(16.dp)
         ) {
-            // 🏠 Home Button
-            IconButton(
-                onClick = onNavigateHome,
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(CardDark.copy(alpha = 0.85f), shape = CircleShape)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "🏠", fontSize = 20.sp)
-            }
+                // 🏠 Home Button
+                IconButton(
+                    onClick = onNavigateHome,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(CardDark.copy(alpha = 0.85f), shape = CircleShape)
+                ) {
+                    Text(text = "🏠", fontSize = 20.sp)
+                }
 
-            // ⚡ Flashlight Toggle Button
-            IconButton(
-                onClick = {
-                    isFlashOn = !isFlashOn
-                    cameraControl?.cameraControl?.enableTorch(isFlashOn)
-                },
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(
-                        if (isFlashOn) GoldAccent else CardDark.copy(alpha = 0.85f),
-                        shape = CircleShape
+                // Dual Hand Selector Chip (Left / Right)
+                Row(
+                    modifier = Modifier
+                        .background(CardDark.copy(alpha = 0.85f), shape = RoundedCornerShape(20.dp))
+                        .padding(horizontal = 4.dp, vertical = 4.dp)
+                ) {
+                    FilterChip(
+                        selected = selectedHand.contains("Right"),
+                        onClick = { selectedHand = "Right (Present Karma)" },
+                        label = { Text("✋ Right Hand", fontSize = 11.sp, color = SoftWhite) },
+                        colors = FilterChipDefaults.filterChipColors(selectedContainerColor = GoldAccent)
                     )
-            ) {
-                Text(text = if (isFlashOn) "⚡ ON" else "💡 OFF", fontSize = 14.sp, color = if (isFlashOn) DeepPurple else SoftWhite)
+                    Spacer(modifier = Modifier.width(4.dp))
+                    FilterChip(
+                        selected = selectedHand.contains("Left"),
+                        onClick = { selectedHand = "Left (Inherited Destiny)" },
+                        label = { Text("🤚 Left Hand", fontSize = 11.sp, color = SoftWhite) },
+                        colors = FilterChipDefaults.filterChipColors(selectedContainerColor = GoldAccent)
+                    )
+                }
+
+                // ⚡ Flashlight Toggle Button
+                IconButton(
+                    onClick = {
+                        isFlashOn = !isFlashOn
+                        cameraControl?.cameraControl?.enableTorch(isFlashOn)
+                    },
+                    modifier = Modifier
+                        .size(48.dp)
+                        .background(
+                            if (isFlashOn) GoldAccent else CardDark.copy(alpha = 0.85f),
+                            shape = CircleShape
+                        )
+                ) {
+                    Text(text = if (isFlashOn) "⚡ ON" else "💡 OFF", fontSize = 14.sp, color = if (isFlashOn) DeepPurple else SoftWhite)
+                }
             }
         }
 
-        // Bottom Controls: Optional Question Input & Capture / Scan Button
+        // Bottom Controls: Speech Voice Mic Input & Click Photo Button
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -122,11 +181,24 @@ fun CameraScreen(
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Optional Specific Question Input (e.g. Shadi kab hogi / Job kab lagegi)
+            // Question Input with 🎙️ Voice Mic Button
             OutlinedTextField(
                 value = userQuestionText,
                 onValueChange = { userQuestionText = it },
-                placeholder = { Text("Poshain: Shadi, Job ya Dhan kab milne ka yog hai...", color = SoftWhite.copy(alpha = 0.6f), fontSize = 13.sp) },
+                placeholder = { Text("Poochhein: Shadi, Job ya Dhan Yog...", color = SoftWhite.copy(alpha = 0.6f), fontSize = 13.sp) },
+                trailingIcon = {
+                    IconButton(
+                        onClick = {
+                            val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+                                putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+                                putExtra(RecognizerIntent.EXTRA_LANGUAGE, "hi-IN")
+                            }
+                            speechRecognizer?.startListening(intent)
+                        }
+                    ) {
+                        Text(if (isListeningVoice) "🎙️..." else "🎙️", fontSize = 20.sp, color = if (isListeningVoice) GoldAccent else SoftWhite)
+                    }
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 16.dp),
@@ -141,12 +213,12 @@ fun CameraScreen(
                 )
             )
 
-            // Capture / Scan Palm Photo Button
+            // Capture & Scan Palm Photo Button
             Button(
                 onClick = {
-                    val finalQuestion = if (userQuestionText.isNotBlank()) userQuestionText else "Aapka poora Hastrekha Bhavishyavani vivran vistar se dein."
+                    val finalQuestion = if (userQuestionText.isNotBlank()) userQuestionText else "Aapka poora $selectedHand Hastrekha Bhavishyavani vivran vistar se dein."
                     val sampleMetadata = """{
-                        "hand": "Right",
+                        "hand": "$selectedHand",
                         "language": "$selectedLanguage",
                         "userQuestion": "$finalQuestion",
                         "lifeLineScore": 0.88,
@@ -167,8 +239,8 @@ fun CameraScreen(
                     Text(text = "📸", fontSize = 22.sp)
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = "CLICK PHOTO & SCAN PALM",
-                        fontSize = 16.sp,
+                        text = "SCAN $selectedHand PALM",
+                        fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
                         color = DeepPurple
                     )
