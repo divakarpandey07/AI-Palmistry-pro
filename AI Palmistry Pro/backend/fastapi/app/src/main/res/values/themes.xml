@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.PalmistryPro" parent="android:Theme.Material.NoTitleBar">
+    <style name="Theme.PalmistryPro" parent="Theme.Material3.Dark.NoActionBar">
         <item name="android:statusBarColor">#1A0A2E</item>
         <item name="android:navigationBarColor">#0F0C29</item>
     </style>
