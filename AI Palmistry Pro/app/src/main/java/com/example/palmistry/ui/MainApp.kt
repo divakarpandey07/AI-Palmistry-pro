@@ -42,21 +42,7 @@ fun MainApp(
             is ReadingUiState.Idle -> {
                 CameraScreen(onPalmMetadataReady = onPalmCaptured)
                 // Overlay hint text
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                    Card(
-                        modifier = Modifier.padding(24.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(containerColor = CardDark.copy(alpha = 0.85f))
-                    ) {
-                        Text(
-                            text = "✋  Apna haath camera ke saamne rakhein\nAI aapki rekhaon ko padhega",
-                            modifier = Modifier.padding(20.dp),
-                            color = SoftWhite,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
+
             }
 
             is ReadingUiState.Loading -> {
