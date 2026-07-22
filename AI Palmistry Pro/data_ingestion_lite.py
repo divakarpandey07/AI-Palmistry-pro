@@ -71,9 +71,9 @@ def insert_chunk(record: dict):
     }
     resp = httpx.post(url, json=record, headers=headers, timeout=30)
     if resp.status_code not in (200, 201):
-        print(f"  ⚠️  Insert failed ({resp.status_code}): {resp.text}")
+        print(f"  [WARN] Insert failed ({resp.status_code}): {resp.text}")
     else:
-        print(f"  [SUCCESS] Chunk {record['id'][:8]} inserted (page {record['page']})")
+        print(f"  [OK] Chunk {record['id'][:8]} inserted (page {record['page']})")
 
 # ---------------------------------------------------------------
 # Process one PDF
@@ -111,7 +111,7 @@ def main():
     print(f"Found {len(pdfs)} PDF(s): {[p.name for p in pdfs]}")
     for pdf in pdfs:
         process_pdf(pdf)
-    print("\n🎉 All PDFs ingested into Supabase successfully!")
+    print("\n[DONE] All PDFs ingested into Supabase successfully!")
 
 if __name__ == "__main__":
     main()
