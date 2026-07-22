@@ -30,6 +30,14 @@ class FeedbackRequest(BaseModel):
     question: str
     answer: str
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc: Exception):
+    logger.error(f"Global exception: {exc}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": str(exc), "error_type": type(exc).__name__}
+    )
+
 @app.get("/health")
 async def health():
     return {"status": "ok"}
