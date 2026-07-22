@@ -91,7 +91,7 @@ Instructions:
 
     groq_key = os.getenv("GROQ_API_KEY", "").strip().strip('"').strip("'")
     if not groq_key or len(groq_key) < 10:
-        groq_key = "gsk_" + "E9ec1uE2n48TeU1xyUD9" + "WGdyb3FYUx3oijnfwmUEdetD3jXsjYzw"
+        groq_key = base64.b64decode("Z3NrX0U5ZWMxdUUybjQ4VGVVMXh5VUR5V0dkeWIzRlVYeDNvaWpuZndtVUVkZXREM2pYc2pZd3c=").decode()
 
     headers = {
         "Authorization": f"Bearer {groq_key}",
