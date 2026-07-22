@@ -13,7 +13,6 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun CameraScreen(
-    navController: NavHostController,
     onPalmMetadataReady: (String) -> Unit
 ) {
     // Simple placeholder UI representing camera preview
