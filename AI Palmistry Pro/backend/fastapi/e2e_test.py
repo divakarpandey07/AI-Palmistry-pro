@@ -6,7 +6,7 @@ and receiving an encrypted AI reading response.
 import os, base64, json, httpx
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-BASE_URL = os.getenv("BASE_URL", "https://ai-palmistry-pro.onrender.com")
+BASE_URL = "http://localhost:8000"
 AES_KEY  = base64.b64decode("BP99iKWY7iibCmQvoOKi8nJj+tjp7PS+ZelJdsIMFAs=")
 
 def encrypt(data: dict) -> str:
