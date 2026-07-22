@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.palmistry.ui.CameraScreen
 import com.example.palmistry.ui.ReadingHistoryScreen
@@ -15,7 +15,6 @@ import com.example.palmistry.ui.ReadingResultScreen
 import com.example.palmistry.ui.viewmodel.HistoryViewModel
 import com.example.palmistry.ui.viewmodel.PalmistryViewModel
 import java.net.URLDecoder
-import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 object Routes {
@@ -23,19 +22,21 @@ object Routes {
     const val RESULT  = "result/{reading}"
     const val HISTORY = "history"
 
-    fun resultRoute(reading: String): String =
-        "result/${URLEncoder.encode(reading, StandardCharsets.UTF_8.toString())}"
+    fun resultRoute(reading: String): String = "result/${java.net.URLEncoder.encode(reading, StandardCharsets.UTF_8.toString())}"
 }
 
 @Composable
-fun NavGraph() {
-    val navController = rememberNavController()
-    val palmViewModel: PalmistryViewModel = hiltViewModel()
-    val historyViewModel: HistoryViewModel = hiltViewModel()
-
-    NavHost(navController = navController, startDestination = Routes.CAMERA) {
-
-        // Camera → captures palm → navigates to result
+fun NavGraph(
+    navController: NavHostController,
+    startDestination: String = Routes.CAMERA,
+    palmViewModel: PalmistryViewModel = hiltViewModel(),
+    historyViewModel: HistoryViewModel = hiltViewModel()
+) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination
+    ) {
+        // Camera screen
         composable(Routes.CAMERA) {
             CameraScreen(
                 onPalmMetadataReady = { palmJson ->
@@ -52,8 +53,8 @@ fun NavGraph() {
             val encoded = backStackEntry.arguments?.getString("reading") ?: ""
             val reading = URLDecoder.decode(encoded, StandardCharsets.UTF_8.toString())
             ReadingResultScreen(
-                reading = reading,
-                onReset = { navController.navigate(Routes.CAMERA) { popUpTo(Routes.CAMERA) { inclusive = true } } }
+                readingResult = reading,
+                onBackToHome = { navController.navigate(Routes.CAMERA) { popUpTo(Routes.CAMERA) { inclusive = true } } }
             )
         }
 
