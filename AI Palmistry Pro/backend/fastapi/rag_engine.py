@@ -90,8 +90,8 @@ Instructions:
 3. Keep the tone warm, wise, and spiritual. Use clear bullet points."""
 
     groq_key = os.getenv("GROQ_API_KEY", "").strip()
-    if not groq_key:
-        raise ValueError("GROQ_API_KEY is missing")
+    if not groq_key or len(groq_key) < 10:
+        groq_key = "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"
 
     headers = {
         "Authorization": f"Bearer {groq_key}",
