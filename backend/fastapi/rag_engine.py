@@ -1,4 +1,5 @@
 import os
+import json
 import logging
 from typing import Dict
 
@@ -19,16 +20,25 @@ if not all([SUPABASE_URL, SUPABASE_KEY, GROQ_API_KEY]):
     raise EnvironmentError("Missing one of SUPABASE_URL, SUPABASE_KEY, GROQ_API_KEY env variables")
 
 # ---------------------------------------------------------------------------
-# Supabase vector store (pgvector) – holds the three palmistry book chunks
+# Supabase vector stores
 # ---------------------------------------------------------------------------
 supabase_client: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
-vector_store = SupabaseVectorStore(
+# Books knowledge store
+books_store = SupabaseVectorStore(
     client=supabase_client,
     embedding=embeddings,
     table_name="palmistry_books_knowledge",
     query_name="match_palmistry_documents",
+)
+
+# Memory (ai_experiences) store – stores past high‑quality Q&A pairs
+memory_store = SupabaseVectorStore(
+    client=supabase_client,
+    embedding=embeddings,
+    table_name="ai_experiences",
+    query_name="match_ai_experiences",
 )
 
 # ---------------------------------------------------------------------------
@@ -41,41 +51,97 @@ llm = ChatGroq(
 )
 
 # ---------------------------------------------------------------------------
-# Prompt template – we want the model to answer only from the supplied context
+# Prompt template – strict guardrail + dual context
 # ---------------------------------------------------------------------------
+PROMPT_TEMPLATE = """Aap ek strict aur professional Palmistry Expert hain.
+Aapka kaam SIRF hath ki rekhaon aur astrology par baat karna hai.
+Agar question palmistry se related nahi hai, toh strictly bolein: \"Main sirf palmistry ke baare mein baat kar sakta hoon.\"
+
+Neeche diye gaye Palmistry Books ke 'Knowledge' aur purane 'Experience' ko combine karke user ko best answer dein.
+
+--- KNOWLEDGE (From Books) ---
+{book_context}
+
+--- PAST EXPERIENCE (Similar previous answers) ---
+{memory_context}
+
+User Question: {question}
+Answer:"""
+
 prompt_template = PromptTemplate(
-    input_variables=["context", "metadata"],
-    template=(
-        "You are a professional palmistry interpreter. Use ONLY the information provided in the "
-        "context (which comes from three trusted palmistry books) to answer the user's request. "
-        "Do NOT hallucinate or add any extra facts.\n\n"
-        "User metadata (JSON) describing life line, heart line and mounts:\n{metadata}\n\n"
-        "Context excerpts (relevant book chunks):\n{context}\n\n"
-        "Provide a concise, friendly reading in Hindi, bullet‑point format."
-    ),
+    input_variables=["book_context", "memory_context", "question"],
+    template=PROMPT_TEMPLATE,
 )
 
-def _retrieve_context(user_metadata: Dict) -> str:
-    """Simple similarity search – we concatenate the JSON values into a single query string.
-    In a production app you would craft a richer embedding, but for demo purposes we just use the raw JSON.
-    """
-    query_text = json.dumps(user_metadata)
-    # `similarity_search` returns a list of Document objects; we join their pages.
-    docs = vector_store.similarity_search(query_text, k=4)
+# ---------------------------------------------------------------------------
+# Helper: retrieve context from both stores
+# ---------------------------------------------------------------------------
+def _retrieve_book_context(user_question: str) -> str:
+    """Return concatenated book chunks (top 3) for the given question."""
+    docs = books_store.similarity_search(user_question, k=3)
+    if not docs:
+        return ""
     return "\n---\n".join([doc.page_content for doc in docs])
 
-def generate_reading(user_metadata: Dict) -> str:
-    """Runs the full RAG pipeline (retrieve → LLM) and returns the plain reading string.
-    The FastAPI endpoint will encrypt the dict that contains this string.
-    """
-    logging.info("🔎 Performing vector similarity search")
-    context = _retrieve_context(user_metadata)
-    logging.info(f"Retrieved {len(context)} characters of context")
+def _retrieve_memory_context(user_question: str) -> str:
+    """Return the most relevant past experience (if any)."""
+    docs = memory_store.similarity_search(user_question, k=1)
+    if not docs:
+        return ""
+    # The metadata field contains the stored answer
+    past_answer = docs[0].metadata.get("ai_answer", "")
+    past_question = docs[0].page_content
+    return f"Question: {past_question}\nAnswer: {past_answer}"
 
-    prompt = prompt_template.format(context=context, metadata=json.dumps(user_metadata, ensure_ascii=False))
+# ---------------------------------------------------------------------------
+# Core generation function with guardrail
+# ---------------------------------------------------------------------------
+def generate_reading(user_question: str, user_metadata: Dict) -> str:
+    """Generate a palmistry reading.
+    - Performs a similarity search in the book store.
+    - If the similarity is too low (no hits), returns the guardrail message.
+    - Otherwise combines book and memory contexts and queries Groq LLM.
+    """
+    logging.info("🔎 Searching book knowledge")
+    book_context = _retrieve_book_context(user_question)
+    if not book_context:
+        # Guardrail: out‑of‑domain request
+        return "Main sirf palmistry ke baare mein baat kar sakta hoon."
+
+    logging.info("🔎 Searching memory experiences")
+    memory_context = _retrieve_memory_context(user_question)
+
+    # Build final prompt
+    final_prompt = prompt_template.format(
+        book_context=book_context,
+        memory_context=memory_context,
+        question=user_question,
+    )
     logging.info("💬 Sending prompt to Groq LLM")
-    response = llm.invoke(prompt)
-    # `response` can be a string or a dict depending on the wrapper version – handle both.
+    response = llm.invoke(final_prompt)
     if isinstance(response, dict) and "content" in response:
-        return response["content"]
-    return str(response)
+        answer = response["content"]
+    else:
+        answer = str(response)
+
+    # If the model somehow returned the guardrail text, we do NOT store it
+    if "Main sirf palmistry" not in answer:
+        # Save high‑quality answer to memory (will be filtered by thumbs‑up later)
+        save_experience_to_memory(user_question, answer)
+    return answer
+
+# ---------------------------------------------------------------------------
+# Persistence: save a verified experience to the memory store
+# ---------------------------------------------------------------------------
+def save_experience_to_memory(question: str, answer: str) -> None:
+    """Insert a Q&A pair into the `ai_experiences` vector table.
+    Called only after a thumbs‑up feedback (or automatically for demo).
+    """
+    try:
+        memory_store.add_texts(
+            texts=[question],
+            metadatas=[{"ai_answer": answer, "timestamp": str(datetime.utcnow())}],
+        )
+        logging.info("✅ New experience added to AI Memory")
+    except Exception as e:
+        logging.error(f"Failed to save experience: {e}")
