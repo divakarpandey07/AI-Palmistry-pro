@@ -1,9 +1,9 @@
 package com.example.palmistry.ui
 
+import android.content.Intent
+import android.speech.tts.TextToSpeech
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -40,6 +40,7 @@ fun InteractiveChatScreen(
     onSendFollowUpQuestion: (String, (String) -> Unit) -> Unit,
     onBackToHome: () -> Unit
 ) {
+    val context = LocalContext.current
     val messages = remember {
         mutableStateListOf(
             ChatMessage(
@@ -51,6 +52,23 @@ fun InteractiveChatScreen(
 
     var currentInputText by remember { mutableStateOf("") }
     var isAiResponding by remember { mutableStateOf(false) }
+    var isSpeaking by remember { mutableStateOf(false) }
+
+    // TextToSpeech Engine
+    var ttsEngine by remember { mutableStateOf<TextToSpeech?>(null) }
+
+    DisposableEffect(context) {
+        val tts = TextToSpeech(context) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                ttsEngine?.language = Locale("hi", "IN")
+            }
+        }
+        ttsEngine = tts
+        onDispose {
+            tts.stop()
+            tts.shutdown()
+        }
+    }
 
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
@@ -83,7 +101,7 @@ fun InteractiveChatScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(CardDark)
-                    .padding(14.dp),
+                    .padding(12.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -91,7 +109,7 @@ fun InteractiveChatScreen(
                     IconButton(onClick = onBackToHome) {
                         Text("🏠", fontSize = 20.sp)
                     }
-                    Spacer(modifier = Modifier.width(8.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
                     Column {
                         Text(
                             text = "🔮 AI Hastrekha Chat",
@@ -107,13 +125,37 @@ fun InteractiveChatScreen(
                     }
                 }
 
-                // New Scan Button
-                Button(
-                    onClick = onBackToHome,
-                    colors = ButtonDefaults.buttonColors(containerColor = NeonViolet),
-                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp)
-                ) {
-                    Text("📸 New Scan", fontSize = 12.sp, color = SoftWhite)
+                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    // Audio TTS Button
+                    IconButton(
+                        onClick = {
+                            val lastAiMsg = messages.lastOrNull { !it.isUser }?.text ?: ""
+                            if (isSpeaking) {
+                                ttsEngine?.stop()
+                                isSpeaking = false
+                            } else if (lastAiMsg.isNotBlank()) {
+                                isSpeaking = true
+                                ttsEngine?.speak(lastAiMsg, TextToSpeech.QUEUE_FLUSH, null, "tts_reading")
+                            }
+                        }
+                    ) {
+                        Text(if (isSpeaking) "🔊 ON" else "🔈 TTS", fontSize = 13.sp, color = GoldAccent)
+                    }
+
+                    // Share Button
+                    IconButton(
+                        onClick = {
+                            val shareText = messages.lastOrNull { !it.isUser }?.text ?: initialReading
+                            val sendIntent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, "✨ AI Palmistry Pro Reading:\n\n$shareText")
+                                type = "text/plain"
+                            }
+                            context.startActivity(Intent.createChooser(sendIntent, "Share Reading"))
+                        }
+                    ) {
+                        Text("📤", fontSize = 18.sp)
+                    }
                 }
             }
 
@@ -144,7 +186,7 @@ fun InteractiveChatScreen(
                             )
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
-                                text = "Acharya AI is analyzing Samudrik books...",
+                                text = "Acharya AI is analyzing 3 Samudrik books...",
                                 fontSize = 13.sp,
                                 color = GoldAccent
                             )
