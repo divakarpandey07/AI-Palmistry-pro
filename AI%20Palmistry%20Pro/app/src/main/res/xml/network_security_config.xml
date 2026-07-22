@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Enforce TLS 1.3 only -->
+    <base-config cleartextTrafficPermitted="false">
+        <tls-version>TLSv1.3</tls-version>
+        <!-- Certificate pinning placeholder – replace with real SHA‑256 hashes -->
+        <pin-set expiration="2028-01-01">
+            <pin algorithm="sha256" digest="BASE64_ENCODED_CERT_HASH_1" />
+            <pin algorithm="sha256" digest="BASE64_ENCODED_CERT_HASH_2" />
+        </pin-set>
+    </base-config>
+</network-security-config>
