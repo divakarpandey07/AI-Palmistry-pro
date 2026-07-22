@@ -12,3 +12,8 @@ venv/
 .venv/
 *.log
 .DS_Store
+.gradle/
+*.zip
+.idea/
+*.iml
+app/build/
