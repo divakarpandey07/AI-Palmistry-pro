@@ -9,8 +9,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.palmistry.ui.CameraScreen
 import com.example.palmistry.ui.HomeScreen
+import com.example.palmistry.ui.InteractiveChatScreen
 import com.example.palmistry.ui.ReadingHistoryScreen
-import com.example.palmistry.ui.ReadingResultScreen
 import com.example.palmistry.ui.viewmodel.HistoryViewModel
 import com.example.palmistry.ui.viewmodel.PalmistryViewModel
 import java.net.URLDecoder
@@ -33,6 +33,7 @@ fun NavGraph(
     historyViewModel: HistoryViewModel = hiltViewModel()
 ) {
     var selectedLanguage by remember { mutableStateOf("Bilingual") }
+    var currentPalmMetadataJson by remember { mutableStateOf("") }
 
     NavHost(
         navController = navController,
@@ -53,6 +54,7 @@ fun NavGraph(
             CameraScreen(
                 selectedLanguage = selectedLanguage,
                 onPalmMetadataReady = { palmJson ->
+                    currentPalmMetadataJson = palmJson
                     palmViewModel.generateReading(palmJson)
                 },
                 onNavigateHome = {
@@ -63,16 +65,35 @@ fun NavGraph(
             )
         }
 
-        // Result screen with decoded reading text
+        // Interactive Multi-Question Chat Screen
         composable(
             route = Routes.RESULT,
             arguments = listOf(navArgument("reading") { type = NavType.StringType })
         ) { backStackEntry ->
             val encoded = backStackEntry.arguments?.getString("reading") ?: ""
             val reading = URLDecoder.decode(encoded, StandardCharsets.UTF_8.toString())
-            ReadingResultScreen(
-                readingResult = reading,
-                onBackToHome = { navController.navigate(Routes.HOME) { popUpTo(Routes.HOME) { inclusive = true } } }
+            InteractiveChatScreen(
+                initialReading = reading,
+                palmMetadataJson = currentPalmMetadataJson,
+                selectedLanguage = selectedLanguage,
+                onSendFollowUpQuestion = { question, onResponseReady ->
+                    val followUpPayload = """{
+                        "hand": "Right",
+                        "language": "$selectedLanguage",
+                        "userQuestion": "$question",
+                        "lifeLineScore": 0.88,
+                        "heartLineScore": 0.92,
+                        "headLineScore": 0.85,
+                        "fateLineScore": 0.80,
+                        "confidenceScore": 0.90
+                    }""".trimIndent()
+                    palmViewModel.generateReadingDirect(followUpPayload, onResponseReady)
+                },
+                onBackToHome = {
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.HOME) { inclusive = true }
+                    }
+                }
             )
         }
 
