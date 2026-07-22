@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Golden Palm Vector Drawing -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M54,20 C50,20 46,24 46,29 L46,45 C44,45 42,43 40,40 L37,36 C35,33 30,34 30,38 C30,41 33,45 37,50 L46,62 C50,68 54,78 54,88 L68,88 C68,76 72,68 76,60 L78,54 C80,50 82,44 82,38 C82,32 78,28 73,28 C70,28 67,30 65,33 L65,27 C65,22 61,18 56,18 L54,20 Z" />
+    <!-- Glowing AI Star Accents -->
+    <path
+        android:fillColor="#7C3AED"
+        android:pathData="M28,24 L30,28 L34,30 L30,32 L28,36 L26,32 L22,30 L26,28 Z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M80,20 L81.5,23 L84.5,24.5 L81.5,26 L80,29 L78.5,26 L75.5,24.5 L78.5,23 Z" />
+</vector>
