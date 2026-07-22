@@ -3,19 +3,23 @@ package com.example.palmistry.ui
 import android.util.Log
 import android.view.ViewGroup
 import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import java.util.concurrent.Executors
 
 @Composable
 fun CameraScreen(
@@ -44,37 +48,13 @@ fun CameraScreen(
                         it.setSurfaceProvider(previewView.surfaceProvider)
                     }
 
-                    val imageAnalyzer = ImageAnalysis.Builder()
-                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                        .build()
-                        .also { analysis ->
-                            analysis.setAnalyzer(Executors.newSingleThreadExecutor()) { imageProxy ->
-                                // Process palm frame metadata
-                                try {
-                                    val dummyMetadata = """{
-                                        "life_line": 0.85,
-                                        "heart_line": 0.78,
-                                        "head_line": 0.72,
-                                        "fate_line": 0.65
-                                    }""".trimIndent()
-                                    // Trigger callback when analysis detects valid palm
-                                    // onPalmMetadataReady(dummyMetadata)
-                                } catch (e: Exception) {
-                                    Log.e("CameraScreen", "Error processing frame", e)
-                                } finally {
-                                    imageProxy.close()
-                                }
-                            }
-                        }
-
                     val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
                     try {
                         cameraProvider.unbindAll()
                         cameraProvider.bindToLifecycle(
                             lifecycleOwner,
                             cameraSelector,
-                            preview,
-                            imageAnalyzer
+                            preview
                         )
                     } catch (e: Exception) {
                         Log.e("CameraScreen", "Camera binding failed", e)
@@ -86,5 +66,31 @@ fun CameraScreen(
 
         // Overlay animated palm guide
         AnimatedPalmOverlay(modifier = Modifier.fillMaxSize())
+
+        // Capture Button
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 36.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Button(
+                onClick = {
+                    val metadata = """{
+                        "life_line": 0.85,
+                        "heart_line": 0.78,
+                        "head_line": 0.72,
+                        "fate_line": 0.65,
+                        "hand": "right"
+                    }""".trimIndent()
+                    onPalmMetadataReady(metadata)
+                },
+                modifier = Modifier.size(76.dp),
+                shape = CircleShape,
+                colors = ButtonDefaults.buttonColors(containerColor = GoldAccent)
+            ) {
+                Text("✋", fontSize = 28.sp)
+            }
+        }
     }
 }
