@@ -73,13 +73,13 @@ def insert_chunk(record: dict):
     if resp.status_code not in (200, 201):
         print(f"  ⚠️  Insert failed ({resp.status_code}): {resp.text}")
     else:
-        print(f"  ✅ Chunk {record['id'][:8]} inserted (page {record['page']})")
+        print(f"  [SUCCESS] Chunk {record['id'][:8]} inserted (page {record['page']})")
 
 # ---------------------------------------------------------------
 # Process one PDF
 # ---------------------------------------------------------------
 def process_pdf(pdf_path: Path):
-    print(f"\n📖 Processing: {pdf_path.name}")
+    print(f"\n[Processing]: {pdf_path.name}")
     doc = fitz.open(pdf_path)
     for page_num, page in enumerate(doc, start=1):
         text = page.get_text("text").strip()
@@ -98,7 +98,7 @@ def process_pdf(pdf_path: Path):
                 }
                 insert_chunk(record)
             except Exception as e:
-                print(f"  ❌ Error on page {page_num}: {e}")
+                print(f"  [ERROR] on page {page_num}: {e}")
 
 # ---------------------------------------------------------------
 # Main
