@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.palmistry.ui.CameraScreen
+import com.example.palmistry.ui.CompatibilityScreen
 import com.example.palmistry.ui.HomeScreen
 import com.example.palmistry.ui.InteractiveChatScreen
 import com.example.palmistry.ui.ReadingHistoryScreen
@@ -17,10 +18,11 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 object Routes {
-    const val HOME    = "home"
-    const val CAMERA  = "camera"
-    const val RESULT  = "result/{reading}"
-    const val HISTORY = "history"
+    const val HOME          = "home"
+    const val CAMERA        = "camera"
+    const val RESULT        = "result/{reading}"
+    const val HISTORY       = "history"
+    const val COMPATIBILITY = "compatibility"
 
     fun resultRoute(reading: String): String = "result/${java.net.URLEncoder.encode(reading, StandardCharsets.UTF_8.toString())}"
 }
@@ -45,7 +47,15 @@ fun NavGraph(
                 selectedLanguage = selectedLanguage,
                 onLanguageSelected = { selectedLanguage = it },
                 onStartScan = { navController.navigate(Routes.CAMERA) },
-                onOpenHistory = { navController.navigate(Routes.HISTORY) }
+                onOpenHistory = { navController.navigate(Routes.HISTORY) },
+                onOpenCompatibility = { navController.navigate(Routes.COMPATIBILITY) }
+            )
+        }
+
+        // Couple Compatibility Screen
+        composable(Routes.COMPATIBILITY) {
+            CompatibilityScreen(
+                onNavigateBack = { navController.popBackStack() }
             )
         }
 
