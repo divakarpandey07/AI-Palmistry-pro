@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 import fitz  # PyMuPDF – install with `pip install pymupdf`
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from sentence_transformers import SentenceTransformer
 from supabase import create_client, Client
 
