@@ -20,16 +20,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import com.example.palmistry.ui.theme.*
 
 @Composable
 fun CameraScreen(
-    onPalmMetadataReady: (String) -> Unit,
-    modifier: Modifier = Modifier
+    onPalmMetadataReady: (String) -> Unit
 ) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize()) {
         AndroidView(
             factory = { ctx ->
                 PreviewView(ctx).apply {
@@ -47,8 +47,8 @@ fun CameraScreen(
                     val preview = Preview.Builder().build().also {
                         it.setSurfaceProvider(previewView.surfaceProvider)
                     }
-
                     val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
                     try {
                         cameraProvider.unbindAll()
                         cameraProvider.bindToLifecycle(
@@ -57,39 +57,41 @@ fun CameraScreen(
                             preview
                         )
                     } catch (e: Exception) {
-                        Log.e("CameraScreen", "Camera binding failed", e)
+                        Log.e("CameraScreen", "Use case binding failed", e)
                     }
                 }, ContextCompat.getMainExecutor(context))
             },
             modifier = Modifier.fillMaxSize()
         )
 
-        // Overlay animated palm guide
-        AnimatedPalmOverlay(modifier = Modifier.fillMaxSize())
+        // Animated Palm Overlay Guide
+        AnimatedPalmOverlay()
 
         // Capture Button
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 36.dp),
+                .padding(bottom = 48.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
             Button(
                 onClick = {
-                    val metadata = """{
-                        "life_line": 0.85,
-                        "heart_line": 0.78,
-                        "head_line": 0.72,
-                        "fate_line": 0.65,
-                        "hand": "right"
+                    // Send sample palm metadata JSON string
+                    val sampleMetadata = """{
+                        "hand": "Right",
+                        "lifeLineScore": 0.85,
+                        "heartLineScore": 0.92,
+                        "headLineScore": 0.78,
+                        "fateLineScore": 0.88,
+                        "confidenceScore": 0.91
                     }""".trimIndent()
-                    onPalmMetadataReady(metadata)
+                    onPalmMetadataReady(sampleMetadata)
                 },
-                modifier = Modifier.size(76.dp),
+                modifier = Modifier.size(72.dp),
                 shape = CircleShape,
                 colors = ButtonDefaults.buttonColors(containerColor = GoldAccent)
             ) {
-                Text("✋", fontSize = 28.sp)
+                Text(text = "📸", fontSize = 28.sp)
             }
         }
     }
