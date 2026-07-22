@@ -22,6 +22,7 @@ object Routes {
     const val CAMERA  = "camera"
     const val RESULT  = "result/{reading}"
     const val HISTORY = "history"
+    const val HOME = "home"
 
     fun resultRoute(reading: String): String =
         "result/${URLEncoder.encode(reading, StandardCharsets.UTF_8.toString())}"
