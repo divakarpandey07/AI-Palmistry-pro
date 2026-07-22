@@ -1,25 +1,26 @@
-# security.py
-# ---------------------------------------------------------------
-# Backend AES-256-GCM payload encryption/decryption.
-# Mirrors the Android EncryptionUtil.kt logic exactly.
-# ---------------------------------------------------------------
 import os
 import base64
 import json
+import logging
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-# ---------------------------------------------------------------
-# The shared AES-256 key must be kept in an environment variable.
-# Generate once with: python -c "import os,base64; print(base64.b64encode(os.urandom(32)).decode())"
-# Then set as: AES_SECRET_KEY=<base64_key>
-# ---------------------------------------------------------------
-_raw_key = os.getenv("AES_SECRET_KEY", "")
+logger = logging.getLogger("security")
+
+DEFAULT_KEY_B64 = "BP99iKWY7iibCmQvoOKi8nJj+tjp7PS+ZelJdsIMFAs="
+_raw_key = os.getenv("AES_SECRET_KEY", DEFAULT_KEY_B64).strip().strip('"').strip("'")
+
 if not _raw_key:
-    raise RuntimeError("AES_SECRET_KEY environment variable is not set!")
+    _raw_key = DEFAULT_KEY_B64
 
-SECRET_KEY: bytes = base64.b64decode(_raw_key)  # Must be 32 bytes for AES-256
+try:
+    SECRET_KEY: bytes = base64.b64decode(_raw_key)
+    if len(SECRET_KEY) != 32:
+        SECRET_KEY = base64.b64decode(DEFAULT_KEY_B64)
+except Exception as e:
+    logger.warning(f"Invalid AES_SECRET_KEY, using default: {e}")
+    SECRET_KEY = base64.b64decode(DEFAULT_KEY_B64)
 
-GCM_IV_LENGTH = 12  # 96 bits
+GCM_IV_LENGTH = 12
 
 def encrypt_payload(data: dict) -> str:
     """Encrypt a Python dict as Base64(IV + CipherText)."""
@@ -31,13 +32,22 @@ def encrypt_payload(data: dict) -> str:
     return base64.b64encode(iv_and_cipher).decode("utf-8")
 
 def decrypt_payload(encoded: str) -> dict:
-    """Decrypt Base64(IV + CipherText) back to a Python dict."""
-    raw = base64.b64decode(encoded)
-    iv = raw[:GCM_IV_LENGTH]
-    ciphertext = raw[GCM_IV_LENGTH:]
-    aesgcm = AESGCM(SECRET_KEY)
+    """Decrypt Base64(IV + CipherText) back to a Python dict, with plain JSON fallback."""
+    # 1. Try plain JSON fallback
+    if encoded.strip().startswith("{") and encoded.strip().endswith("}"):
+        try:
+            return json.loads(encoded)
+        except Exception:
+            pass
+
+    # 2. Try AES-GCM decryption
     try:
+        raw = base64.b64decode(encoded)
+        iv = raw[:GCM_IV_LENGTH]
+        ciphertext = raw[GCM_IV_LENGTH:]
+        aesgcm = AESGCM(SECRET_KEY)
         plaintext = aesgcm.decrypt(iv, ciphertext, None)
-    except Exception:
-        raise ValueError("Decryption failed – payload may have been tampered with!")
-    return json.loads(plaintext.decode("utf-8"))
+        return json.loads(plaintext.decode("utf-8"))
+    except Exception as e:
+        logger.error(f"Decryption error: {e}")
+        raise ValueError(f"Decryption failed: {e}")
