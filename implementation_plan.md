@@ -1,71 +1,70 @@
-# AI Palmistry Pro – Implementation Plan
+# Implementation Plan
 
-## Goal
-Create a highly secure, privacy‑first Android application **AI Palmistry Pro** that captures a hand image, extracts palm lines and mounts on‑device, encrypts the resulting metadata with AES‑256‑GCM, and sends it to a FastAPI backend. The backend uses a Supabase pgvector store and a quantized Llama‑3 8B model to perform Retrieval‑Augmented Generation (RAG) over three proprietary palmistry books, returning a personalized reading.
+## Fix Gradle jlink path issue and stabilize build
 
----
+**Goal**: Resolve intermittent `jlink executable ... does not exist` errors during `gradle assembleDebug` by ensuring the correct JDK path is configured for the Android build environment on Windows, both locally and in GitHub Actions CI.
 
-## User Review Required
-> **[IMPORTANT]** This plan introduces several new components:
-> - Android module with Jetpack Compose, CameraX, MediaPipe, TensorFlow Lite, Hilt, Room‑SQLCipher, and network security config.
-> - FastAPI backend with Supabase pgvector, LangChain, and Llama‑3 8B (quantized).
-> - End‑to‑end encryption (AES‑256‑GCM) and TLS 1.3 with certificate pinning.
-> Ensure you are comfortable with these technology choices before proceeding.
+### User Review Required
 
----
+> [!IMPORTANT]
+> Verify the absolute path to the JDK you want to use for building the Android app. The current configuration points to:
+> `C:\\Users\\hp\\.antigravity\\extensions\\redhat.java-1.54.0-win32-x64\\jre\\21.0.10-win32-x86_64`
+> If this path is incorrect or the JDK is missing, provide the correct JDK installation location.
 
-## Open Questions
-> **[INFO]** All open questions have been answered in the previous messages. No further clarification needed at this stage.
+### Open Questions
 
----
+- Which JDK version should be used for the Android project? (e.g., JDK 17, JDK 21) 
+- Do you prefer using the bundled JDK in the Antigravity extension or a system‑wide JDK installed at `C:\\Program Files\\Java`?
+- Should the CI workflow also install the JDK automatically, or rely on a pre‑installed version?
 
-## Proposed Changes
-### Android Frontend
-- **[NEW]** `app` directory with Gradle Kotlin DSL (`build.gradle.kts`) including dependencies:
-  - `androidx.camera:camera-core`, `camera-camera2`, `camera-lifecycle`, `camera-view`
-  - `com.google.mediapipe:mediapipe-hands`
-  - `org.tensorflow:tensorflow-lite`
-  - `com.google.dagger:hilt-android` and `hilt-compiler`
-  - `androidx.room:room-runtime` with `room-sqlcipher`
-  - `com.squareup.retrofit2:retrofit` and `converter-moshi`
-  - `androidx.security:security-crypto` (for AES‑GCM)
-- **[NEW]** Hilt setup (`Application` class, modules).
-- **[NEW]** CameraX preview composable using `AndroidView`.
-- **[NEW]** `EncryptionUtil.kt` implementing AES‑256‑GCM.
-- **[NEW]** Network security config XML enforcing TLS 1.3 and certificate pinning.
-- **[NEW]** Repository layer (Retrofit service) for `/read` endpoint.
-
-### Backend Service
-- **[NEW]** FastAPI project (`main.py`, `router.py`).
-- **[NEW]** Supabase client for pgvector (SQLAlchemy + `vector` extension).
-- **[NEW]** LangChain `SupabaseVectorStore` wrapper.
-- **[NEW]** RAG chain: retrieve relevant chunks → Llama‑3 inference → prompt guardrails.
-- **[NEW]** Endpoint `/read` accepting encrypted JSON, decrypting, processing, and returning encrypted response.
-- **[NEW]** Dockerfile for containerised deployment.
-
-### Security
-- **[NEW]** AES‑256‑GCM utility on both client and server.
-- **[NEW]** TLS 1.3 only network config with pinned SHA‑256 certificate hash.
-- **[NEW]** Root/emulator detection utility in Android app.
-- **[NEW]** Rate‑limiting middleware in FastAPI (using `slowapi`).
-
-### DevOps / CI
-- **[NEW]** GitHub Actions workflow for Android build, unit tests, and lint.
-- **[NEW]** GitHub Actions workflow for backend Docker image build and push.
+### Proposed Changes
 
 ---
+#### Gradle Configuration
 
-## Verification Plan
-### Automated Tests
-- Android unit tests for `EncryptionUtil` and Retrofit service mocks.
-- FastAPI integration tests covering decryption, vector retrieval, and LLM response validation.
-- CI pipelines execute the above on each PR.
+- **[MODIFY] `gradle.properties`** (`C:/Users/hp/.gemini/antigravity/brain/3b82dffa-6b42-4284-8c07-5fc52a9797d7/AI Palmistry Pro/gradle.properties`)
+  - Add or update `org.gradle.java.home` to point to a valid JDK directory.
+  - Provide fallback logic using an environment variable `JAVA_HOME` if set.
 
-### Manual Verification
-- Capture a hand image, ensure on‑device model returns a non‑empty JSON metadata.
-- Verify encrypted payload reaches backend and is decrypted correctly.
-- Confirm the reading references the three source books (spot‑check extracted text).
-- Test root/emulator detection blocks API calls.
-- Perform a prompt‑injection attempt and verify the guardrails reject the request.
+- **[MODIFY] GitHub Actions workflow `android_build.yml`** (`C:/Users/hp/.gemini/antigravity/brain/3b82dffa-6b42-4284-8c07-5fc52a9797d7/AI Palmistry Pro/.github/workflows/android_build.yml`)
+  - Install the required JDK version using `actions/setup-java` before running Gradle.
+  - Ensure the `JAVA_HOME` environment variable is exported for the Gradle step.
 
-Once you approve this plan, I will scaffold the Android project and set up the initial `build.gradle.kts` with the listed dependencies.
+---
+#### Grahan / Transit Alert System (Feature Implementation)
+
+- **[NEW] `GrahanAlertEngine.kt`** (`app/src/main/java/com/example/palmistry/feature/GrahanAlertEngine.kt`)
+  - Core logic to load Grahan and planetary transit data from the local vector store (the three classical books).
+  - Provides a function `getUpcomingTransits(): List<Transit>` that returns transits within the next 7 days.
+
+- **[MODIFY] `HomeScreen.kt`** (`C:/Users/hp/.gemini/antigravity/brain/3b82dffa-6b42-4284-8c07-5fc52a9797d7/AI Palmistry Pro/app/src/main/java/com/example/palmistry/ui/HomeScreen.kt`)
+  - Add a new composable card "Grahan & Transit Alerts" that displays the next significant transit (e.g., Solar Eclipse, Lunar Eclipse) with date and brief effect description.
+  - Tap on the card navigates to a detailed screen.
+
+- **[NEW] `TransitAlertScreen.kt`** (`app/src/main/java/com/example/palmistry/ui/TransitAlertScreen.kt`)
+  - Shows a list of upcoming transits, each with an icon, date, and actionable advice.
+
+- **[MODIFY] `NavGraph.kt`** (`C:/Users/hp/.gemini/antigravity/brain/3b82dffa-6b42-4284-8c07-5fc52a9797d7/AI Palmistry Pro/app/src/main/java/com/example/palmistry/ui/navigation/NavGraph.kt`)
+  - Add navigation route for the new `TransitAlertScreen`.
+
+- **[MODIFY] `RagEngine.kt`** (backend fastapi, if needed)
+  - Add a query template for Grahan/Transit data retrieval.
+
+---
+### Verification Plan
+
+#### Automated Tests
+- Run `gradlew assembleDebug` locally after applying Gradle changes to ensure the `jlink` error is resolved.
+- Execute the GitHub Actions workflow (trigger a manual workflow dispatch) and confirm the build completes without JDK errors.
+- Add a unit test for `GrahanAlertEngine.getUpcomingTransits()` covering the next‑7‑day window.
+
+#### Manual Verification
+- Launch the app on an emulator/device and verify the new "Grahan & Transit Alerts" card appears on the home screen.
+- Tap the card to view detailed transit listings and confirm the displayed information matches the vector‑store data.
+- Check that the app still functions for existing features (hand scan, line overlay, etc.).
+
+---
+**Next Steps**
+1. Await user confirmation on the JDK path and version preferences.
+2. Upon approval, apply the Gradle configuration changes and implement the Grahan/Transit feature as outlined.
+3. Run verification steps.
