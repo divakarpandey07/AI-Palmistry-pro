@@ -41,7 +41,7 @@ fun MainApp(
         when (uiState) {
             is ReadingUiState.Idle -> {
                 CameraScreen(onPalmMetadataReady = onPalmCaptured)
-                // Overlay hint text
+                
 
             }
 
