@@ -63,19 +63,29 @@ def semantic_search(embedding: list[float], top_k: int = 6) -> list[str]:
     return []
 
 def generate_reading(question: str, metadata: dict) -> str:
+    lang_pref = metadata.get("language", "Bilingual (Hindi + English)").strip()
+
     # 1. Try vector embedding & search across 1,940 chunks from all 3 books
     embedding = get_embedding(question)
     context_chunks = semantic_search(embedding) if embedding else []
     
     context_text = "\n---\n".join(context_chunks) if context_chunks else "References from Samudrik Shastra, Vrihad Hastrekha Shastra, and Samudrik Hastrekha Vigyan"
     
-    # 2. Build deep, strict prompt referencing all 3 books
-    prompt = f"""Aap Teeno Pramukh Shastron — (1) Samudrik Shastra (सामुद्रिक शास्त्र), (2) Vrihad Hastrekha Shastra (वृहद् हस्तरेखा शास्त्र), evam (3) Samudrik Hastrekha Vigyan (सामुद्रिक हस्तरेखा विज्ञान) — ke param gyaani Acharya hain.
-Aapka sabhi vishleshan aur uttar 100% shuddh roop se inhi TEENO PUSTAKON ke Data (Context) par hi aadharit hona chahiye.
+    # 2. Build deep, strict prompt with multi-language support (Hindi, English, Bilingual)
+    prompt = f"""You are a master Vedic Palmistry Scholar trained in 3 classical texts:
+(1) Samudrik Shastra (सामुद्रिक शास्त्र)
+(2) Vrihad Hastrekha Shastra (वृहद् हस्तरेखा शास्त्र)
+(3) Samudrik Hastrekha Vigyan (सामुद्रिक हस्तरेखा विज्ञान)
 
-STRICT MANDATE:
-- Apni taraf se koi bhi man-ghadant (hallucinated or speculative prediction) bilkul NAYI BAAT NA LIKHEIN.
-- Sabhi vivran, rekha vishleshan, vivah samay, naukri samay, aur upay KEVAL in TEENO PUSTAKON ke authenticated data se hi praapt hone chahiye.
+LANGUAGE SELECTION MANDATE:
+User Language Preference: [{lang_pref}]
+- If language is 'Hindi': Provide the entire reading in pure Hindi (Devnagari script).
+- If language is 'English': Provide the entire reading in clear, elegant English.
+- If language is 'Bilingual' or 'Bilingual (Hindi + English)': Provide both Hindi (Devnagari) AND English sections clearly separated.
+
+STRICT GROUNDING MANDATE:
+- Do NOT speculate, hallucinate, or invent predictions.
+- All predictions (Marriage, Job/Career, Wealth, Health, Travel) MUST be 100% grounded in the text chunks of the 3 Samudrik Shastra books.
 
 [Palm Analysis Features]:
 {metadata}
@@ -87,17 +97,14 @@ STRICT MANDATE:
 {question}
 
 CRITICAL RULES:
-1. Uttar Hindi/Hinglish mein Aatyantik Vistar (Comprehensive & In-Depth) hona chahiye.
-2. Teeno Pustakon (Samudrik Shastra, Vrihad Hastrekha Shastra, Samudrik Hastrekha Vigyan) ke Siddhanton ke aadhar par Rekhaon (Jeevan, Hriday, Mastak, Bhagya, Vivah, Surya Rekha) aur Parvaton (Guru, Shani, Surya, Budh, Shukra, Mangal, Chandra) ki shastriya sthiti samjhayein.
-3. Uttaron mein bilkul bhi repetition (overlapping) nahi honi chahiye.
+1. Provide an exhaustive, highly detailed response without repetition or overlapping text.
+2. Structure the reading into clean sections:
+   - 📌 **Shastra-Aadharit Prashn Vishleshan / Analysis**
+   - ✋ **Hastrekha Evam Parvat Sthiti / Lines & Mounts**
+   - 🔮 **Pustak-Aadharit Kaal Nirdharan / Timeline & Predictions** (Marriage/Job/Outcome)
+   - 💡 **Shastra-Sammata Upay / Authentic Remedies & Guidance**
 
-PROPER STRUCTURE FOR RESPONSE:
-- 📌 **Teeno Shastron ke Aadhar Par Prashn Vishleshan** (Context & 3 Books Correlation)
-- ✋ **Hastrekha Evam Parvat Shastriya Sthiti** (Detailed Analysis from the 3 Classical Books)
-- 🔮 **Pustak-Aadharit Kaal Nirdharan (Timeline & Outcome)** (Marriage / Job / Life outcomes strictly grounded in the 3 books)
-- 💡 **Shastra-Sammata Upay Evam Margadarshan** (Authentic remedies from the 3 books)
-
-Provide a rich, exhaustive, strictly 3-books-grounded response now:"""
+Provide the response now:"""
 
     groq_key = os.getenv("GROQ_API_KEY", "").strip().strip('"').strip("'")
     if not groq_key or len(groq_key) < 10:
