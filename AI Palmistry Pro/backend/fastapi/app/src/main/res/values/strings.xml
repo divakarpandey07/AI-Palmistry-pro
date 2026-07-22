@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">AI Palmistry Pro</string>
+    <string name="camera_hint">✋ Apna haath camera ke saamne rakhein\nAI aapki rekhaon ko padhega</string>
+    <string name="loading_text">🔮 AI aapka haath padh raha hai...</string>
+    <string name="result_title">🔮 Aapka Haath Padha Gaya!</string>
+    <string name="retry_btn">Dobara Koshish Karein</string>
+    <string name="new_reading_btn">Naya Reading Lein</string>
+</resources>
