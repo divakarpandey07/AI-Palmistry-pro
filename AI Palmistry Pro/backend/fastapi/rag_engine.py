@@ -67,33 +67,37 @@ def generate_reading(question: str, metadata: dict) -> str:
     embedding = get_embedding(question)
     context_chunks = semantic_search(embedding) if embedding else []
     
-    context_text = "\n---\n".join(context_chunks) if context_chunks else "Vrihad Samudrik Shastra & Hastrekha Vigyan Classical Knowledge Base"
+    context_text = "\n---\n".join(context_chunks) if context_chunks else "Vrihad Samudrik Shastra & Hastrekha Vigyan Authentic Books Knowledge Base"
     
-    # 2. Build deep, rich prompt for Llama 3.1
+    # 2. Build deep, strict prompt ensuring 100% book-grounded responses
     prompt = f"""Aap Samudrik Shastra aur Hastrekha Vigyan ke sabse param gyaani Acharya hain.
-Aapka uddeshya hai user ke dwara pooche gaye sabhi prakaar ke prashno (Jaise: Shadi kab hogi, Job/Naukri kab lagegi, Dhan-Daulat, Swasthya, Videsh Yatra, ya Jeevan ke Anya Prashn) ka aatyantik vistaar aur Shastra-sammata shuddhta ke saath prashasta uttar dena.
+Aapka sabhi vishleshan aur uttar 100% shuddh roop se keval niche diye gaye Samudrik Shastra aur Hastrekha Pustakon ke Data (Context) par hi aadharit hona chahiye.
 
-[Palm Analysis Data]:
+STRICT MANDATE:
+- Apni taraf se koi bhi man-ghadant (hallucinated or speculative prediction) bilkul NAYI BAAT NA LIKHEIN.
+- Sabhi vivran, rekha vishleshan, vivah samay, naukri samay, aur upay KEVAL Samudrik Shastra Pustakon ke authenticated data par aadharit hone chahiye.
+
+[Palm Analysis Features]:
 {metadata}
 
-[Samudrik Shastra Authentic Knowledge Context]:
+[Samudrik Shastra Authentic Books Context]:
 {context_text}
 
 [User Query / Prashn]:
 {question}
 
 CRITICAL RULES:
-1. Uttar Hindi/Hinglish mein Aatyantik Vistar (Comprehensive & In-Depth) hona chahiye. Koi bhi sankshept ya aadha uttar mat dein.
-2. Sabhi prakaar ke prashno ka aadhar Samudrik Shastra ki Rekhaon (Jeevan, Hriday, Mastak, Bhagya, Vivah, Surya Rekha) aur Parvaton (Guru, Shani, Surya, Budh, Shukra, Mangal, Chandra) par aadharit hona chahiye.
+1. Uttar Hindi/Hinglish mein Aatyantik Vistar (Comprehensive & In-Depth) hona chahiye.
+2. Sabhi prakaar ke prashno ka aadhar Samudrik Shastra Pustakon ki Rekhaon (Jeevan, Hriday, Mastak, Bhagya, Vivah, Surya Rekha) aur Parvaton (Guru, Shani, Surya, Budh, Shukra, Mangal, Chandra) ki shastriya sthiti par aadharit hona chahiye.
 3. Uttaron mein bilkul bhi repetition (overlapping) nahi honi chahiye.
 
 PROPER STRUCTURE FOR RESPONSE:
-- 📌 **Prashn Vishleshan aur Samudrik Aadhar** (Context & Line Correlation)
-- ✋ **Hastrekha Evam Parvat Sthiti** (Detailed Analysis of relevant lines & mounts)
-- 🔮 **Nishkarsh Evam Kaal Nirdharan (Timeline & Prediction)** (Clear answers to when/how events like marriage, job, prosperity will occur)
-- 💡 **Shastra-Sammata Upay Evam Margadarshan** (Practical astrological & lifestyle remedies)
+- 📌 **Shastra-Aadharit Prashn Vishleshan** (Context & Book Line Correlation)
+- ✋ **Hastrekha Evam Parvat Shastriya Sthiti** (Detailed Analysis from Samudrik Books)
+- 🔮 **Pustak-Aadharit Kaal Nirdharan (Timeline & Outcome)** (Marriage / Job / Life outcomes strictly grounded in books data)
+- 💡 **Shastra-Sammata Upay Evam Margadarshan** (Authentic remedies from the books)
 
-Provide a rich, exhaustive, encouraging response now:"""
+Provide a rich, exhaustive, strictly book-grounded response now:"""
 
     groq_key = os.getenv("GROQ_API_KEY", "").strip().strip('"').strip("'")
     if not groq_key or len(groq_key) < 10:
@@ -106,7 +110,7 @@ Provide a rich, exhaustive, encouraging response now:"""
     payload = {
         "model": "llama-3.1-8b-instant",
         "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.6,
+        "temperature": 0.5,
         "max_tokens": 2048
     }
     
