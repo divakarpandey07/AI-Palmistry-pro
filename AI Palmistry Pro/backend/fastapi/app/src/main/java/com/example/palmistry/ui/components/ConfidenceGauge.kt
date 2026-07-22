@@ -16,9 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.palmistry.ui.GoldAccent
-import com.example.palmistry.ui.NeonViolet
-import com.example.palmistry.ui.SoftWhite
+import com.example.palmistry.ui.theme.*
 
 /**
  * Circular confidence gauge showing AI reading confidence (0-100%).
@@ -26,61 +24,66 @@ import com.example.palmistry.ui.SoftWhite
  */
 @Composable
 fun ConfidenceGauge(
-    confidence: Float,       // 0f to 1f
-    size: Dp = 160.dp,
-    modifier: Modifier = Modifier
+    confidenceScore: Float, // 0.0 to 1.0
+    modifier: Modifier = Modifier,
+    size: Dp = 140.dp,
+    strokeWidth: Dp = 12.dp
 ) {
-    val animatedSweep by animateFloatAsState(
-        targetValue = confidence.coerceIn(0f, 1f) * 280f,  // 280° arc
-        animationSpec = tween(durationMillis = 1500, easing = FastOutSlowInEasing),
+    val targetSweepAngle = (confidenceScore.coerceIn(0f, 1f)) * 260f
+
+    val animatedSweepAngle by animateFloatAsState(
+        targetValue = targetSweepAngle,
+        animationSpec = tween(durationMillis = 1400, easing = FastOutSlowInEasing),
         label = "gauge_sweep"
     )
+
+    val percentage = (confidenceScore * 100).toInt()
 
     Box(
         modifier = modifier.size(size),
         contentAlignment = Alignment.Center
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {
-            val strokeWidth = 16.dp.toPx()
-            val inset = strokeWidth / 2
-            val arcSize = Size(this.size.width - inset * 2, this.size.height - inset * 2)
-            val startAngle = 130f   // starts bottom-left
-            val topLeft = Offset(inset, inset)
+            val strokePx = strokeWidth.toPx()
+            val arcSize = Size(size.toPx() - strokePx, size.toPx() - strokePx)
+            val topLeft = Offset(strokePx / 2, strokePx / 2)
+            val startAngle = 140f
 
-            // Background track
+            // Background arc (dark track)
             drawArc(
-                color = Color.White.copy(alpha = 0.08f),
+                color = Color(0xFF2D1B69),
                 startAngle = startAngle,
-                sweepAngle = 280f,
+                sweepAngle = 260f,
                 useCenter = false,
                 topLeft = topLeft,
                 size = arcSize,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                style = Stroke(width = strokePx, cap = StrokeCap.Round)
             )
 
-            // Filled arc
+            // Active animated progress arc (NeonViolet)
             drawArc(
                 color = NeonViolet,
                 startAngle = startAngle,
-                sweepAngle = animatedSweep,
+                sweepAngle = animatedSweepAngle,
                 useCenter = false,
                 topLeft = topLeft,
                 size = arcSize,
-                style = Stroke(width = strokeWidth, cap = StrokeCap.Round)
+                style = Stroke(width = strokePx, cap = StrokeCap.Round)
             )
         }
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "${(confidence * 100).toInt()}%",
-                color = GoldAccent,
-                fontSize = (size.value * 0.2f).sp,
-                fontWeight = FontWeight.Bold
+                text = "$percentage%",
+                fontSize = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = GoldAccent
             )
             Text(
                 text = "Confidence",
-                color = SoftWhite.copy(alpha = 0.6f),
-                fontSize = (size.value * 0.09f).sp
+                fontSize = 11.sp,
+                color = SoftWhite.copy(alpha = 0.7f),
+                fontWeight = FontWeight.Medium
             )
         }
     }
