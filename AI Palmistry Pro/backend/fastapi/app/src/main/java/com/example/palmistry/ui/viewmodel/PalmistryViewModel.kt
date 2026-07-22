@@ -64,6 +64,20 @@ class PalmistryViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Direct method for continuous follow-up questions in the chat view.
+     */
+    fun generateReadingDirect(palmJson: String, onResult: (String) -> Unit) {
+        viewModelScope.launch {
+            val metadata = mapOf("palm_json" to palmJson)
+            val result = repository.generateReading("Hastrekha Prashn", metadata, sessionKey)
+            result.fold(
+                onSuccess = { reading -> onResult(reading) },
+                onFailure = { e -> onResult("⚠️ Upay Vishleshan error: ${e.message}") }
+            )
+        }
+    }
+
     fun resetState() {
         _uiState.value = ReadingUiState.Idle
     }
