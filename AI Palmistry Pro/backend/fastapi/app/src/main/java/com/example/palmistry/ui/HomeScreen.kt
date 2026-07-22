@@ -14,11 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.palmistry.ui.theme.*
+import com.example.palmistry.util.PdfReportExporter
 
 @Composable
 fun HomeScreen(
@@ -28,6 +30,7 @@ fun HomeScreen(
     onOpenHistory: () -> Unit,
     onOpenCompatibility: () -> Unit
 ) {
+    val context = LocalContext.current
     val scrollState = rememberScrollState()
 
     Box(
@@ -82,7 +85,7 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Daily Shubh Muhurat Banner
+            // Daily Shubh Muhurat & Grahan Alert Banner
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -97,13 +100,13 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.width(12.dp))
                     Column {
                         Text(
-                            text = "Aaj Ka Shubh Muhurat & Astro Tip",
+                            text = "Aaj Ka Shubh Muhurat & Graha Gochar",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
                             color = GoldAccent
                         )
                         Text(
-                            text = "Abhijit Muhurat: 11:58 AM - 12:48 PM | Guru Parvat Sthiti: Shubh",
+                            text = "Abhijit Muhurat: 11:58 AM - 12:48 PM | Guru Parvat: High Synergy",
                             fontSize = 11.sp,
                             color = SoftWhite.copy(alpha = 0.8f)
                         )
@@ -111,7 +114,7 @@ fun HomeScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // Language Selection Card
             Card(
@@ -184,7 +187,7 @@ fun HomeScreen(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 // Partner Compatibility Button
                 Button(
@@ -195,25 +198,28 @@ fun HomeScreen(
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = NeonViolet)
                 ) {
-                    Text("💞 Couple Matching", fontSize = 13.sp, color = SoftWhite, fontWeight = FontWeight.Bold)
+                    Text("💞 Couple Matching", fontSize = 12.sp, color = SoftWhite, fontWeight = FontWeight.Bold)
                 }
 
-                // History Button
+                // Export PDF Sample Button
                 OutlinedButton(
-                    onClick = onOpenHistory,
+                    onClick = {
+                        val sampleText = "✨ AI PALMISTRY PRO SAMPLE REPORT\n\n1. Jeevan Rekha: 88% Strong\n2. Hriday Rekha: 92% Emotional Balance\n3. Mastishk Rekha: 85% Intelligence\n4. Bhagya Rekha: 80% Career Growth\n\nSamudrik Shastra Remedy: Jaap Om Namah Shivaya daily."
+                        PdfReportExporter.generateAndSharePdf(context, sampleText)
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp),
                     shape = RoundedCornerShape(14.dp),
-                    border = androidx.compose.foundation.BorderStroke(1.5.dp, NeonViolet)
+                    border = androidx.compose.foundation.BorderStroke(1.5.dp, GoldAccent)
                 ) {
-                    Text("📜 Past History", fontSize = 13.sp, color = SoftWhite, fontWeight = FontWeight.Bold)
+                    Text("📄 Export PDF", fontSize = 12.sp, color = GoldAccent, fontWeight = FontWeight.Bold)
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // Gemstone & Rudraksha Recommendation Banner
+            // Weekly Astro Forecast Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(18.dp),
@@ -221,14 +227,36 @@ fun HomeScreen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = "💎 Gemstone & Rudraksha Recommendation",
+                        text = "📅 Weekly Astro & Palmistry Forecast",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = GoldAccent
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(text = "💼 Career: Surya Parvat prabhav se nayi jimmedari milegi.", fontSize = 12.sp, color = SoftWhite)
+                    Text(text = "💍 Relationships: Shukra Parvat shubh, parivarik sahmoot.", fontSize = 12.sp, color = SoftWhite)
+                    Text(text = "💰 Wealth: Laxmi Yog prabal, dhan aagaman.", fontSize = 12.sp, color = SoftWhite)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Vedic Upay & Stotra Remedies Card
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp),
+                colors = CardDefaults.cardColors(containerColor = CardDark.copy(alpha = 0.8f))
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "🕉️ Vedic Upay & Mantra Remedies",
                         fontSize = 15.sp,
                         fontWeight = FontWeight.Bold,
                         color = GoldAccent
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        text = "• Guru Parvat Strong: Yellow Sapphire (Pukhraj) & 5-Mukhi Rudraksha\n• Surya Rekha Support: Ruby (Manikya) for Career & Prestige",
+                        text = "• Shani Parvat Dosh: Hanuman Chalisa path & Chana daan.\n• Guru Parvat Strong: Yellow Sapphire & Om Brim Brihaspataye Namah.",
                         fontSize = 12.sp,
                         color = SoftWhite.copy(alpha = 0.85f),
                         lineHeight = 18.sp
