@@ -20,7 +20,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
-    private const val BASE_URL = "https://your-fastapi-backend.onrender.com/"
+    private const val BASE_URL = "https://ai-palmistry-pro.onrender.com/"
 
     @Provides
     @Singleton
