@@ -25,7 +25,8 @@ fun HomeScreen(
     selectedLanguage: String,
     onLanguageSelected: (String) -> Unit,
     onStartScan: () -> Unit,
-    onOpenHistory: () -> Unit
+    onOpenHistory: () -> Unit,
+    onOpenCompatibility: () -> Unit
 ) {
     val scrollState = rememberScrollState()
 
@@ -41,11 +42,11 @@ fun HomeScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(24.dp)
+                .padding(20.dp)
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(36.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
             // App Branding Icon
             Box(
@@ -61,7 +62,7 @@ fun HomeScreen(
                 Text(text = "🤚", fontSize = 48.sp)
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
             Text(
                 text = "AI Palmistry Pro",
@@ -72,14 +73,45 @@ fun HomeScreen(
             )
 
             Text(
-                text = "Vedic Samudrik Shastra & AI Palmistry Analysis",
-                fontSize = 14.sp,
+                text = "Vedic Samudrik Shastra & AI Astrological Reading",
+                fontSize = 13.sp,
                 color = SoftWhite.copy(alpha = 0.8f),
                 fontWeight = FontWeight.Medium,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(20.dp))
+
+            // Daily Shubh Muhurat Banner
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = CardDark.copy(alpha = 0.9f)),
+                border = androidx.compose.foundation.BorderStroke(1.dp, GoldAccent.copy(alpha = 0.4f))
+            ) {
+                Row(
+                    modifier = Modifier.padding(14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = "🌞", fontSize = 28.sp)
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = "Aaj Ka Shubh Muhurat & Astro Tip",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = GoldAccent
+                        )
+                        Text(
+                            text = "Abhijit Muhurat: 11:58 AM - 12:48 PM | Guru Parvat Sthiti: Shubh",
+                            fontSize = 11.sp,
+                            color = SoftWhite.copy(alpha = 0.8f)
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Language Selection Card
             Card(
@@ -88,14 +120,14 @@ fun HomeScreen(
                 colors = CardDefaults.cardColors(containerColor = CardDark.copy(alpha = 0.9f)),
                 border = androidx.compose.foundation.BorderStroke(1.dp, NeonViolet.copy(alpha = 0.5f))
             ) {
-                Column(modifier = Modifier.padding(18.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "🌐 Choose Response Language / Bhasha Chunein",
-                        fontSize = 15.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = GoldAccent
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -122,14 +154,14 @@ fun HomeScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Main CTA Button - Start Camera Scan
             Button(
                 onClick = onStartScan,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp),
+                    .height(58.dp),
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = GoldAccent)
             ) {
@@ -138,64 +170,73 @@ fun HomeScreen(
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(text = "📸", fontSize = 24.sp)
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = "Scan My Palm / Haath Scan Karein",
-                        fontSize = 17.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         color = DeepPurple
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // History Button
-            OutlinedButton(
-                onClick = onOpenHistory,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(52.dp),
-                shape = RoundedCornerShape(16.dp),
-                border = androidx.compose.foundation.BorderStroke(1.5.dp, NeonViolet)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Text(
-                    text = "📜 View Past Readings / Purani Reading",
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = SoftWhite
-                )
+                // Partner Compatibility Button
+                Button(
+                    onClick = onOpenCompatibility,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = NeonViolet)
+                ) {
+                    Text("💞 Couple Matching", fontSize = 13.sp, color = SoftWhite, fontWeight = FontWeight.Bold)
+                }
+
+                // History Button
+                OutlinedButton(
+                    onClick = onOpenHistory,
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(48.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    border = androidx.compose.foundation.BorderStroke(1.5.dp, NeonViolet)
+                ) {
+                    Text("📜 Past History", fontSize = 13.sp, color = SoftWhite, fontWeight = FontWeight.Bold)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Gemstone & Rudraksha Recommendation Banner
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(18.dp),
+                colors = CardDefaults.cardColors(containerColor = CardDark.copy(alpha = 0.8f))
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = "💎 Gemstone & Rudraksha Recommendation",
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = GoldAccent
+                    )
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "• Guru Parvat Strong: Yellow Sapphire (Pukhraj) & 5-Mukhi Rudraksha\n• Surya Rekha Support: Ruby (Manikya) for Career & Prestige",
+                        fontSize = 12.sp,
+                        color = SoftWhite.copy(alpha = 0.85f),
+                        lineHeight = 18.sp
+                    )
+                }
             }
 
             Spacer(modifier = Modifier.height(28.dp))
-
-            // Features Grid
-            Text(
-                text = "✨ App Key Features",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = SoftWhite,
-                modifier = Modifier.align(Alignment.Start)
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-
-            FeatureItem(
-                icon = "✋",
-                title = "3 Classical Books Knowledge",
-                desc = "Samudrik Shastra, Vrihad Hastrekha Shastra, Samudrik Hastrekha Vigyan data base."
-            )
-            FeatureItem(
-                icon = "🔮",
-                title = "Marriage & Career Predictions",
-                desc = "Shadi timing, Job/Career timing, Dhan yog & Life outcomes."
-            )
-            FeatureItem(
-                icon = "🔒",
-                title = "100% Encrypted & Private",
-                desc = "AES-256 military grade payload security for 100% privacy."
-            )
-
-            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
@@ -228,28 +269,5 @@ private fun LanguageOptionChip(
             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
             color = if (isSelected) DeepPurple else SoftWhite
         )
-    }
-}
-
-@Composable
-private fun FeatureItem(icon: String, title: String, desc: String) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp),
-        shape = RoundedCornerShape(14.dp),
-        colors = CardDefaults.cardColors(containerColor = CardDark.copy(alpha = 0.6f))
-    ) {
-        Row(
-            modifier = Modifier.padding(14.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(text = icon, fontSize = 28.sp)
-            Spacer(modifier = Modifier.width(14.dp))
-            Column {
-                Text(text = title, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = GoldAccent)
-                Text(text = desc, fontSize = 12.sp, color = SoftWhite.copy(alpha = 0.8f))
-            }
-        }
     }
 }
