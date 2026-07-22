@@ -5,9 +5,8 @@ import base64
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 BASE_URL = os.getenv("BASE_URL", "http://localhost:8000")
-AES_SECRET_KEY = os.getenv("AES_SECRET_KEY", "0123456789abcdef0123456789abcdef")
-
-key_bytes = AES_SECRET_KEY.encode('utf-8')[:32].ljust(32, b'0')
+AES_SECRET_KEY = os.getenv("AES_SECRET_KEY", "BP99iKWY7iibCmQvoOKi8nJj+tjp7PS+ZelJdsIMFAs=")
+key_bytes = base64.b64decode(AES_SECRET_KEY)
 
 def encrypt(data: dict) -> str:
     aesgcm = AESGCM(key_bytes)
