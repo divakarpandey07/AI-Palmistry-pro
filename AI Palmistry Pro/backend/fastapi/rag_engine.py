@@ -1,83 +1,75 @@
-# rag_engine.py
-# ---------------------------------------------------------------
-# Core RAG pipeline used by FastAPI endpoint.
-# ---------------------------------------------------------------
 import os
-import logging
-from typing import List, Dict, Any
+import httpx
+from datetime import datetime
 
-from sentence_transformers import SentenceTransformer
+HF_API_URL = 'https://api-inference.huggingface.co/pipeline/feature-extraction/sentence-transformers/all-MiniLM-L6-v2'
+SIMILARITY_THRESHOLD = 0.7
 
-from .supabase_client import semantic_search
-
-# Load the same embedding model used during ingestion.
-EMBEDDER = SentenceTransformer("all-MiniLM-L6-v2")
-
-# Safety threshold – if the best similarity distance is > 0.2 (i.e.
-# low similarity) we consider the query out‑of‑scope.
-SIMILARITY_THRESHOLD = 0.2
-
-# System prompt that forces the LLM to stay within Palmistry.
-SYSTEM_PROMPT = (
-    "You are a professional Palmistry AI. Answer ONLY based on the provided context. "
-    "If the context does not contain information relevant to the user's query, "
-    "respond with: \"I am a Palmistry AI and can only discuss hand lines and mounts.\""
-)
-
-def embed_query(question: str) -> List[float]:
-    """Return the embedding vector for a user question."""
-    return EMBEDDER.encode(question).tolist()
-
-def build_prompt(context_chunks: List[Dict[str, Any]], question: str) -> str:
-    """Combine system prompt, retrieved context and the user question.
-
-    The LLM receives a single string; we keep it concise for token budget.
-    """
-    context_text = "\n\n---\n\n".join(chunk["chunk_text"] for chunk in context_chunks)
-    return f"{SYSTEM_PROMPT}\n\nContext:{context_text}\n\nQuestion: {question}"
-
-def generate_reading(question: str, metadata: Dict[str, Any] = None) -> str:
-    """Run the full RAG flow and return the LLM answer.
-
-    1. Embed the question.
-    2. Retrieve the top‑k similar chunks from Supabase.
-    3. If similarity is below the safety threshold, abort.
-    4. Build the prompt and call the LLM (Groq API).
-    5. Return the raw answer string.
-    """
-    logging.info("🔎 Embedding user question")
-    query_vec = embed_query(question)
-
-    logging.info("📚 Performing semantic search")
-    results = semantic_search(query_vec, top_k=5)
-    if not results:
-        raise RuntimeError("No knowledge base results returned")
-
-    # The `<=>` operator in Supabase returns cosine distance; lower is more similar.
-    best_distance = results[0].get("distance", 1.0) if isinstance(results[0], dict) else 1.0
-    logging.debug(f"Best similarity distance: {best_distance}")
-    if best_distance > SIMILARITY_THRESHOLD:
-        raise ValueError("Query out of scope – similarity below threshold")
-
-    prompt = build_prompt(results, question)
-    logging.info("🤖 Calling LLM (Groq) to generate reading")
-    # -------------------------------------------------------------------
-    # Groq API call – you must set GROQ_API_KEY in environment.
-    # -------------------------------------------------------------------
-    import httpx
-    GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-    if not GROQ_API_KEY:
-        raise RuntimeError("GROQ_API_KEY environment variable not set")
-
-    headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
-    payload = {
-        "model": "mixtral-8x7b-32768",  # Replace with Llama‑3‑8B if available on Groq
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.2,
-        "max_tokens": 1024,
-    }
-    response = httpx.post("https://api.groq.com/openai/v1/chat/completions", json=payload, headers=headers, timeout=30)
+def get_embedding(text: str) -> list[float]:
+    hf_token = os.getenv("HF_API_KEY")
+    headers = {"Authorization": f"Bearer {hf_token}"}
+    response = httpx.post(HF_API_URL, headers=headers, json={"inputs": text})
     response.raise_for_status()
-    data = response.json()
-    answer = data["choices"][0]["message"]["content"].strip()
-    return answer
+    return response.json()
+
+def semantic_search(embedding: list[float], top_k: int = 5) -> list[str]:
+    supabase_url = os.getenv("SUPABASE_URL")
+    supabase_key = os.getenv("SUPABASE_ANON_KEY")
+    headers = {
+        "apikey": supabase_key,
+        "Authorization": f"Bearer {supabase_key}",
+        "Content-Type": "application/json"
+    }
+    url = f"{supabase_url}/rest/v1/rpc/match_palmistry_chunks"
+    payload = {"query_embedding": embedding, "match_count": top_k}
+    
+    response = httpx.post(url, headers=headers, json=payload)
+    response.raise_for_status()
+    results = response.json()
+    
+    return [res["content"] for res in results if res.get("similarity", 0) >= SIMILARITY_THRESHOLD]
+
+def generate_reading(question: str, metadata: dict) -> str:
+    embedding = get_embedding(question)
+    context_chunks = semantic_search(embedding)
+    context = "\n".join(context_chunks)
+    
+    prompt = (
+        "System: You are an expert palm reader. Only answer palmistry questions from the context provided.\n"
+        f"Context: {context}\n"
+        f"Metadata: {metadata}\n"
+        f"User: {question}\n"
+        "AI:"
+    )
+    
+    groq_key = os.getenv("GROQ_API_KEY")
+    headers = {
+        "Authorization": f"Bearer {groq_key}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "llama3-8b-8192",
+        "messages": [{"role": "user", "content": prompt}]
+    }
+    response = httpx.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload)
+    response.raise_for_status()
+    
+    return response.json()["choices"][0]["message"]["content"]
+
+def save_experience_to_memory(question: str, answer: str):
+    supabase_url = os.getenv("SUPABASE_URL")
+    supabase_key = os.getenv("SUPABASE_ANON_KEY")
+    headers = {
+        "apikey": supabase_key,
+        "Authorization": f"Bearer {supabase_key}",
+        "Content-Type": "application/json",
+        "Prefer": "return=minimal"
+    }
+    url = f"{supabase_url}/rest/v1/ai_memory"
+    payload = {
+        "question": question,
+        "answer": answer,
+        "timestamp": datetime.utcnow().isoformat()
+    }
+    response = httpx.post(url, headers=headers, json=payload)
+    response.raise_for_status()
