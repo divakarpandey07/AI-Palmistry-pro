@@ -23,6 +23,8 @@ fun MainApp(
     onPalmCaptured: (String) -> Unit,
     onReset: () -> Unit
 ) {
+    var selectedLanguage by remember { mutableStateOf("Bilingual") }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -34,23 +36,11 @@ fun MainApp(
     ) {
         when (uiState) {
             is ReadingUiState.Idle -> {
-                CameraScreen(onPalmMetadataReady = onPalmCaptured)
-                // Overlay hint text
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
-                    Card(
-                        modifier = Modifier.padding(24.dp),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(containerColor = CardDark.copy(alpha = 0.85f))
-                    ) {
-                        Text(
-                            text = "✋  Apna haath camera ke saamne rakhein\nAI aapki rekhaon ko padhega",
-                            modifier = Modifier.padding(20.dp),
-                            color = SoftWhite,
-                            fontSize = 16.sp,
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                }
+                CameraScreen(
+                    selectedLanguage = selectedLanguage,
+                    onPalmMetadataReady = onPalmCaptured,
+                    onNavigateHome = onReset
+                )
             }
             is ReadingUiState.Loading -> {
                 Column(
@@ -69,41 +59,10 @@ fun MainApp(
                 }
             }
             is ReadingUiState.Success -> {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(24.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = "✨ Aapka Haath Padha Gaya",
-                        color = GoldAccent,
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(1f),
-                        colors = CardDefaults.cardColors(containerColor = CardDark),
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Text(
-                            text = uiState.reading,
-                            modifier = Modifier.padding(16.dp),
-                            color = SoftWhite,
-                            fontSize = 15.sp
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Button(
-                        onClick = onReset,
-                        colors = ButtonDefaults.buttonColors(containerColor = NeonViolet)
-                    ) {
-                        Text("Dobara Scan Karein", color = SoftWhite)
-                    }
-                }
+                ReadingResultScreen(
+                    readingResult = uiState.reading,
+                    onBackToHome = onReset
+                )
             }
             is ReadingUiState.Error -> {
                 Column(
