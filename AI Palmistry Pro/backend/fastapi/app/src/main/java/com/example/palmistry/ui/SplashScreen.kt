@@ -15,24 +15,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.palmistry.ui.theme.*
 import kotlinx.coroutines.delay
-
-val DeepPurple  = Color(0xFF1A0A2E)
-val NeonViolet  = Color(0xFF7C3AED)
-val GoldAccent  = Color(0xFFF59E0B)
-val SoftWhite   = Color(0xFFF1F5F9)
-val CardDark    = Color(0xFF2D1B69)
 
 @Composable
 fun SplashScreen(onSplashDone: () -> Unit) {
 
-    // Navigate after 2.5 seconds
     LaunchedEffect(Unit) {
         delay(2500)
         onSplashDone()
     }
 
-    // Shimmer animation for title
     val shimmerTransition = rememberInfiniteTransition(label = "shimmer")
     val shimmerOffset by shimmerTransition.animateFloat(
         initialValue = -300f,
@@ -41,14 +34,12 @@ fun SplashScreen(onSplashDone: () -> Unit) {
         label = "shimmer_offset"
     )
 
-    // Subtitle fade-in
     val subtitleAlpha by animateFloatAsState(
         targetValue = 1f,
         animationSpec = tween(durationMillis = 1200, delayMillis = 800),
         label = "subtitle_alpha"
     )
 
-    // Pulsing palm icon scale
     val pulseTransition = rememberInfiniteTransition(label = "pulse")
     val iconScale by pulseTransition.animateFloat(
         initialValue = 0.95f,
@@ -73,14 +64,12 @@ fun SplashScreen(onSplashDone: () -> Unit) {
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-            // Palm icon (text-based for now; replace with LottieAnimation or VectorPainter)
             Text(
                 text = "🤚",
                 fontSize = (80 * iconScale).sp,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
-            // Shimmer title
             val shimmerBrush = Brush.linearGradient(
                 colors = listOf(GoldAccent, Color.White, GoldAccent),
                 start = Offset(shimmerOffset, 0f),
@@ -107,7 +96,6 @@ fun SplashScreen(onSplashDone: () -> Unit) {
 
             Spacer(modifier = Modifier.height(48.dp))
 
-            // Animated dots loader
             val dotAlpha1 by pulseTransition.animateFloat(
                 initialValue = 0.2f, targetValue = 1f,
                 animationSpec = infiniteRepeatable(tween(600), RepeatMode.Reverse),
