@@ -35,10 +35,7 @@ fun CameraScreen(
                 Text("Flashlight")
             }
             Spacer(modifier = Modifier.height(12.dp))
-            // Home navigation button
-            OutlinedButton(onClick = { navController.navigate(com.example.palmistry.ui.navigation.Routes.HOME) }) {
-                Text("Home")
-            }
+
         }
     }
 
