@@ -1,26 +1,30 @@
 package com.example.palmistry.ui
 
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Calculate
+import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Psychology
+import androidx.compose.material.icons.filled.Stars
+import androidx.compose.material.icons.filled.Style
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.scale
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shadow
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,251 +33,273 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun HomeScreen(
     onStartScan: () -> Unit,
+    onOpenKundli: () -> Unit,
+    onOpenTarot: () -> Unit,
+    onOpenNumerology: () -> Unit,
     onViewHistory: () -> Unit
 ) {
-    val infiniteTransition = rememberInfiniteTransition(label = "home_anim")
-
-    // Floating glow animation
-    val glowAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.3f, targetValue = 0.7f,
-        animationSpec = infiniteRepeatable(tween(2000, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "glow"
-    )
-    val palmScale by infiniteTransition.animateFloat(
-        initialValue = 0.95f, targetValue = 1.05f,
-        animationSpec = infiniteRepeatable(tween(1800, easing = FastOutSlowInEasing), RepeatMode.Reverse),
-        label = "palm_scale"
-    )
-    val starRotation by infiniteTransition.animateFloat(
-        initialValue = 0f, targetValue = 360f,
-        animationSpec = infiniteRepeatable(tween(8000, easing = LinearEasing)),
-        label = "star_rot"
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF07040E), Color(0xFF130C29), Color(0xFF090615))
     )
 
-    // Fade-in on first composition
-    var visible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { visible = true }
-    val contentAlpha by animateFloatAsState(
-        targetValue = if (visible) 1f else 0f,
-        animationSpec = tween(800),
-        label = "fade_in"
-    )
-
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        Color(0xFF0D0621),
-                        Color(0xFF1A0A2E),
-                        Color(0xFF0F0C29)
-                    )
-                )
-            )
+            .background(backgroundGradient)
+            .statusBarsPadding()
+            .navigationBarsPadding()
     ) {
-        // Background decorative orbs
-        Box(
+        // Top Header
+        Row(
             modifier = Modifier
-                .size(300.dp)
-                .offset(x = (-60).dp, y = (-60).dp)
-                .background(
-                    Brush.radialGradient(
-                        listOf(Color(0xFF7C3AED).copy(alpha = glowAlpha * 0.4f), Color.Transparent)
-                    ),
-                    CircleShape
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column {
+                Text(
+                    "AI PALMISTRY PRO",
+                    color = Color(0xFFF3C654),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    letterSpacing = 1.5.sp
                 )
-        )
-        Box(
-            modifier = Modifier
-                .size(250.dp)
-                .align(Alignment.BottomEnd)
-                .offset(x = 40.dp, y = 40.dp)
-                .background(
-                    Brush.radialGradient(
-                        listOf(Color(0xFFF59E0B).copy(alpha = glowAlpha * 0.3f), Color.Transparent)
-                    ),
-                    CircleShape
+                Text(
+                    "Vedic Palmistry & Astro Intelligence",
+                    color = Color(0xFFCBD5E1).copy(alpha = 0.6f),
+                    fontSize = 11.sp
                 )
-        )
+            }
+
+            IconButton(
+                onClick = onViewHistory,
+                modifier = Modifier
+                    .background(Color(0xFF1E143B), CircleShape)
+                    .border(1.dp, Color(0xFFD4AF37).copy(alpha = 0.4f), CircleShape)
+            ) {
+                Icon(Icons.Filled.History, contentDescription = "History", tint = Color(0xFFF3C654))
+            }
+        }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(contentAlpha)
                 .verticalScroll(rememberScrollState())
-                .padding(24.dp),
+                .padding(horizontal = 20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
-
-            // ── Logo / Icon area ──────────────────────────────────────────
-            Box(contentAlignment = Alignment.Center) {
-                // Glowing ring
-                Box(
-                    modifier = Modifier
-                        .size(150.dp)
-                        .scale(palmScale)
-                        .background(
-                            Brush.radialGradient(
-                                listOf(
-                                    Color(0xFF7C3AED).copy(alpha = glowAlpha * 0.5f),
-                                    Color.Transparent
-                                )
-                            ),
-                            CircleShape
-                        )
-                )
-                // Palm emoji
-                Text(
-                    text = "🤚",
-                    fontSize = (72 * palmScale).sp,
-                    modifier = Modifier.scale(palmScale)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(28.dp))
-
-            // ── App title with shimmer ────────────────────────────────────
-            Text(
-                text = "AI Palmistry Pro",
-                fontSize = 34.sp,
-                fontWeight = FontWeight.ExtraBold,
-                style = TextStyle(
-                    brush = Brush.linearGradient(
-                        listOf(Color(0xFFF59E0B), Color(0xFFFFD700), Color(0xFFF59E0B))
-                    ),
-                    shadow = Shadow(
-                        color = Color(0xFF7C3AED).copy(alpha = 0.6f),
-                        offset = Offset(0f, 4f),
-                        blurRadius = 12f
-                    )
-                )
-            )
-
-            Spacer(modifier = Modifier.height(10.dp))
-
-            Text(
-                text = "Apne haath ki rekhaon se apna\nbhavishya jaanein",
-                fontSize = 15.sp,
-                color = Color(0xFFF1F5F9).copy(alpha = 0.65f),
-                textAlign = TextAlign.Center,
-                lineHeight = 22.sp
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
-
-            // ── Feature cards ─────────────────────────────────────────────
-            FeatureCard(
-                emoji = "🔮",
-                title = "AI-Powered Reading",
-                desc = "Google Gemini se powered deep palm analysis"
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            FeatureCard(
-                emoji = "🛡️",
-                title = "100% Private",
-                desc = "AES-256 encryption – aapka data safe hai"
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            FeatureCard(
-                emoji = "📜",
-                title = "Reading History",
-                desc = "Apni sabhi purani readings dekhen"
-            )
-
-            Spacer(modifier = Modifier.height(44.dp))
-
-            // ── Scan button ───────────────────────────────────────────────
-            Button(
-                onClick = onStartScan,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp),
-                shape = RoundedCornerShape(20.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                contentPadding = PaddingValues(0.dp)
+            // Daily Insight Banner
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1135)),
+                border = BorderStroke(1.dp, Color(0xFFD4AF37).copy(alpha = 0.3f))
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(
-                            Brush.horizontalGradient(
-                                listOf(Color(0xFF7C3AED), Color(0xFF4C1D95), Color(0xFF7C3AED))
-                            ),
-                            RoundedCornerShape(20.dp)
-                        ),
-                    contentAlignment = Alignment.Center
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-                    ) {
-                        Text("✋", fontSize = 22.sp)
-                        Spacer(modifier = Modifier.width(10.dp))
+                    Icon(
+                        imageVector = Icons.Filled.Stars,
+                        contentDescription = null,
+                        tint = Color(0xFFF3C654),
+                        modifier = Modifier.size(28.dp)
+                    )
+                    Spacer(modifier = Modifier.width(14.dp))
+                    Column {
                         Text(
-                            "Scan Karein",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            " Aaj Ka Grah Yog",
+                            color = Color(0xFFF3C654),
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Chandrama aur Guru ki sthiti se aaj ka din naye karyon aur aatm-vishwas ke liye shubh hai.",
+                            color = Color(0xFFE2E8F0),
+                            fontSize = 12.sp,
+                            lineHeight = 18.sp
                         )
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(14.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // ── History button ────────────────────────────────────────────
-            OutlinedButton(
-                onClick = onViewHistory,
+            // Main Hero Banner - Palm Scan
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(54.dp),
-                shape = RoundedCornerShape(16.dp),
-                border = BorderStroke(1.5.dp, Color(0xFF7C3AED).copy(alpha = 0.6f))
+                    .clickable { onStartScan() },
+                shape = RoundedCornerShape(22.dp),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF2E195E)),
+                border = BorderStroke(1.5.dp, Color(0xFFF3C654))
             ) {
-                Icon(Icons.Filled.History, contentDescription = null, tint = Color(0xFF7C3AED))
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    "Reading History",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = Color(0xFFF1F5F9)
-                )
-            }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(
+                            Brush.horizontalGradient(
+                                listOf(Color(0xFF4C1D95), Color(0xFF2E195E), Color(0xFF6B21A8))
+                            )
+                        )
+                        .padding(22.dp)
+                ) {
+                    Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Surface(
+                                shape = CircleShape,
+                                color = Color(0xFFF3C654).copy(alpha = 0.2f),
+                                border = BorderStroke(1.dp, Color(0xFFF3C654))
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Filled.CameraAlt,
+                                    contentDescription = null,
+                                    tint = Color(0xFFF3C654),
+                                    modifier = Modifier.padding(10.dp).size(26.dp)
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(14.dp))
+                            Column {
+                                Text(
+                                    "Palmistry AI Scanner",
+                                    color = Color.White,
+                                    fontSize = 19.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    "Instant High-Precision Palm Line Analysis",
+                                    color = Color(0xFFCBD5E1).copy(alpha = 0.7f),
+                                    fontSize = 12.sp
+                                )
+                            }
+                        }
 
-            Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(18.dp))
 
-            // Stars footer
-            Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                repeat(5) {
-                    Icon(Icons.Filled.Star, contentDescription = null, tint = Color(0xFFF59E0B), modifier = Modifier.size(16.dp))
+                        Text(
+                            "Apne haath ki photu scan karein aur Heart, Head, Life va Fate lines ka deep analysis praapt karein.",
+                            color = Color(0xFFE2E8F0),
+                            fontSize = 13.sp,
+                            lineHeight = 19.sp
+                        )
+
+                        Spacer(modifier = Modifier.height(18.dp))
+
+                        Button(
+                            onClick = onStartScan,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(48.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFD4AF37))
+                        ) {
+                            Text(
+                                "SCAN MY PALM NOW",
+                                color = Color(0xFF090614),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.ExtraBold,
+                                letterSpacing = 1.sp
+                            )
+                        }
+                    }
                 }
-                Spacer(modifier = Modifier.width(6.dp))
-                Text("10,000+ readings done", color = Color(0xFFF1F5F9).copy(alpha = 0.5f), fontSize = 12.sp)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                "Astro & Esoteric Modules",
+                color = Color(0xFFF3C654),
+                fontSize = 15.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.align(Alignment.Start)
+            )
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // 4 Grid Feature Cards
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                FeatureTile(
+                    title = "Janma Kundli",
+                    subtitle = "Vedic Birth Chart",
+                    icon = Icons.Filled.AutoAwesome,
+                    modifier = Modifier.weight(1f),
+                    onClick = onOpenKundli
+                )
+                FeatureTile(
+                    title = "Tarot Reading",
+                    subtitle = "3-Card Insight",
+                    icon = Icons.Filled.Style,
+                    modifier = Modifier.weight(1f),
+                    onClick = onOpenTarot
+                )
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                FeatureTile(
+                    title = "Numerology",
+                    subtitle = "Life Path & Destiny",
+                    icon = Icons.Filled.Calculate,
+                    modifier = Modifier.weight(1f),
+                    onClick = onOpenNumerology
+                )
+                FeatureTile(
+                    title = "Past Readings",
+                    subtitle = "Saved History",
+                    icon = Icons.Filled.History,
+                    modifier = Modifier.weight(1f),
+                    onClick = onViewHistory
+                )
+            }
+
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }
 
 @Composable
-private fun FeatureCard(emoji: String, title: String, desc: String) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFF2D1B69).copy(alpha = 0.6f))
-            .border(1.dp, Color(0xFF7C3AED).copy(alpha = 0.3f), RoundedCornerShape(16.dp))
-            .padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+private fun FeatureTile(
+    title: String,
+    subtitle: String,
+    icon: ImageVector,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = modifier
+            .height(135.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(18.dp),
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF181033)),
+        border = BorderStroke(1.dp, Color(0xFFD4AF37).copy(alpha = 0.35f))
     ) {
-        Text(emoji, fontSize = 28.sp)
-        Spacer(modifier = Modifier.width(14.dp))
-        Column {
-            Text(title, color = Color.White, fontWeight = FontWeight.SemiBold, fontSize = 15.sp)
-            Text(desc, color = Color(0xFFF1F5F9).copy(alpha = 0.6f), fontSize = 12.sp, lineHeight = 18.sp)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = Color(0xFF6B21A8).copy(alpha = 0.3f),
+                border = BorderStroke(1.dp, Color(0xFFD4AF37).copy(alpha = 0.5f))
+            ) {
+                Icon(
+                    imageVector = icon,
+                    contentDescription = null,
+                    tint = Color(0xFFF3C654),
+                    modifier = Modifier.padding(8.dp).size(20.dp)
+                )
+            }
+
+            Column {
+                Text(title, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(subtitle, color = Color(0xFFCBD5E1).copy(alpha = 0.6f), fontSize = 11.sp)
+            }
         }
     }
 }
