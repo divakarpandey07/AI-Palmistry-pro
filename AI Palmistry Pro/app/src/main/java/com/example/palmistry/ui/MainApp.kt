@@ -118,10 +118,14 @@ fun MainApp(
                     }
                 )
 
-                AppScreen.HISTORY -> ReadingHistoryScreen(
-                    readings = emptyList(),
-                    onDelete = {}
-                )
+                AppScreen.HISTORY -> {
+                    val historyViewModel: HistoryViewModel = hiltViewModel()
+                    val readings by historyViewModel.readings.collectAsState()
+                    ReadingHistoryScreen(
+                        readings = readings,
+                        onDelete = { id -> historyViewModel.deleteReading(id) }
+                    )
+                }
             }
         }
     }
