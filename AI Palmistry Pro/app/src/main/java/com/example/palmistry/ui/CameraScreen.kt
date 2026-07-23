@@ -15,6 +15,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.*
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,8 +23,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.FlashOff
 import androidx.compose.material.icons.filled.FlashOn
+import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -36,15 +41,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Paint
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.nativeCanvas
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
@@ -58,16 +58,16 @@ import kotlinx.coroutines.launch
 import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executors
 
-// ─── Scan phase states ───────────────────────────────────────────────────────
 private enum class ScanPhase { PREVIEW, CAPTURED, ANALYZING }
 
 @Composable
-fun CameraScreen(onPalmMetadataReady: (String) -> Unit) {
+fun CameraScreen(
+    onPalmMetadataReady: (String) -> Unit
+) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val scope = rememberCoroutineScope()
 
-    // Camera state
     var imageCapture: ImageCapture? by remember { mutableStateOf(null) }
     var flashlightOn by remember { mutableStateOf(false) }
     var scanPhase by remember { mutableStateOf(ScanPhase.PREVIEW) }
@@ -76,7 +76,6 @@ fun CameraScreen(onPalmMetadataReady: (String) -> Unit) {
     var lineAlpha by remember { mutableStateOf(0f) }
     var showFlashDialog by remember { mutableStateOf(false) }
 
-    // Camera manager for torch
     val cameraManager = remember {
         context.getSystemService(Context.CAMERA_SERVICE) as CameraManager
     }
@@ -95,27 +94,25 @@ fun CameraScreen(onPalmMetadataReady: (String) -> Unit) {
         }
     }
 
-    // Pulsing scan ring animation
     val infiniteTransition = rememberInfiniteTransition(label = "scan_ring")
     val ringScale by infiniteTransition.animateFloat(
-        initialValue = 0.85f, targetValue = 1.0f,
+        initialValue = 0.88f, targetValue = 1.0f,
         animationSpec = infiniteRepeatable(tween(1200, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "ring_scale"
     )
     val ringAlpha by infiniteTransition.animateFloat(
-        initialValue = 0.4f, targetValue = 1f,
+        initialValue = 0.5f, targetValue = 1f,
         animationSpec = infiniteRepeatable(tween(1200, easing = LinearEasing), RepeatMode.Reverse),
         label = "ring_alpha"
     )
 
-    // Line draw animation (for post-capture)
     val lineDrawProgress by animateFloatAsState(
         targetValue = lineAlpha,
-        animationSpec = tween(durationMillis = 1500, easing = FastOutSlowInEasing),
+        animationSpec = tween(durationMillis = 1600, easing = FastOutSlowInEasing),
         label = "line_draw"
     )
 
-    Box(modifier = Modifier.fillMaxSize().background(Color.Black)) {
+    Box(modifier = Modifier.fillMaxSize().background(Color(0xFF07040E))) {
 
         // ── Camera Preview ────────────────────────────────────────────────
         if (scanPhase == ScanPhase.PREVIEW) {
@@ -146,7 +143,6 @@ fun CameraScreen(onPalmMetadataReady: (String) -> Unit) {
                 }
             )
 
-            // ── Elegant scan frame (NO extra lines, just corner arcs) ──────
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawScanFrame(ringScale, ringAlpha)
             }
@@ -161,21 +157,19 @@ fun CameraScreen(onPalmMetadataReady: (String) -> Unit) {
                     modifier = Modifier.fillMaxSize(),
                     contentScale = androidx.compose.ui.layout.ContentScale.Crop
                 )
-                // Draw detected palm lines animated on top
                 Canvas(modifier = Modifier.fillMaxSize()) {
                     for ((start, end) in palmLines) {
                         drawLine(
-                            color = Color(0xFF7C3AED).copy(alpha = lineDrawProgress),
+                            color = Color(0xFFF3C654).copy(alpha = lineDrawProgress),
                             start = Offset(start.x * size.width, start.y * size.height),
                             end = Offset(end.x * size.width, end.y * size.height),
                             strokeWidth = 4.dp.toPx(),
                             cap = StrokeCap.Round
                         )
                     }
-                    // Gold center dot
                     if (lineDrawProgress > 0.5f) {
                         drawCircle(
-                            color = Color(0xFFF59E0B).copy(alpha = lineDrawProgress),
+                            color = Color(0xFF6B21A8).copy(alpha = lineDrawProgress),
                             radius = 8.dp.toPx(),
                             center = Offset(size.width / 2f, size.height / 2f)
                         )
@@ -184,22 +178,22 @@ fun CameraScreen(onPalmMetadataReady: (String) -> Unit) {
             }
         }
 
-        // ── Top bar ────────────────────────────────────────────────────────
+        // ── Top Bar ────────────────────────────────────────────────────────
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .statusBarsPadding()
-                .padding(horizontal = 20.dp, vertical = 12.dp),
+                .padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                "AI Palmistry",
-                color = Color.White,
-                fontSize = 20.sp,
+                "Palm Scan Mode",
+                color = Color(0xFFF3C654),
+                fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
-            // Flashlight button
+
             if (scanPhase == ScanPhase.PREVIEW) {
                 IconButton(
                     onClick = {
@@ -213,23 +207,22 @@ fun CameraScreen(onPalmMetadataReady: (String) -> Unit) {
                     modifier = Modifier
                         .size(44.dp)
                         .background(
-                            if (flashlightOn) Color(0xFFF59E0B).copy(alpha = 0.2f)
-                            else Color.White.copy(alpha = 0.1f),
+                            if (flashlightOn) Color(0xFFF3C654).copy(alpha = 0.25f)
+                            else Color.Black.copy(alpha = 0.4f),
                             shape = CircleShape
                         )
+                        .border(1.dp, Color(0xFFF3C654).copy(alpha = 0.5f), CircleShape)
                 ) {
                     Icon(
                         imageVector = if (flashlightOn) Icons.Filled.FlashOn else Icons.Filled.FlashOff,
                         contentDescription = "Flashlight",
-                        tint = if (flashlightOn) Color(0xFFF59E0B) else Color.White
+                        tint = if (flashlightOn) Color(0xFFF3C654) else Color.White
                     )
                 }
             }
         }
 
-        // ── Center scanning instruction (REMOVED per user request – no hint text) ──
-
-        // ── Bottom controls ────────────────────────────────────────────────
+        // ── Bottom Controls ────────────────────────────────────────────────
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -239,17 +232,11 @@ fun CameraScreen(onPalmMetadataReady: (String) -> Unit) {
         ) {
             when (scanPhase) {
                 ScanPhase.PREVIEW -> {
-                    // Capture button
                     Box(
                         modifier = Modifier
-                            .size(80.dp)
-                            .background(
-                                Brush.radialGradient(
-                                    listOf(Color(0xFF7C3AED), Color(0xFF4C1D95))
-                                ),
-                                shape = CircleShape
-                            )
-                            .border(3.dp, Color(0xFFF59E0B), CircleShape),
+                            .size(76.dp)
+                            .background(Color(0xFF6B21A8), shape = CircleShape)
+                            .border(2.5.dp, Color(0xFFF3C654), CircleShape),
                         contentAlignment = Alignment.Center
                     ) {
                         Button(
@@ -265,18 +252,15 @@ fun CameraScreen(onPalmMetadataReady: (String) -> Unit) {
                                         val bmp = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
                                         val rotated = rotateBitmap(bmp, image.imageInfo.rotationDegrees.toFloat())
                                         image.close()
-                                        // Generate mock palm lines from image dimensions
+
                                         val lines = generatePalmLines(rotated.width, rotated.height)
                                         scope.launch {
                                             capturedBitmap = rotated
                                             palmLines = lines
                                             scanPhase = ScanPhase.CAPTURED
-                                            // Animate lines appearing
                                             delay(400)
                                             lineAlpha = 1f
-                                            // Hold for 5-8 seconds then proceed
                                             delay(6000)
-                                            // Create base64 palm JSON to send
                                             val palmJson = bitmapToBase64Json(rotated)
                                             onPalmMetadataReady(palmJson)
                                         }
@@ -287,66 +271,65 @@ fun CameraScreen(onPalmMetadataReady: (String) -> Unit) {
                                     }
                                 })
                             },
-                            modifier = Modifier.size(72.dp),
+                            modifier = Modifier.size(68.dp),
                             shape = CircleShape,
                             colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
                             contentPadding = PaddingValues(0.dp)
                         ) {
-                            Text("📸", fontSize = 28.sp)
+                            Icon(Icons.Filled.Camera, contentDescription = "Capture", tint = Color.White, modifier = Modifier.size(32.dp))
                         }
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
-                        "Apna haath camera ke saamne rakhen",
-                        color = Color.White.copy(alpha = 0.7f),
+                        "Align Palm Within Scan Frame & Tap Camera",
+                        color = Color.White.copy(alpha = 0.85f),
                         fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
                         textAlign = TextAlign.Center
                     )
                 }
 
                 ScanPhase.ANALYZING -> {
-                    // Processing indicator
-                    CircularProgressIndicator(color = Color(0xFF7C3AED), strokeWidth = 3.dp)
+                    CircularProgressIndicator(color = Color(0xFFF3C654), strokeWidth = 3.dp)
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text("🔮 Palm lines analyze ho rahi hain...", color = Color.White, fontSize = 14.sp)
+                    Text("Processing Image & Extracting Lines...", color = Color.White, fontSize = 14.sp)
                 }
 
                 ScanPhase.CAPTURED -> {
-                    // Lines drawing state
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text("✨ Palm lines detect ho gayi!", color = Color(0xFFF59E0B), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Icon(Icons.Filled.AutoAwesome, contentDescription = null, tint = Color(0xFFF3C654), modifier = Modifier.size(28.dp))
                         Spacer(modifier = Modifier.height(6.dp))
-                        Text("AI reading prepare kar raha hai...", color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp)
+                        Text("Palm Lines Detected", color = Color(0xFFF3C654), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text("Neural Engine Preparing Report...", color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp)
                     }
                 }
             }
         }
     }
 
-    // ── Flashlight not available dialog ───────────────────────────────────────
     if (showFlashDialog) {
         AlertDialog(
             onDismissRequest = { showFlashDialog = false },
-            containerColor = Color(0xFF2D1B69),
+            containerColor = Color(0xFF181033),
             title = {
-                Text("🔦 Flashlight", color = Color(0xFFF59E0B), fontWeight = FontWeight.Bold)
+                Text("Flashlight Hardware", color = Color(0xFFF3C654), fontWeight = FontWeight.Bold)
             },
             text = {
                 Text(
-                    "Is device mein flashlight available nahi hai ya permission required hai.",
-                    color = Color(0xFFF1F5F9), fontSize = 14.sp
+                    "Torch mode unavailable on this device or permission required.",
+                    color = Color(0xFFE2E8F0), fontSize = 14.sp
                 )
             },
             confirmButton = {
                 TextButton(onClick = { showFlashDialog = false }) {
-                    Text("Theek Hai", color = Color(0xFF7C3AED))
+                    Text("OK", color = Color(0xFFF3C654))
                 }
             }
         )
     }
 }
 
-// ─── Draw elegant scan frame (corner arcs only, NO crossing lines) ─────────
 private fun DrawScope.drawScanFrame(scale: Float, alpha: Float) {
     val w = size.width
     val h = size.height
@@ -356,53 +339,39 @@ private fun DrawScope.drawScanFrame(scale: Float, alpha: Float) {
     val top = (h - frameH) / 2f
     val right = left + frameW
     val bottom = top + frameH
-    val cornerLen = 60.dp.toPx()
+    val cornerLen = 50.dp.toPx()
     val stroke = Stroke(width = 3.dp.toPx(), cap = StrokeCap.Round)
-    val color = Color(0xFF7C3AED).copy(alpha = alpha)
-    val gold = Color(0xFFF59E0B).copy(alpha = alpha * 0.6f)
+    val color = Color(0xFFF3C654).copy(alpha = alpha)
 
-    // Corner arcs - top left
     drawLine(color, Offset(left, top + cornerLen), Offset(left, top), stroke.width, StrokeCap.Round)
     drawLine(color, Offset(left, top), Offset(left + cornerLen, top), stroke.width, StrokeCap.Round)
-    // top right
     drawLine(color, Offset(right - cornerLen, top), Offset(right, top), stroke.width, StrokeCap.Round)
     drawLine(color, Offset(right, top), Offset(right, top + cornerLen), stroke.width, StrokeCap.Round)
-    // bottom left
     drawLine(color, Offset(left, bottom - cornerLen), Offset(left, bottom), stroke.width, StrokeCap.Round)
     drawLine(color, Offset(left, bottom), Offset(left + cornerLen, bottom), stroke.width, StrokeCap.Round)
-    // bottom right
     drawLine(color, Offset(right - cornerLen, bottom), Offset(right, bottom), stroke.width, StrokeCap.Round)
     drawLine(color, Offset(right, bottom), Offset(right, bottom - cornerLen), stroke.width, StrokeCap.Round)
 }
 
-// ─── Generate palm lines (normalized 0-1 coords) ─────────────────────────
 private fun generatePalmLines(w: Int, h: Int): List<Pair<Offset, Offset>> {
-    // Heart line, head line, life line (approximate positions)
     return listOf(
-        // Heart line (upper palm, horizontal)
         Offset(0.2f, 0.35f) to Offset(0.8f, 0.30f),
-        // Head line (middle)
         Offset(0.15f, 0.48f) to Offset(0.75f, 0.52f),
-        // Life line (curved bottom-left arc – approximated with 3 segments)
         Offset(0.35f, 0.25f) to Offset(0.25f, 0.45f),
         Offset(0.25f, 0.45f) to Offset(0.20f, 0.65f),
         Offset(0.20f, 0.65f) to Offset(0.30f, 0.80f),
-        // Fate line (vertical center)
         Offset(0.50f, 0.75f) to Offset(0.48f, 0.38f),
     )
 }
 
-// ─── Rotate bitmap ────────────────────────────────────────────────────────
 private fun rotateBitmap(bitmap: Bitmap, degrees: Float): Bitmap {
     if (degrees == 0f) return bitmap
     val matrix = Matrix().apply { postRotate(degrees) }
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 }
 
-// ─── Encode bitmap to Base64 JSON for API ────────────────────────────────
 private fun bitmapToBase64Json(bitmap: Bitmap): String {
     val stream = ByteArrayOutputStream()
-    // Scale down to reduce payload
     val scaled = Bitmap.createScaledBitmap(bitmap, 224, 224, true)
     scaled.compress(Bitmap.CompressFormat.JPEG, 70, stream)
     val base64 = android.util.Base64.encodeToString(stream.toByteArray(), android.util.Base64.NO_WRAP)
