@@ -1,10 +1,15 @@
 package com.example.palmistry.ui
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,40 +25,37 @@ import com.example.palmistry.data.model.ReadingEntity
 import java.text.SimpleDateFormat
 import java.util.*
 
-// Local color constants (same as MainApp palette)
-private val _HistorySoftWhite = Color(0xFFF1F5F9)
-private val _HistoryGoldAccent = Color(0xFFF59E0B)
-private val _HistoryCardDark = Color(0xFF2D1B69)
-private val _HistoryNeonViolet = Color(0xFF7C3AED)
-
-/**
- * Premium history screen for past palm readings.
- */
 @Composable
 fun ReadingHistoryScreen(
     readings: List<ReadingEntity>,
-    onDelete: (Int) -> Unit
+    onDelete: (Int) -> Unit,
+    onBack: () -> Unit
 ) {
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(Color(0xFF07040E), Color(0xFF130C29), Color(0xFF090615))
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(
-                Brush.verticalGradient(
-                    listOf(Color(0xFF0D0621), Color(0xFF1A0A2E), Color(0xFF0F0C29))
-                )
-            )
+            .background(backgroundGradient)
+            .statusBarsPadding()
     ) {
-        // Header
-        Box(
+        // Top Header
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .statusBarsPadding()
-                .padding(horizontal = 24.dp, vertical = 20.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
+            IconButton(onClick = onBack) {
+                Icon(Icons.Filled.ArrowBack, contentDescription = "Back", tint = Color(0xFFD4AF37))
+            }
+            Spacer(modifier = Modifier.width(8.dp))
             Text(
-                "📜 Reading History",
-                color = _HistoryGoldAccent,
-                fontSize = 22.sp,
+                "Reading History & Saved Reports",
+                color = Color(0xFFF3C654),
+                fontSize = 20.sp,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -63,19 +65,27 @@ fun ReadingHistoryScreen(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("🤚", fontSize = 56.sp)
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.padding(24.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.History,
+                        contentDescription = null,
+                        tint = Color(0xFFD4AF37).copy(alpha = 0.5f),
+                        modifier = Modifier.size(54.dp)
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
-                        "Abhi koi reading nahi hai.",
-                        color = _HistorySoftWhite.copy(alpha = 0.7f),
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.SemiBold
+                        "Koi Purani Reading Nahi Hai",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        "Pehle apna haath scan karein!",
-                        color = _HistorySoftWhite.copy(alpha = 0.45f),
+                        "Pehle apna haath scan karein ya Kundli calculate karein!",
+                        color = Color(0xFFCBD5E1).copy(alpha = 0.6f),
                         fontSize = 13.sp,
                         textAlign = TextAlign.Center
                     )
@@ -85,8 +95,8 @@ fun ReadingHistoryScreen(
         }
 
         LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp),
             contentPadding = PaddingValues(bottom = 24.dp)
         ) {
             items(readings, key = { it.id }) { reading ->
@@ -105,39 +115,40 @@ fun ReadingHistoryCard(reading: ReadingEntity, onDelete: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = _HistoryCardDark)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF181033)),
+        border = BorderStroke(1.dp, Color(0xFFD4AF37).copy(alpha = 0.35f))
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
+        Column(modifier = Modifier.padding(18.dp)) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(date, color = _HistoryGoldAccent, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                TextButton(onClick = onDelete) {
-                    Text("🗑 Delete", color = Color(0xFFEF4444), fontSize = 12.sp)
+                Text(date, color = Color(0xFFF3C654), fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                IconButton(onClick = onDelete, modifier = Modifier.size(28.dp)) {
+                    Icon(Icons.Filled.Delete, contentDescription = "Delete", tint = Color(0xFFEF4444), modifier = Modifier.size(18.dp))
                 }
             }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = reading.readingResult,
-                color = _HistorySoftWhite,
-                fontSize = 14.sp,
-                lineHeight = 22.sp,
+                color = Color(0xFFE2E8F0),
+                fontSize = 13.sp,
+                lineHeight = 21.sp,
                 maxLines = 4,
                 overflow = TextOverflow.Ellipsis
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             LinearProgressIndicator(
                 progress = { reading.confidenceScore },
-                modifier = Modifier.fillMaxWidth().height(5.dp),
-                color = _HistoryNeonViolet,
-                trackColor = _HistorySoftWhite.copy(alpha = 0.1f)
+                modifier = Modifier.fillMaxWidth().height(4.dp),
+                color = Color(0xFF6B21A8),
+                trackColor = Color(0xFFE2E8F0).copy(alpha = 0.1f)
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
-                "Confidence: ${(reading.confidenceScore * 100).toInt()}%",
-                color = _HistorySoftWhite.copy(alpha = 0.5f),
+                "Confidence Metric: ${(reading.confidenceScore * 100).toInt()}%",
+                color = Color(0xFFCBD5E1).copy(alpha = 0.5f),
                 fontSize = 11.sp
             )
         }
