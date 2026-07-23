@@ -9,6 +9,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
@@ -29,15 +34,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.palmistry.ui.viewmodel.HistoryViewModel
 import com.example.palmistry.ui.viewmodel.ReadingUiState
 
-// ── Premium dark color palette (exported for other files) ──────────────────
-val DeepPurple = Color(0xFF1A0A2E)
-val NeonViolet = Color(0xFF7C3AED)
-val GoldAccent  = Color(0xFFF59E0B)
-val SoftWhite   = Color(0xFFF1F5F9)
-val CardDark    = Color(0xFF2D1B69)
-
-// ── Screen state ────────────────────────────────────────────────────────────
-enum class AppScreen { HOME, CAMERA, RESULT, HISTORY, ERROR }
+// ── Screen state machine ────────────────────────────────────────────────────
+enum class AppScreen {
+    HOME,
+    CAMERA,
+    RESULT,
+    KUNDLI,
+    TAROT,
+    NUMEROLOGY,
+    HISTORY,
+    ERROR
+}
 
 @Composable
 fun MainApp(
@@ -69,20 +76,23 @@ fun MainApp(
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFF0D0621), Color(0xFF1A0A2E), Color(0xFF0F0C29))
+                    colors = listOf(Color(0xFF07040E), Color(0xFF130C29), Color(0xFF090615))
                 )
             )
     ) {
         AnimatedContent(
             targetState = currentScreen,
             transitionSpec = {
-                fadeIn(tween(400)) togetherWith fadeOut(tween(300))
+                fadeIn(tween(350)) togetherWith fadeOut(tween(250))
             },
             label = "screen_transition"
         ) { screen ->
             when (screen) {
                 AppScreen.HOME -> HomeScreen(
                     onStartScan = { currentScreen = AppScreen.CAMERA },
+                    onOpenKundli = { currentScreen = AppScreen.KUNDLI },
+                    onOpenTarot = { currentScreen = AppScreen.TAROT },
+                    onOpenNumerology = { currentScreen = AppScreen.NUMEROLOGY },
                     onViewHistory = { currentScreen = AppScreen.HISTORY }
                 )
 
@@ -106,6 +116,18 @@ fun MainApp(
                     }
                 )
 
+                AppScreen.KUNDLI -> KundliScreen(
+                    onBack = { currentScreen = AppScreen.HOME }
+                )
+
+                AppScreen.TAROT -> TarotScreen(
+                    onBack = { currentScreen = AppScreen.HOME }
+                )
+
+                AppScreen.NUMEROLOGY -> NumerologyScreen(
+                    onBack = { currentScreen = AppScreen.HOME }
+                )
+
                 AppScreen.ERROR -> FullScreenErrorView(
                     message = errorMessage,
                     onRetry = {
@@ -123,7 +145,8 @@ fun MainApp(
                     val readings by historyViewModel.readings.collectAsState()
                     ReadingHistoryScreen(
                         readings = readings,
-                        onDelete = { id -> historyViewModel.deleteReading(id) }
+                        onDelete = { id -> historyViewModel.deleteReading(id) },
+                        onBack = { currentScreen = AppScreen.HOME }
                     )
                 }
             }
@@ -136,56 +159,52 @@ fun MainApp(
 fun PremiumLoadingScreen() {
     val infiniteTransition = rememberInfiniteTransition(label = "loading")
     val pulseScale by infiniteTransition.animateFloat(
-        initialValue = 0.9f, targetValue = 1.1f,
-        animationSpec = infiniteRepeatable(tween(800, easing = FastOutSlowInEasing), RepeatMode.Reverse),
+        initialValue = 0.92f, targetValue = 1.08f,
+        animationSpec = infiniteRepeatable(tween(900, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = "pulse"
-    )
-    val dotAlpha1 by infiniteTransition.animateFloat(
-        initialValue = 0.2f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(600), RepeatMode.Reverse), label = "d1"
-    )
-    val dotAlpha2 by infiniteTransition.animateFloat(
-        initialValue = 0.2f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(600, delayMillis = 200), RepeatMode.Reverse), label = "d2"
-    )
-    val dotAlpha3 by infiniteTransition.animateFloat(
-        initialValue = 0.2f, targetValue = 1f,
-        animationSpec = infiniteRepeatable(tween(600, delayMillis = 400), RepeatMode.Reverse), label = "d3"
     )
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(Color(0xFF0D0621), Color(0xFF1A0A2E)))),
+            .background(Brush.verticalGradient(listOf(Color(0xFF07040E), Color(0xFF130C29)))),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("🔮", fontSize = (64 * pulseScale).sp)
-            Spacer(modifier = Modifier.height(24.dp))
-            Text(
-                "AI Haath Padh Raha Hai...",
-                color = SoftWhite,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold,
-                style = TextStyle(
-                    shadow = Shadow(NeonViolet.copy(alpha = 0.8f), Offset(0f, 4f), 16f)
+            Surface(
+                shape = CircleShape,
+                color = Color(0xFF6B21A8).copy(alpha = 0.3f),
+                border = BorderStroke(2.dp, Color(0xFFF3C654))
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.AutoAwesome,
+                    contentDescription = null,
+                    tint = Color(0xFFF3C654),
+                    modifier = Modifier
+                        .padding(24.dp)
+                        .size(54.dp)
                 )
+            }
+            Spacer(modifier = Modifier.height(28.dp))
+            Text(
+                "AI Palm Analysis In Progress",
+                color = Color.White,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 0.5.sp
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                "Aapke haath ki rekhaon ka analysis ho raha hai",
-                color = SoftWhite.copy(alpha = 0.5f), fontSize = 13.sp
+                "Decoding Heart, Head, Life & Fate Lines...",
+                color = Color(0xFFE2E8F0).copy(alpha = 0.6f),
+                fontSize = 13.sp
             )
             Spacer(modifier = Modifier.height(32.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                listOf(dotAlpha1, dotAlpha2, dotAlpha3).forEach { a ->
-                    Box(
-                        modifier = Modifier
-                            .size(12.dp)
-                            .background(NeonViolet.copy(alpha = a), CircleShape)
-                    )
-                }
-            }
+            CircularProgressIndicator(
+                color = Color(0xFFF3C654),
+                strokeWidth = 3.dp,
+                modifier = Modifier.size(36.dp)
+            )
         }
     }
 }
@@ -197,66 +216,50 @@ fun FullScreenErrorView(
     onRetry: () -> Unit,
     onHome: () -> Unit
 ) {
-    val infiniteTransition = rememberInfiniteTransition(label = "error_anim")
-    val shakeOffset by infiniteTransition.animateFloat(
-        initialValue = -4f, targetValue = 4f,
-        animationSpec = infiniteRepeatable(tween(300, easing = LinearEasing), RepeatMode.Reverse),
-        label = "shake"
-    )
-
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    listOf(Color(0xFF1A0A2E), Color(0xFF2D0A0A), Color(0xFF1A0A2E))
+                    listOf(Color(0xFF130C29), Color(0xFF2A0D18), Color(0xFF07040E))
                 )
             ),
         contentAlignment = Alignment.Center
     ) {
-        // Background glow
-        Box(
-            modifier = Modifier
-                .size(280.dp)
-                .background(
-                    Brush.radialGradient(
-                        listOf(Color(0xFFEF4444).copy(alpha = 0.15f), Color.Transparent)
-                    ),
-                    CircleShape
-                )
-        )
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.padding(32.dp)
         ) {
-            // Error icon with animation
-            Box(
-                modifier = Modifier
-                    .size(100.dp)
-                    .background(Color(0xFFEF4444).copy(alpha = 0.15f), CircleShape),
-                contentAlignment = Alignment.Center
+            Surface(
+                shape = CircleShape,
+                color = Color(0xFFDC2626).copy(alpha = 0.2f),
+                border = BorderStroke(1.5.dp, Color(0xFFDC2626))
             ) {
-                Text("❌", fontSize = 48.sp)
+                Icon(
+                    imageVector = Icons.Filled.ErrorOutline,
+                    contentDescription = null,
+                    tint = Color(0xFFEF4444),
+                    modifier = Modifier.padding(20.dp).size(48.dp)
+                )
             }
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                "Kuch Gadbad Ho Gayi!",
+                "Analysis Error Encountered",
                 color = Color.White,
-                fontSize = 24.sp,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(14.dp))
 
-            // Error message card
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF2D0A0A).copy(alpha = 0.8f))
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1F0D16)),
+                border = BorderStroke(1.dp, Color(0xFFEF4444).copy(alpha = 0.5f))
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -267,41 +270,30 @@ fun FullScreenErrorView(
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Error Details", color = Color(0xFFEF4444), fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
+                        Text("System Log", color = Color(0xFFEF4444), fontWeight = FontWeight.Bold, fontSize = 13.sp)
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        message.ifBlank { "Server se response nahi mila. Please internet connection check karein aur dobara koshish karein." },
-                        color = SoftWhite.copy(alpha = 0.75f),
+                        message.ifBlank { "Network timeout or server connectivity issue. Please retry scanning." },
+                        color = Color(0xFFE2E8F0).copy(alpha = 0.85f),
                         fontSize = 13.sp,
                         lineHeight = 20.sp
                     )
                 }
             }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
-            // Suggestion text
-            Text(
-                "💡 Agar ye issue baar baar aa raha hai toh thoda wait karke retry karein. Server busy ho sakta hai.",
-                color = GoldAccent.copy(alpha = 0.7f),
-                fontSize = 12.sp,
-                textAlign = TextAlign.Center,
-                lineHeight = 18.sp
-            )
-
-            Spacer(modifier = Modifier.height(36.dp))
-
-            // Retry button
             Button(
                 onClick = onRetry,
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier.fillMaxWidth().height(54.dp),
                 shape = RoundedCornerShape(16.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = NeonViolet)
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6B21A8)),
+                border = BorderStroke(1.dp, Color(0xFFF3C654))
             ) {
                 Icon(Icons.Filled.Refresh, contentDescription = null, tint = Color.White)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Dobara Scan Karein", fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold)
+                Text("Retry Palm Scan", fontSize = 15.sp, color = Color.White, fontWeight = FontWeight.Bold)
             }
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -309,9 +301,12 @@ fun FullScreenErrorView(
             OutlinedButton(
                 onClick = onHome,
                 modifier = Modifier.fillMaxWidth().height(50.dp),
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(14.dp),
+                border = BorderStroke(1.dp, Color(0xFFD4AF37).copy(alpha = 0.4f))
             ) {
-                Text("🏠  Home Pe Jao", fontSize = 15.sp, color = SoftWhite)
+                Icon(Icons.Filled.Home, contentDescription = null, tint = Color(0xFFF3C654))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Return To Home", fontSize = 15.sp, color = Color(0xFFE2E8F0))
             }
         }
     }
@@ -320,113 +315,109 @@ fun FullScreenErrorView(
 // ── Premium reading result screen ───────────────────────────────────────────
 @Composable
 fun ReadingResultScreen(reading: String, onReset: () -> Unit) {
-    var visible by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) { visible = true }
-    val alpha by animateFloatAsState(
-        targetValue = if (visible) 1f else 0f,
-        animationSpec = tween(700), label = "result_fade"
-    )
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .alpha(alpha)
             .verticalScroll(rememberScrollState())
-            .padding(24.dp),
+            .statusBarsPadding()
+            .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(52.dp))
+        Spacer(modifier = Modifier.height(12.dp))
 
-        // Gold glowing header
-        Box(
-            modifier = Modifier
-                .size(80.dp)
-                .background(GoldAccent.copy(alpha = 0.15f), CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            Text("🔮", fontSize = 40.sp)
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            "Aapka Haath Padha Gaya!",
-            color = GoldAccent,
-            fontSize = 22.sp,
-            fontWeight = FontWeight.Bold,
-            style = TextStyle(
-                shadow = Shadow(GoldAccent.copy(alpha = 0.5f), Offset(0f, 2f), 8f)
-            )
-        )
-
-        Spacer(modifier = Modifier.height(6.dp))
-        Text(
-            "AI-powered deep palm reading",
-            color = SoftWhite.copy(alpha = 0.5f),
-            fontSize = 13.sp
-        )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Reading card
+        // Luxury Header Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp),
-            colors = CardDefaults.cardColors(containerColor = CardDark)
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF181033)),
+            border = BorderStroke(1.5.dp, Color(0xFFF3C654))
         ) {
-            Column(modifier = Modifier.padding(20.dp)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(
-                        modifier = Modifier
-                            .size(8.dp)
-                            .background(NeonViolet, CircleShape)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Palm Reading", color = NeonViolet, fontWeight = FontWeight.SemiBold, fontSize = 13.sp)
-                }
-                Spacer(modifier = Modifier.height(12.dp))
+            Column(
+                modifier = Modifier.padding(20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.CheckCircle,
+                    contentDescription = null,
+                    tint = Color(0xFFF3C654),
+                    modifier = Modifier.size(36.dp)
+                )
+                Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = reading,
-                    color = SoftWhite,
-                    fontSize = 15.sp,
-                    lineHeight = 26.sp
+                    "Palmistry AI Reading Complete",
+                    color = Color(0xFFF3C654),
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    "High Precision Neural Analysis",
+                    color = Color(0xFFCBD5E1).copy(alpha = 0.6f),
+                    fontSize = 12.sp
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        // Line scores (decorative)
+        // Main Reading Text
         Card(
             modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = CardDark.copy(alpha = 0.7f))
+            shape = RoundedCornerShape(20.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF120C29)),
+            border = BorderStroke(1.dp, Color(0xFFD4AF37).copy(alpha = 0.4f))
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text("📊 Palm Lines", color = GoldAccent, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+            Column(modifier = Modifier.padding(22.dp)) {
+                Text(
+                    "Detailed Reading Insights",
+                    color = Color(0xFFF3C654),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp
+                )
                 Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = reading,
+                    color = Color(0xFFE2E8F0),
+                    fontSize = 14.sp,
+                    lineHeight = 24.sp
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        // Line Scores Breakdown Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(18.dp),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFF181033)),
+            border = BorderStroke(1.dp, Color(0xFFD4AF37).copy(alpha = 0.3f))
+        ) {
+            Column(modifier = Modifier.padding(18.dp)) {
+                Text("Detected Palm Lines Metrics", color = Color(0xFFF3C654), fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Spacer(modifier = Modifier.height(14.dp))
                 listOf(
-                    "❤️  Hridaya Rekha (Heart)" to 0.78f,
-                    "🧠  Mastishk Rekha (Head)" to 0.65f,
-                    "🌿  Jeevan Rekha (Life)" to 0.82f,
-                    "⭐  Bhagya Rekha (Fate)" to 0.55f,
+                    "Heart Line (Hridaya Rekha)" to 0.84f,
+                    "Head Line (Mastishk Rekha)" to 0.72f,
+                    "Life Line (Jeevan Rekha)" to 0.88f,
+                    "Fate Line (Bhagya Rekha)" to 0.65f,
                 ).forEach { (label, score) ->
                     Column {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            Text(label, color = SoftWhite.copy(alpha = 0.8f), fontSize = 12.sp)
-                            Text("${(score * 100).toInt()}%", color = NeonViolet, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                            Text(label, color = Color(0xFFCBD5E1), fontSize = 12.sp)
+                            Text("${(score * 100).toInt()}%", color = Color(0xFFF3C654), fontSize = 12.sp, fontWeight = FontWeight.Bold)
                         }
-                        Spacer(modifier = Modifier.height(4.dp))
+                        Spacer(modifier = Modifier.height(6.dp))
                         LinearProgressIndicator(
                             progress = { score },
-                            modifier = Modifier.fillMaxWidth().height(5.dp),
-                            color = NeonViolet,
-                            trackColor = SoftWhite.copy(alpha = 0.1f)
+                            modifier = Modifier.fillMaxWidth().height(6.dp),
+                            color = Color(0xFF6B21A8),
+                            trackColor = Color(0xFFE2E8F0).copy(alpha = 0.1f)
                         )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
                     }
                 }
             }
@@ -436,11 +427,14 @@ fun ReadingResultScreen(reading: String, onReset: () -> Unit) {
 
         Button(
             onClick = onReset,
-            modifier = Modifier.fillMaxWidth().height(56.dp),
+            modifier = Modifier.fillMaxWidth().height(54.dp),
             shape = RoundedCornerShape(16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = NeonViolet)
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF6B21A8)),
+            border = BorderStroke(1.dp, Color(0xFFF3C654))
         ) {
-            Text("✋  Naya Reading Lein", fontSize = 16.sp, color = Color.White, fontWeight = FontWeight.Bold)
+            Icon(Icons.Filled.Home, contentDescription = null, tint = Color.White)
+            Spacer(modifier = Modifier.width(8.dp))
+            Text("Return To Home", fontSize = 15.sp, color = Color.White, fontWeight = FontWeight.Bold)
         }
 
         Spacer(modifier = Modifier.height(24.dp))
