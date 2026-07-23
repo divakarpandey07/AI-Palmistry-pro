@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import com.example.palmistry.security.RootDetector
 import com.example.palmistry.ui.MainApp
+import com.example.palmistry.ui.theme.PalmistryTheme
 import com.example.palmistry.ui.viewmodel.PalmistryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -21,12 +22,13 @@ class MainActivity : ComponentActivity() {
     @Inject lateinit var rootDetector: RootDetector
     private val viewModel: PalmistryViewModel by viewModels()
 
-    // Camera permission launcher
-    private val cameraPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { granted ->
-        if (!granted) {
-            Toast.makeText(this, "Camera permission is required!", Toast.LENGTH_LONG).show()
+    // Request both CAMERA and flashlight-related permissions
+    private val permissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { results ->
+        val cameraGranted = results[Manifest.permission.CAMERA] ?: false
+        if (!cameraGranted) {
+            Toast.makeText(this, "Camera permission zaruri hai!", Toast.LENGTH_LONG).show()
             finish()
         }
     }
@@ -41,16 +43,23 @@ class MainActivity : ComponentActivity() {
             return
         }
 
-        // Request camera permission
-        cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        // Request camera + flashlight permissions
+        permissionLauncher.launch(
+            arrayOf(
+                Manifest.permission.CAMERA,
+                // Flashlight uses the camera hardware – no separate permission needed on Android 13+
+            )
+        )
 
         setContent {
-            val uiState by viewModel.uiState.collectAsState()
-            MainApp(
-                uiState = uiState,
-                onPalmCaptured = { palmJson -> viewModel.generateReading(palmJson) },
-                onReset = { viewModel.resetState() }
-            )
+            PalmistryTheme {
+                val uiState by viewModel.uiState.collectAsState()
+                MainApp(
+                    uiState = uiState,
+                    onPalmCaptured = { palmJson -> viewModel.generateReading(palmJson) },
+                    onReset = { viewModel.resetState() }
+                )
+            }
         }
     }
 }
