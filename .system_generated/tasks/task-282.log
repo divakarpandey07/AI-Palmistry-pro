@@ -1,0 +1,31 @@
+Traceback (most recent call last):
+  File "C:\Users\hp\.gemini\antigravity\brain\3b82dffa-6b42-4284-8c07-5fc52a9797d7\AI Palmistry Pro\data_ingestion.py", line 14, in <module>
+    from langchain_text_splitters import RecursiveCharacterTextSplitter
+  File "C:\Users\hp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\langchain_text_splitters\__init__.py", line 39, in <module>
+    from langchain_text_splitters.sentence_transformers import (
+        SentenceTransformersTokenTextSplitter,
+    )
+  File "C:\Users\hp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\langchain_text_splitters\sentence_transformers.py", line 11, in <module>
+    from sentence_transformers import (  # type: ignore[import-not-found, unused-ignore]
+        SentenceTransformer,
+    )
+  File "C:\Users\hp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\sentence_transformers\__init__.py", line 10, in <module>
+    from sentence_transformers.backend import (
+    ...<3 lines>...
+    )
+  File "C:\Users\hp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\sentence_transformers\backend\__init__.py", line 3, in <module>
+    from .load import load_onnx_model, load_openvino_model
+  File "C:\Users\hp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\sentence_transformers\backend\load.py", line 7, in <module>
+    from transformers.configuration_utils import PretrainedConfig
+  File "C:\Users\hp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\transformers\configuration_utils.py", line 32, in <module>
+    from .generation.configuration_utils import GenerationConfig
+  File "C:\Users\hp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\transformers\generation\configuration_utils.py", line 61, in <module>
+    from .logits_process import SynthIDTextWatermarkLogitsProcessor, WatermarkLogitsProcessor
+  File "C:\Users\hp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\transformers\generation\logits_process.py", line 21, in <module>
+    import torch
+  File "C:\Users\hp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\torch\__init__.py", line 288, in <module>
+    _load_dll_libraries()
+    ~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Users\hp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\torch\__init__.py", line 271, in _load_dll_libraries
+    raise err
+OSError: [WinError 4551] An Application Control policy has blocked this file. Error loading "C:\Users\hp\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\torch\lib\shm.dll" or one of its dependencies.

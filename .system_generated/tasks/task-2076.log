@@ -1,0 +1,8 @@
+gradle : The term 'gradle' is not recognized as the name of a cmdlet, function, script file, or operable program. 
+Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:93
++ ... oxy = New-Object System.Net.WebProxy($env:HTTP_PROXY); gradle wrapper
++                                                            ~~~~~~
+    + CategoryInfo          : ObjectNotFound: (gradle:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 

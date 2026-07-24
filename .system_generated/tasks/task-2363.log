@@ -1,0 +1,10 @@
+Successfully scheduled one-shot timer.
+Expected to fire at: 2026-07-23T16:21:20+05:30
+Prompt: Check if GitHub Actions build run #30000752581 has completed and get the final result
+Early Termination: never
+
+[2026-07-23T16:20:45+05:30] Still waiting. Remaining time: 35s
+[2026-07-23T16:20:55+05:30] Still waiting. Remaining time: 25s
+[2026-07-23T16:21:05+05:30] Still waiting. Remaining time: 15s
+[2026-07-23T16:21:15+05:30] Still waiting. Remaining time: 5s
+[2026-07-23T16:21:20+05:30] Timer fired.

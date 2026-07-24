@@ -1,0 +1,3 @@
+To https://github.com/divakarpandey07/AI-Palmistry-pro.git
+ ! [remote rejected] HEAD -> main (cannot lock ref 'refs/heads/main': is at d402d3afb40e067bf39904da24dbc4af755291a0 but expected c1c8ebf8b4d0ff6295f17389307e850b3a455900)
+error: failed to push some refs to 'https://github.com/divakarpandey07/AI-Palmistry-pro.git'
