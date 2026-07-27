@@ -429,17 +429,6 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileNavBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
 
     // ----------------------------------------------------------------------
-    // LOVE & MARRIAGE COMPATIBILITY HANDLER
-    // ----------------------------------------------------------------------
-    const calcLoveBtn = document.getElementById('calcLoveBtn');
-    const loveResultCard = document.getElementById('loveResultCard');
-    if (calcLoveBtn) {
-        calcLoveBtn.addEventListener('click', () => {
-            loveResultCard.classList.remove('hidden');
-        });
-    }
-
-    // ----------------------------------------------------------------------
     // 5. ORIENTATION-AWARE HAND POSE & DARK CREASE PIXEL SNAPPING ENGINE
     // ----------------------------------------------------------------------
     const startCamBtn = document.getElementById('startCamBtn');
@@ -786,7 +775,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gemini: { name: "♊ मिथुन (Gemini)", text: "बुध देव की कृपा से व्यापारिक सौदे सफल होंगे एवं तार्किक बुद्धि से धन-धान्य वृद्धि होगी।" },
         cancer: { name: "♋ कर्क (Cancer)", text: "चंद्रमा का शुभ गोचर आपके मन में शांति, उच्च अंतर्ज्ञान एवं पारिवारिक स्नेह बढ़ाएगा।" },
         leo: { name: "♌ सिंह (Leo)", text: "सूर्यदेव का प्रताप आपके मान-सम्मान एवं प्रशासनिक जिम्मेदारियों में वृद्धि करेगा।" },
-        virgo: { name: "<ctrl42> कन्या (Virgo)", text: "बुध ग्रह की शुभता से बौद्धिक कार्यों में बड़ी सफलता एवं स्वास्थ लाभ प्राप्त होगा।" },
+        virgo: { name: "♍ कन्या (Virgo)", text: "बुध ग्रह की शुभता से बौद्धिक कार्यों में बड़ी सफलता एवं स्वास्थ लाभ प्राप्त होगा।" },
         libra: { name: "♎ तुला (Libra)", text: "शुक्र गोचर से दांपत्य जीवन में मधुरता एवं कलात्मक कार्यों से धन लाभ होगा।" },
         scorpio: { name: "♏ वृश्चिक (Scorpio)", text: "मंगल देव का पराक्रम आपके आत्मविश्वास को चरम पर पहुंचाएगा एवं भूमि लाभ देगा।" },
         sagittarius: { name: "♐ धनु (Sagittarius)", text: "गुरु बृहस्पति की कृपा से उच्च शिक्षा, धार्मिक यात्रा व धन समृद्धि का योग है।" },
@@ -817,10 +806,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ----------------------------------------------------------------------
-    // 8. REAL WEBGL THREE.JS 3D HAND RENDERER
+    // 8. REAL WEBGL THREE.JS 3D HAND RENDERER & INTERACTIVE CONTROLS
     // ----------------------------------------------------------------------
     const gTitle = document.getElementById('gTitle');
     const gDesc = document.getElementById('gDesc');
+    let is3DRotating = true;
+    let camera3D, handGroup3D;
 
     const guideDict = {
         jupiter: { title: "🪐 गुरु पर्वत", desc: "तर्जनी के नीचे स्थित गुरु पर्वत ज्ञान, नेतृत्व व राज-योग का प्रतीक है।" },
@@ -846,6 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
         camera.position.set(0, 0, 13);
+        camera3D = camera;
 
         const renderer = new THREE.WebGLRenderer({ canvas: container, antialias: true, alpha: true });
         renderer.setSize(width, height);
@@ -867,6 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scene.add(keyLight);
 
         const handGroup = new THREE.Group();
+        handGroup3D = handGroup;
 
         const skinMat = new THREE.MeshPhysicalMaterial({
             color: 0xE8B896,
@@ -990,7 +983,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function animate3D() {
             requestAnimationFrame(animate3D);
-            handGroup.rotation.y += 0.0025;
+            if (is3DRotating) {
+                handGroup.rotation.y += 0.0025;
+            }
             if (controls) controls.update();
             renderer.render(scene, camera);
         }
@@ -999,8 +994,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setTimeout(initPhotorealistic3DHandRenderer, 500);
 
+    // 3D CONTROLS BUTTON HANDLERS
+    const reset3DCamBtn = document.getElementById('reset3DCamBtn');
+    const toggle3DRotateBtn = document.getElementById('toggle3DRotateBtn');
+    const rotateBtnLabel = document.getElementById('rotateBtnLabel');
+
+    if (reset3DCamBtn) {
+        reset3DCamBtn.addEventListener('click', () => {
+            if (camera3D && handGroup3D) {
+                camera3D.position.set(0, 0, 13);
+                handGroup3D.rotation.set(0, 0, 0);
+            }
+        });
+    }
+
+    if (toggle3DRotateBtn) {
+        toggle3DRotateBtn.addEventListener('click', () => {
+            is3DRotating = !is3DRotating;
+            if (is3DRotating) {
+                toggle3DRotateBtn.innerHTML = '<i class="fa-solid fa-pause"></i> <span>घूमना रोकें</span>';
+            } else {
+                toggle3DRotateBtn.innerHTML = '<i class="fa-solid fa-play"></i> <span>घूमना शुरू करें</span>';
+            }
+        });
+    }
+
     /**
-     * RICH SCRIPTURE READING GENERATOR (100% Pure Language Isolation)
+     * RICH SCRIPTURE READING GENERATOR (100% Pure Language Isolation & Banners)
      */
     function generateShastraReading(lang, features = { heart: 'deep_jupiter', head: 'straight_sharp', life: 'full_curve', fate: 'wrist_saturn', skin: 'pink', finger: 'conical' }) {
         if (lang === 'en') {
@@ -1021,6 +1041,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 <h3>📌 Authenticated Scripture-Grounded Astrological Reading</h3>
                 <p><em>(Rigorously cross-referenced with Cheiro's Palmistry, Samudrik Shastra, Vrihad Hastrekha Shastra & Samudrik Hastrekha Vigyan)</em></p>
                 
+                <div class="raj-yoga-banner">
+                    <h4>👑 Classical Raj-Yoga Formation Detected</h4>
+                    <p>Confluence of unbroken Fate Line & well-developed Jupiter Mount creates auspicious Dhan-Yoga post age 28.</p>
+                </div>
+
                 <h3>✋ 1. Detailed Line & Mount Analysis:</h3>
                 <ul>
                     <li><strong>Heart Line (Emotional Profile):</strong> ${heartDesc}</li>
@@ -1035,17 +1060,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <li><strong>Finger Formation:</strong> ${fingerDesc}</li>
                 </ul>
 
-                <h3>🔮 3. Life Predictions & Auspicious Yogas:</h3>
-                <ul>
-                    <li><strong>Career & Wealth:</strong> Strong Jupiter-Saturn alignment creates favorable Raj-Yoga. Financial stability increases post age 28.</li>
-                    <li><strong>Relationships:</strong> Deep loyalty in personal bonds. Emotional clarity brings long-term harmony.</li>
-                </ul>
-
-                <h3>💡 4. Vedic Astro Remedies:</h3>
-                <ul>
-                    <li>Offer water mixed with turmeric to the Rising Sun on Thursdays while reciting <em>Om Brim Brihaspataye Namah</em>.</li>
-                    <li>Recite Hanuman Chalisa on Tuesdays for Mars alignment and courage.</li>
-                </ul>
+                <div class="remedy-banner">
+                    <h4>💡 Auspicious Vedic Remedy:</h4>
+                    <p>Offer water mixed with turmeric to the Rising Sun on Thursdays while reciting <em>Om Brim Brihaspataye Namah</em>.</p>
+                </div>
             `;
         } else if (lang === 'hin') {
             let heartDesc = "Aapki Heart Line Jupiter Mount tak ja rahi hai. Cheiro Palmistry ke according ye aapke strong emotional balance, honesty aur high integrity ko dikhati hai.";
@@ -1061,6 +1079,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return `
                 <h3>📌 Verified Shastra-Based Detailed Reading</h3>
                 <p><em>(Cheiro Palmistry, Samudrik Shastra aur Vrihad Hastrekha Shastra se matched)</em></p>
+
+                <div class="raj-yoga-banner">
+                    <h4>👑 Raj-Yoga Highlight Banner</h4>
+                    <p>Jupiter aur Saturn Mount ke combination se age 28 ke baad fast career & wealth growth ka Yoga hai.</p>
+                </div>
                 
                 <h3>✋ 1. Detailed Line Analysis:</h3>
                 <ul>
@@ -1070,17 +1093,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     <li><strong>Fate Line:</strong> ${fateDesc}</li>
                 </ul>
 
-                <h3>🔮 2. Life Predictions & Yogas:</h3>
-                <ul>
-                    <li><strong>Career & Wealth:</strong> Jupiter-Saturn confluence se Raj-Yoga ban raha hai. Age 28 ke baad wealth growth fast hogi.</li>
-                    <li><strong>Health & Energy:</strong> High stamina aur positive energy rahegi.</li>
-                </ul>
-
-                <h3>💡 3. Shastra-Sammati Remedies:</h3>
-                <ul>
-                    <li>Har Thursday ko water me turmeric milakar Sun ko arghya dein aur <em>Om Brim Brihaspataye Namah</em> ka jaap karein.</li>
-                    <li>Tuesday ko Hanuman Chalisa ka paath karein.</li>
-                </ul>
+                <div class="remedy-banner">
+                    <h4>💡 Shastra Remedy:</h4>
+                    <p>Har Thursday ko Sun ko turmeric water chadhayein aur <em>Om Brim Brihaspataye Namah</em> ka jaap karein.</p>
+                </div>
             `;
         }
 
@@ -1102,6 +1118,11 @@ document.addEventListener('DOMContentLoaded', () => {
             <h3>📌 प्रामाणिक शास्त्र-आधारित विस्तृत फलकथन</h3>
             <p><em>(कीरो हस्तरेखा शास्त्र, सामुद्रिक शास्त्र, वृहद् हस्तरेखा शास्त्र एवं सामुद्रिक हस्तरेखा विज्ञान द्वारा प्रमाणित)</em></p>
             
+            <div class="raj-yoga-banner">
+                <h4 style="color: #DFAC6C; font-family: 'Playfair Display', serif; font-size: 1.1rem; margin-bottom: 6px;"><i class="fa-solid fa-crown"></i> शास्त्रीय धनदायक राज-योग प्रमाणित</h4>
+                <p style="font-size: 0.9rem; line-height: 1.5; color: #F8FAFC;">हथेली में मणिकंठ से शनि पर्वत तक अखण्डित भाग्य रेखा एवं गुरु पर्वत का सुदृढ़ उभार 28 वर्ष की आयु के पश्चात असीम प्रतिष्ठा व समृद्धि का योग बनाता है।</p>
+            </div>
+
             <h3>✋ 1. रेखाओं एवं पर्वतों का विस्तृत विश्लेषण:</h3>
             <ul>
                 <li><strong>हृदय रेखा (भावनात्मक स्थिति):</strong> ${heartDesc}</li>
@@ -1116,17 +1137,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 <li><strong>उंगलियों का स्वरूप:</strong> ${fingerDesc}</li>
             </ul>
 
-            <h3>🔮 3. जीवन फलादेश एवं राज-योग:</h3>
-            <ul>
-                <li><strong>करियर व धन-धान्य:</strong> गुरु व शनि पर्वत की अनुकूल स्थिति से हथेली में धनदायक राज-योग निर्मित हो रहा है। 28 वर्ष की आयु के पश्चात निरंतर प्रगति होगी।</li>
-                <li><strong>पारिवारिक सुख:</strong> संबंधों में प्रगाढ़ता व स्थायित्व रहेगा।</li>
-            </ul>
-
-            <h3>💡 4. शास्त्र-सम्मत अचूक उपाय:</h3>
-            <ul>
-                <li>प्रत्येक गुरुवार को जल में हल्दी मिलाकर सूर्य देव को अर्घ्य दें तथा <em>ॐ बृं बृहस्पतये नमः</em> का 108 बार जाप करें।</li>
-                <li>मंगलवार के दिन हनुमान चालीसा अथवा सुंदरकांड का पाठ करें।</li>
-            </ul>
+            <div class="remedy-banner">
+                <h4 style="color: #10B981; font-family: 'Playfair Display', serif; font-size: 1.05rem; margin-bottom: 6px;"><i class="fa-solid fa-hands-praying"></i> शास्त्र-सम्मत अचूक ग्रह शांति उपाय</h4>
+                <p style="font-size: 0.9rem; line-height: 1.5; color: #F8FAFC;">प्रत्येक गुरुवार को जल में हल्दी मिलाकर सूर्य देव को अर्घ्य दें तथा <em>ॐ बृं बृहस्पतये नमः</em> का 108 बार जाप करें।</p>
+            </div>
         `;
     }
 
