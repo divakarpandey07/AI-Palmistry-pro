@@ -94,7 +94,7 @@
         <!-- Main Content Area -->
         <main class="main-content">
             
-            <!-- SECTION 1: PALMISTRY SCANNER & 4-LAYER PIPELINE -->
+            <!-- SECTION 1: PALMISTRY SCANNER, 4-LAYER PIPELINE & 3D HAND GUIDE -->
             <section id="palmistrySection" class="tab-section active">
                 
                 <!-- 4-LAYER MAJOR VERIFICATION PIPELINE BAR -->
@@ -218,7 +218,7 @@
 
                                 <!-- ADDITIONAL SCRIPTURE CLARIFICATION QUESTIONS FOR 100% ACCURACY -->
                                 <div class="verify-group">
-                                    <label><i class="fa-solid fa-palette" style="color: #F472B6;"></i> <strong data-i18n="lbl_skin_color">हथेली का रंग (Samudrik Shastra):</strong></label>
+                                    <label><i class="fa-solid fa-palette" style="color: #F472B6;"></i> <strong data-i18n="lbl_skin_color">हथेली का रंग (सामुद्रिक शास्त्र):</strong></label>
                                     <select id="vSkinColor" class="verify-select">
                                         <option value="pink" data-i18n="opt_skin_pink">गुलाबी व स्निग्ध (सौभाग्यशाली)</option>
                                         <option value="red" data-i18n="opt_skin_red">लाल व उग्र (ऊर्जावान)</option>
@@ -227,7 +227,7 @@
                                 </div>
 
                                 <div class="verify-group">
-                                    <label><i class="fa-solid fa-hand-fist" style="color: #60A5FA;"></i> <strong data-i18n="lbl_finger_type">उंगलियों की बनावट (Cheiro Shastra):</strong></label>
+                                    <label><i class="fa-solid fa-hand-fist" style="color: #60A5FA;"></i> <strong data-i18n="lbl_finger_type">उंगलियों की बनावट (कीरो हस्तरेखा):</strong></label>
                                     <select id="vFingerType" class="verify-select">
                                         <option value="conical" data-i18n="opt_fing_conical">लंबी व सुडौल (कलात्मक)</option>
                                         <option value="square" data-i18n="opt_fing_square">वर्गाकार (व्यावहारिक व अनुशासित)</option>
@@ -237,7 +237,7 @@
                             </div>
 
                             <button id="confirmAndGenerateBtn" class="btn btn-gold full-width" style="margin-top: 10px;">
-                                <i class="fa-solid fa-square-check"></i> <span data-i18n="btn_confirm_gen">पुष्टि करें एवं 4 ग्रंथों से विस्तृत फलादेश निकालें</span>
+                                <i class="fa-solid fa-square-check"></i> <span data-i18n="btn_confirm_gen">पुष्टि करें एवं 4 ग्रंथों से विस्तृत फलकथन निकालें</span>
                             </button>
                         </div>
 
@@ -324,6 +324,70 @@
                     </div>
 
                 </div>
+
+                <!-- 3D PALM & MOUNT REFERENCE GUIDE AT THE BOTTOM -->
+                <div class="glass-card hand-guide-card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-hand-holding-dots"></i> <span data-i18n="guide_title">3D हस्तरेखा एवं नवग्रह पर्वत निर्देशिका (3D Hand Guide)</span></h2>
+                        <span class="badge-shastra" data-i18n="guide_badge">सामुद्रिक शास्त्र गाइड</span>
+                    </div>
+                    <p class="guide-subtitle" data-i18n="guide_subtitle">अपनी हथेली की रेखाओं एवं पर्वतों को समझने के लिए नीचे दिए गए 3D मॉडल पर किसी भी रेखा या पर्वत पर क्लिक करें:</p>
+                    
+                    <div class="guide-content-row">
+                        <!-- Left 3D Hand SVG Diagram -->
+                        <div class="hand-svg-wrapper">
+                            <svg viewBox="0 0 320 420" class="interactive-hand-svg">
+                                <!-- Hand Outline Base -->
+                                <path d="M 60 220 C 50 180, 55 120, 75 70 C 82 50, 95 50, 100 70 L 110 160 C 115 130, 125 40, 140 20 C 148 10, 160 10, 165 20 L 175 160 C 180 130, 195 50, 210 40 C 218 35, 228 38, 232 50 L 235 170 C 242 150, 255 80, 270 75 C 278 72, 286 78, 288 90 L 285 240 C 285 300, 250 380, 180 400 L 120 400 C 70 370, 60 300, 60 220 Z" fill="rgba(19, 11, 39, 0.8)" stroke="#DFAC6C" stroke-width="2.5" filter="drop-shadow(0 0 15px rgba(223, 172, 108, 0.3))"/>
+                                
+                                <!-- Thumb Base -->
+                                <path d="M 60 220 C 40 240, 15 220, 25 180 C 35 150, 50 160, 70 190 Z" fill="rgba(19, 11, 39, 0.85)" stroke="#DFAC6C" stroke-width="2"/>
+
+                                <!-- PALM MOUNTS INTERACTIVE ZONES -->
+                                <circle cx="90" cy="110" r="18" fill="rgba(109, 40, 217, 0.3)" stroke="#6D28D9" stroke-width="1.5" class="mount-circle" data-mount="jupiter"/>
+                                <text x="90" y="114" text-anchor="middle" fill="#F7E2BD" font-size="10" font-weight="bold">♃ गुरु</text>
+
+                                <circle cx="145" cy="90" r="18" fill="rgba(223, 172, 108, 0.3)" stroke="#DFAC6C" stroke-width="1.5" class="mount-circle" data-mount="saturn"/>
+                                <text x="145" y="94" text-anchor="middle" fill="#F7E2BD" font-size="10" font-weight="bold">♄ शनि</text>
+
+                                <circle cx="205" cy="95" r="18" fill="rgba(245, 158, 11, 0.3)" stroke="#F59E0B" stroke-width="1.5" class="mount-circle" data-mount="sun"/>
+                                <text x="205" y="99" text-anchor="middle" fill="#F7E2BD" font-size="10" font-weight="bold">☉ सूर्य</text>
+
+                                <circle cx="260" cy="120" r="18" fill="rgba(59, 130, 246, 0.3)" stroke="#3B82F6" stroke-width="1.5" class="mount-circle" data-mount="mercury"/>
+                                <text x="260" y="124" text-anchor="middle" fill="#F7E2BD" font-size="10" font-weight="bold">☿ बुध</text>
+
+                                <circle cx="95" cy="270" r="24" fill="rgba(236, 72, 153, 0.3)" stroke="#EC4899" stroke-width="1.5" class="mount-circle" data-mount="venus"/>
+                                <text x="95" y="274" text-anchor="middle" fill="#F7E2BD" font-size="11" font-weight="bold">♀ शुक्र</text>
+
+                                <circle cx="240" cy="260" r="22" fill="rgba(16, 185, 129, 0.3)" stroke="#10B981" stroke-width="1.5" class="mount-circle" data-mount="moon"/>
+                                <text x="240" y="264" text-anchor="middle" fill="#F7E2BD" font-size="11" font-weight="bold">☽ चंद्र</text>
+
+                                <circle cx="245" cy="180" r="18" fill="rgba(239, 68, 68, 0.3)" stroke="#EF4444" stroke-width="1.5" class="mount-circle" data-mount="mars"/>
+                                <text x="245" y="184" text-anchor="middle" fill="#F7E2BD" font-size="10" font-weight="bold">♂ मंगल</text>
+
+                                <!-- PALM LINES OVERLAY -->
+                                <!-- Heart Line (Yellow) -->
+                                <path d="M 270 155 Q 180 140, 95 125" fill="none" stroke="#F59E0B" stroke-width="3.5" class="guide-line-path" data-line="heart"/>
+                                <!-- Head Line (Purple) -->
+                                <path d="M 80 185 Q 160 185, 235 220" fill="none" stroke="#6D28D9" stroke-width="3.5" class="guide-line-path" data-line="head"/>
+                                <!-- Life Line (Green) -->
+                                <path d="M 80 185 Q 140 240, 115 360" fill="none" stroke="#10B981" stroke-width="3.5" class="guide-line-path" data-line="life"/>
+                                <!-- Fate Line (White) -->
+                                <path d="M 165 370 L 150 110" fill="none" stroke="#F7E2BD" stroke-dasharray="4,4" stroke-width="3" class="guide-line-path" data-line="fate"/>
+                            </svg>
+                        </div>
+
+                        <!-- Right Info Card Details -->
+                        <div class="guide-details-box" id="guideDetailsBox">
+                            <div class="guide-info-header">
+                                <i class="fa-solid fa-circle-info"></i>
+                                <strong id="gTitle">हस्तरेखा एवं पर्वत गाइड (Click any zone)</strong>
+                            </div>
+                            <p id="gDesc" class="guide-info-desc">हथेली में स्थित रेखाओं या पर्वतों (गुरु, शनि, सूर्य, बुध, शुक्र, चंद्र, मंगल) पर क्लिक करके सामुद्रिक शास्त्र के अनुसार उनका महत्व जानें।</p>
+                        </div>
+                    </div>
+                </div>
+
             </section>
 
             <!-- SECTION 2: KUNDLI & PLANETARY CHART -->
