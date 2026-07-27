@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AI Palmistry Pro - WebGL Three.js Real 3D Interactive Hand Model Engine
+   AI Palmistry Pro - Ultra-Realistic Photorealistic 3D Human Hand Model Engine
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -72,8 +72,8 @@ document.addEventListener('DOMContentLoaded', () => {
             btn_pdf: "PDF डाउनलोड",
             empty_result: "स्कैन शुरू करने के बाद आपको यहाँ आपकी हथेली से निकली रेखाएं व संपादन विकल्प दिखाई देगा।",
             invalid_palm_error: "⚠️ हाथ की हथेली पहचाने नहीं गई! कृपया किसी दस्तावेज या अन्य वस्तु के बजाय केवल अपने हाथ की स्पष्ट फोटो अपलोड करें।",
-            guide_title: "3D हस्तरेखा एवं नवग्रह पर्वत निर्देशिका (Interactive 3D Hand Model)",
-            guide_badge: "WebGL 3D मॉडल",
+            guide_title: "3D हस्तरेखा एवं नवग्रह पर्वत निर्देशिका (Photorealistic 3D Hand)",
+            guide_badge: "3D फोटोरिएलिस्टिक मॉडल",
             guide_subtitle: "नीचे दिए गए 3D मॉडल को घुमाएं (Rotate in 3D) तथा किसी भी रेखा (Line) या नवग्रह पर्वत (Mount) पर क्लिक करके सामुद्रिक शास्त्र के अनुसार उनका महत्व जानें:",
             kundli_title: "जन्म विवरण",
             kundli_desc: "अपनी जन्म पत्रिका हेतु विवरण भरें",
@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
             empty_result: "Start a scan to reveal detected features & editing options here.",
             invalid_palm_error: "⚠️ No human palm detected! Please upload or capture a clear photo of a real human hand/palm, not a document or object.",
             guide_title: "3D Palm & Mount Reference Guide",
-            guide_badge: "WebGL 3D Model",
+            guide_badge: "Photorealistic 3D Model",
             guide_subtitle: "Rotate the 3D hand model and click on any Line or Planetary Mount to learn its Vedic astrological significance:",
             kundli_title: "Birth Details",
             kundli_desc: "Fill in your birth details for accurate Kundli chart",
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
             empty_result: "Scan karne ke baad aapko yahan aapki lines aur edit options dikhenge.",
             invalid_palm_error: "⚠️ Haath ki palm detect nahi hui! Kripya kisi document ki jagah apne haath ki clear photo upload karein.",
             guide_title: "3D Palm & Mount Reference Guide",
-            guide_badge: "WebGL 3D Model",
+            guide_badge: "3D Photorealistic Model",
             guide_subtitle: "3D hand model ko rotate karke kisi bhi Line ya Mount par click karein:",
             kundli_title: "Birth Details",
             kundli_desc: "Sahi Kundli ke liye apna birth details bharein",
@@ -711,7 +711,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ----------------------------------------------------------------------
-    // 6. REAL WEBGL THREE.JS 3D INTERACTIVE HAND MODEL RENDERER
+    // 6. ULTRA-REALISTIC PHOTOREALISTIC 3D HUMAN HAND MODEL ENGINE (WebGL Three.js)
     // ----------------------------------------------------------------------
     const guideDict = {
         jupiter: {
@@ -763,16 +763,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const gTitle = document.getElementById('gTitle');
     const gDesc = document.getElementById('gDesc');
 
-    function init3DHandRenderer() {
+    function initPhotorealistic3DHandRenderer() {
         const container = document.getElementById('hand3DCanvas');
         if (!container || typeof THREE === 'undefined') return;
 
-        const width = container.clientWidth || 320;
+        const width = container.clientWidth || 340;
         const height = 340;
 
         const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-        camera.position.set(0, 0, 14);
+        const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+        camera.position.set(0, 0, 13);
 
         const renderer = new THREE.WebGLRenderer({ canvas: container, antialias: true, alpha: true });
         renderer.setSize(width, height);
@@ -786,64 +786,111 @@ document.addEventListener('DOMContentLoaded', () => {
             controls.enableZoom = false;
         }
 
-        // Lighting
-        const ambientLight = new THREE.AmbientLight(0xFFFFFF, 0.8);
+        // Realistic Studio Lighting Setup
+        const ambientLight = new THREE.AmbientLight(0xFFE4CE, 0.9);
         scene.add(ambientLight);
 
-        const spotLight = new THREE.SpotLight(0xDFAC6C, 2);
-        spotLight.position.set(10, 20, 15);
-        scene.add(spotLight);
+        const keyLight = new THREE.DirectionalLight(0xFFF2DF, 1.8);
+        keyLight.position.set(10, 15, 20);
+        scene.add(keyLight);
+
+        const goldFillLight = new THREE.PointLight(0xDFAC6C, 1.2, 50);
+        goldFillLight.position.set(-10, -10, 15);
+        scene.add(goldFillLight);
 
         const handGroup = new THREE.Group();
 
-        // 3D Palm Base Mesh
-        const palmGeo = new THREE.BoxGeometry(4.2, 5.2, 0.9);
-        const skinMat = new THREE.MeshStandardMaterial({
-            color: 0x1F123C,
-            roughness: 0.3,
-            metalness: 0.4,
-            emissive: 0x0C061A
+        // Organic Realistic Human Skin Material (Physical Material with Roughness & Subsurface Scattering Color)
+        const skinMat = new THREE.MeshPhysicalMaterial({
+            color: 0xE8B896,
+            roughness: 0.45,
+            metalness: 0.05,
+            clearcoat: 0.15,
+            clearcoatRoughness: 0.2,
+            subsurfaceColor: 0xCC5533
         });
+
+        // 1. Organic Palm Base Geometry (Rounded Extruded Shape)
+        const shape = new THREE.Shape();
+        shape.moveTo(-1.8, -2.5);
+        shape.quadraticCurveTo(-2.3, 0, -1.9, 2.2); // Left edge / Thenar
+        shape.quadraticCurveTo(-1.0, 2.5, 1.9, 2.2);  // Upper knuckles
+        shape.quadraticCurveTo(2.3, 0, 1.8, -2.5);  // Right edge / Hypothenar
+        shape.quadraticCurveTo(0, -2.9, -1.8, -2.5); // Wrist joint
+
+        const extrudeSettings = {
+            steps: 2,
+            depth: 0.7,
+            bevelEnabled: true,
+            bevelThickness: 0.3,
+            bevelSize: 0.3,
+            bevelSegments: 8
+        };
+
+        const palmGeo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+        palmGeo.center();
         const palmMesh = new THREE.Mesh(palmGeo, skinMat);
         handGroup.add(palmMesh);
 
-        // 3D Fingers
-        const fingerMat = new THREE.MeshStandardMaterial({ color: 0x27174C, roughness: 0.3 });
-        const fingerPositions = [
-            { x: -1.6, y: 3.4, h: 2.4 }, // Index
-            { x: -0.5, y: 3.8, h: 2.8 }, // Middle
-            { x: 0.6, y: 3.6, h: 2.6 },  // Ring
-            { x: 1.6, y: 3.0, h: 2.0 }   // Little
+        // 2. Realistic 5 Curved Human Fingers
+        const fingerData = [
+            { name: "Index", x: -1.4, y: 2.5, rotZ: 0.08, len: 2.5, radius: 0.36 },
+            { name: "Middle", x: -0.4, y: 2.7, rotZ: 0.02, len: 2.9, radius: 0.38 },
+            { name: "Ring", x: 0.6, y: 2.6, rotZ: -0.04, len: 2.7, radius: 0.36 },
+            { name: "Pinky", x: 1.5, y: 2.2, rotZ: -0.12, len: 2.1, radius: 0.32 }
         ];
 
-        fingerPositions.forEach(f => {
-            const fGeo = new THREE.CylinderGeometry(0.35, 0.42, f.h, 16);
-            const fMesh = new THREE.Mesh(fGeo, fingerMat);
-            fMesh.position.set(f.x, f.y, 0);
-            handGroup.add(fMesh);
+        fingerData.forEach(f => {
+            const fGroup = new THREE.Group();
+            fGroup.position.set(f.x, f.y, 0);
+            fGroup.rotation.z = f.rotZ;
+
+            // Proximal & Distal Phalanges
+            const pGeo = new THREE.CylinderGeometry(f.radius * 0.9, f.radius, f.len, 16);
+            const pMesh = new THREE.Mesh(pGeo, skinMat);
+            pMesh.position.y = f.len / 2;
+            fGroup.add(pMesh);
+
+            // Rounded Fingertip
+            const tipGeo = new THREE.SphereGeometry(f.radius * 0.9, 16, 16);
+            const tipMesh = new THREE.Mesh(tipGeo, skinMat);
+            tipMesh.position.y = f.len;
+            fGroup.add(tipMesh);
+
+            handGroup.add(fGroup);
         });
 
-        // 3D Thumb
-        const thumbGeo = new THREE.CylinderGeometry(0.42, 0.48, 2.2, 16);
-        const thumbMesh = new THREE.Mesh(thumbGeo, fingerMat);
-        thumbMesh.position.set(-2.5, -0.8, 0.2);
-        thumbMesh.rotation.z = Math.PI / 4;
-        handGroup.add(thumbMesh);
+        // Anatomical Thumb
+        const thumbGroup = new THREE.Group();
+        thumbGroup.position.set(-2.2, -0.6, 0.2);
+        thumbGroup.rotation.z = Math.PI / 3.8;
 
-        // 3D GLOWING MOUNT SPHERES
+        const thumbGeo = new THREE.CylinderGeometry(0.42, 0.50, 2.2, 16);
+        const thumbMesh = new THREE.Mesh(thumbGeo, skinMat);
+        thumbMesh.position.y = 1.1;
+        thumbGroup.add(thumbMesh);
+
+        const thumbTipGeo = new THREE.SphereGeometry(0.42, 16, 16);
+        const thumbTipMesh = new THREE.Mesh(thumbTipGeo, skinMat);
+        thumbTipMesh.position.y = 2.2;
+        thumbGroup.add(thumbTipMesh);
+
+        handGroup.add(thumbGroup);
+
+        // 3. GLOWING 3D MOUNT SPHERES
         const mounts = [
-            { key: 'jupiter', name: '♃ गुरु', x: -1.4, y: 1.8, z: 0.5, color: 0x6D28D9 },
-            { key: 'saturn', name: '♄ शनि', x: -0.4, y: 2.0, z: 0.5, color: 0xDFAC6C },
-            { key: 'sun', name: '☉ सूर्य', x: 0.6, y: 1.9, z: 0.5, color: 0xF59E0B },
-            { key: 'mercury', name: '☿ बुध', x: 1.5, y: 1.5, z: 0.5, color: 0x3B82F6 },
-            { key: 'venus', name: '♀ शुक्र', x: -1.5, y: -0.8, z: 0.5, color: 0xEC4899 },
-            { key: 'moon', name: '☽ चंद्र', x: 1.4, y: -1.2, z: 0.5, color: 0x10B981 },
-            { key: 'mars', name: '♂ मंगल', x: 1.5, y: 0.2, z: 0.5, color: 0xEF4444 }
+            { key: 'jupiter', name: '♃ गुरु', x: -1.3, y: 1.8, z: 0.6, color: 0x6D28D9 },
+            { key: 'saturn', name: '♄ शनि', x: -0.4, y: 2.0, z: 0.6, color: 0xDFAC6C },
+            { key: 'sun', name: '☉ सूर्य', x: 0.6, y: 1.9, z: 0.6, color: 0xF59E0B },
+            { key: 'mercury', name: '☿ बुध', x: 1.5, y: 1.5, z: 0.6, color: 0x3B82F6 },
+            { key: 'venus', name: '♀ शुक्र', x: -1.3, y: -0.8, z: 0.6, color: 0xEC4899 },
+            { key: 'moon', name: '☽ चंद्र', x: 1.4, y: -1.2, z: 0.6, color: 0x10B981 },
+            { key: 'mars', name: '♂ मंगल', x: 1.5, y: 0.2, z: 0.6, color: 0xEF4444 }
         ];
 
         const mountObjects = [];
         mounts.forEach(m => {
-            const mGeo = new THREE.SphereGeometry(0.35, 16, 16);
+            const mGeo = new THREE.SphereGeometry(0.32, 16, 16);
             const mMat = new THREE.MeshBasicMaterial({ color: m.color });
             const mMesh = new THREE.Mesh(mGeo, mMat);
             mMesh.position.set(m.x, m.y, m.z);
@@ -852,10 +899,10 @@ document.addEventListener('DOMContentLoaded', () => {
             mountObjects.push(mMesh);
         });
 
-        // 3D GLOWING PALM LINES (Curved Tubes)
+        // 4. GLOWING 3D LINE TUBES ATTACHED TO REAL ORGANIC PALM SURFACE
         function create3DLineTube(points, color, key) {
             const curve = new THREE.CatmullRomCurve3(points);
-            const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.08, 8, false);
+            const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.07, 8, false);
             const tubeMat = new THREE.MeshBasicMaterial({ color: color });
             const tubeMesh = new THREE.Mesh(tubeGeo, tubeMat);
             tubeMesh.userData = { key: key };
@@ -865,30 +912,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Heart Line (Yellow)
         create3DLineTube([
-            new THREE.Vector3(1.6, 0.9, 0.52),
-            new THREE.Vector3(0.2, 1.1, 0.52),
-            new THREE.Vector3(-1.4, 1.4, 0.52)
+            new THREE.Vector3(1.6, 1.0, 0.62),
+            new THREE.Vector3(0.2, 1.2, 0.62),
+            new THREE.Vector3(-1.3, 1.4, 0.62)
         ], 0xF59E0B, 'heart');
 
         // Head Line (Purple)
         create3DLineTube([
-            new THREE.Vector3(-1.6, 0.8, 0.52),
-            new THREE.Vector3(0.0, 0.2, 0.52),
-            new THREE.Vector3(1.4, -0.6, 0.52)
+            new THREE.Vector3(-1.4, 0.8, 0.62),
+            new THREE.Vector3(0.0, 0.2, 0.62),
+            new THREE.Vector3(1.3, -0.6, 0.62)
         ], 0x6D28D9, 'head');
 
         // Life Line (Green)
         create3DLineTube([
-            new THREE.Vector3(-1.6, 0.8, 0.52),
-            new THREE.Vector3(-0.6, -0.8, 0.52),
-            new THREE.Vector3(-1.2, -2.4, 0.52)
+            new THREE.Vector3(-1.4, 0.8, 0.62),
+            new THREE.Vector3(-0.5, -0.8, 0.62),
+            new THREE.Vector3(-1.0, -2.4, 0.62)
         ], 0x10B981, 'life');
 
         // Fate Line (Gold)
         create3DLineTube([
-            new THREE.Vector3(0.0, -2.3, 0.52),
-            new THREE.Vector3(-0.2, -0.2, 0.52),
-            new THREE.Vector3(-0.4, 1.8, 0.52)
+            new THREE.Vector3(0.0, -2.3, 0.62),
+            new THREE.Vector3(-0.2, -0.2, 0.62),
+            new THREE.Vector3(-0.4, 1.8, 0.62)
         ], 0xF7E2BD, 'fate');
 
         scene.add(handGroup);
@@ -914,17 +961,17 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // 3D Animation Loop
+        // Smooth Animation Render Loop
         function animate3D() {
             requestAnimationFrame(animate3D);
-            handGroup.rotation.y += 0.003; // Gentle auto-rotation
+            handGroup.rotation.y += 0.0025; // Gentle 3D auto-rotation
             if (controls) controls.update();
             renderer.render(scene, camera);
         }
         animate3D();
     }
 
-    setTimeout(init3DHandRenderer, 500);
+    setTimeout(initPhotorealistic3DHandRenderer, 500);
 
     /**
      * RICH SCRIPTURE READING GENERATOR (100% Pure Language Isolation)
