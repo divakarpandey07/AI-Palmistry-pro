@@ -429,6 +429,17 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileNavBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
 
     // ----------------------------------------------------------------------
+    // LOVE & MARRIAGE COMPATIBILITY HANDLER
+    // ----------------------------------------------------------------------
+    const calcLoveBtn = document.getElementById('calcLoveBtn');
+    const loveResultCard = document.getElementById('loveResultCard');
+    if (calcLoveBtn) {
+        calcLoveBtn.addEventListener('click', () => {
+            loveResultCard.classList.remove('hidden');
+        });
+    }
+
+    // ----------------------------------------------------------------------
     // 5. ORIENTATION-AWARE HAND POSE & DARK CREASE PIXEL SNAPPING ENGINE
     // ----------------------------------------------------------------------
     const startCamBtn = document.getElementById('startCamBtn');
@@ -775,7 +786,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gemini: { name: "♊ मिथुन (Gemini)", text: "बुध देव की कृपा से व्यापारिक सौदे सफल होंगे एवं तार्किक बुद्धि से धन-धान्य वृद्धि होगी।" },
         cancer: { name: "♋ कर्क (Cancer)", text: "चंद्रमा का शुभ गोचर आपके मन में शांति, उच्च अंतर्ज्ञान एवं पारिवारिक स्नेह बढ़ाएगा।" },
         leo: { name: "♌ सिंह (Leo)", text: "सूर्यदेव का प्रताप आपके मान-सम्मान एवं प्रशासनिक जिम्मेदारियों में वृद्धि करेगा।" },
-        virgo: { name: "♍ कन्या (Virgo)", text: "बुध ग्रह की शुभता से बौद्धिक कार्यों में बड़ी सफलता एवं स्वास्थ लाभ प्राप्त होगा।" },
+        virgo: { name: "<ctrl42> कन्या (Virgo)", text: "बुध ग्रह की शुभता से बौद्धिक कार्यों में बड़ी सफलता एवं स्वास्थ लाभ प्राप्त होगा।" },
         libra: { name: "♎ तुला (Libra)", text: "शुक्र गोचर से दांपत्य जीवन में मधुरता एवं कलात्मक कार्यों से धन लाभ होगा।" },
         scorpio: { name: "♏ वृश्चिक (Scorpio)", text: "मंगल देव का पराक्रम आपके आत्मविश्वास को चरम पर पहुंचाएगा एवं भूमि लाभ देगा।" },
         sagittarius: { name: "♐ धनु (Sagittarius)", text: "गुरु बृहस्पति की कृपा से उच्च शिक्षा, धार्मिक यात्रा व धन समृद्धि का योग है।" },
