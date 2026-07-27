@@ -93,14 +93,14 @@
         <!-- Main Content Area -->
         <main class="main-content">
             
-            <!-- SECTION 1: PALMISTRY SCANNER -->
+            <!-- SECTION 1: PALMISTRY SCANNER & 2-STEP VERIFICATION -->
             <section id="palmistrySection" class="tab-section active">
                 <div class="section-grid">
                     
                     <!-- Left: Camera / Scanner Card -->
                     <div class="glass-card scanner-card">
                         <div class="card-header">
-                            <h2><i class="fa-solid fa-camera"></i> <span data-i18n="scanner_title">लाइव हस्तरेखा स्कैन</span></h2>
+                            <h2><i class="fa-solid fa-camera"></i> <span data-i18n="scanner_title">चरण 1: हथेली स्कैन करें</span></h2>
                             <p data-i18n="scanner_desc">हाथ की स्पष्ट छवि कैमरे से लें या फोटो अपलोड करें</p>
                         </div>
                         
@@ -129,62 +129,117 @@
                                 <input type="file" id="uploadInput" accept="image/*" class="hidden-input">
                             </label>
                             <button id="captureScanBtn" class="btn btn-accent hidden">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btn_analyze">विश्लेषण करें</span>
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btn_analyze">स्कैन व रेखाएं निकालें</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Right: Reading Results & Scores -->
+                    <!-- Right: Step-2 Verification Form OR Final Scripture Reading -->
                     <div class="glass-card result-card">
-                        <div class="card-header">
-                            <h2><i class="fa-solid fa-book-open-reader"></i> <span data-i18n="result_title">शास्त्र-आधारित फलकथन</span></h2>
-                            <span class="badge-shastra" data-i18n="badge_shastra">4 प्राचीन ग्रंथों द्वारा प्रमाणित</span>
+                        
+                        <!-- Initial Empty Result Placeholder -->
+                        <div id="emptyResultPlaceholder" class="empty-placeholder">
+                            <i class="fa-solid fa-scroll placeholder-icon"></i>
+                            <p data-i18n="empty_result">स्कैन शुरू करने के बाद आपको यहाँ आपकी हथेली से निकली रेखाएं व संपादन विकल्प दिखाई देगा।</p>
                         </div>
 
                         <!-- Initial Loading State -->
                         <div id="readingLoading" class="loading-state hidden">
                             <div class="spinner"></div>
-                            <p class="loading-text" data-i18n="loading_text">कीरो हस्तरेखा, सामुद्रिक शास्त्र, वृहद् हस्तरेखा शास्त्र एवं सामुद्रिक हस्तरेखा विज्ञान से मिलान किया जा रहा है...</p>
+                            <p class="loading-text" data-i18n="loading_text">हथेली की प्रामाणिकता जांच कर रेखाओं व पर्वतों का पिक्सेल डेटा निकाला जा रहा है...</p>
                         </div>
 
-                        <!-- Results Container -->
+                        <!-- STEP 2: PALM LANDMARK VERIFICATION & EDIT BOX -->
+                        <div id="palmVerificationBox" class="verification-box hidden">
+                            <div class="card-header">
+                                <h2><i class="fa-solid fa-user-check"></i> <span>चरण 2: स्कैन की गई रेखाओं की पुष्टि करें</span></h2>
+                                <span class="badge-shastra">संपादन योग्य</span>
+                            </div>
+                            <p class="verify-subtitle">आपकी हथेली से निम्नलिखित रेखाएं एवं लक्षण मिले हैं। आप इन्हें जांचें या अपनी इच्छा अनुसार संपादित करें:</p>
+
+                            <div class="verify-form-grid">
+                                <div class="verify-group">
+                                    <label><i class="fa-solid fa-heart" style="color: #EC4899;"></i> <strong>हृदय रेखा (Heart Line):</strong></label>
+                                    <select id="vHeartLine" class="verify-select">
+                                        <option value="deep_jupiter">गुरु पर्वत तक गहरी व सुदृढ़ (Deep to Jupiter Mount)</option>
+                                        <option value="saturn_straight">शनि पर्वत तक सीधी (Straight to Saturn Mount)</option>
+                                        <option value="forked">अंत में द्विशाखीय (Forked at End)</option>
+                                    </select>
+                                </div>
+
+                                <div class="verify-group">
+                                    <label><i class="fa-solid fa-brain" style="color: #6D28D9;"></i> <strong>मस्तिष्क रेखा (Head Line):</strong></label>
+                                    <select id="vHeadLine" class="verify-select">
+                                        <option value="straight_sharp">सीधी व तीक्ष्ण तार्किक (Straight & Sharp Logic)</option>
+                                        <option value="curved_moon">चंद्र पर्वत की ओर झुकी (Curved to Moon Mount)</option>
+                                        <option value="double_head">द्वि-मस्तिष्क रेखा (Double Head Line)</option>
+                                    </select>
+                                </div>
+
+                                <div class="verify-group">
+                                    <label><i class="fa-solid fa-shield-halved" style="color: #10B981;"></i> <strong>जीवन रेखा (Life Line):</strong></label>
+                                    <select id="vLifeLine" class="verify-select">
+                                        <option value="full_curve">पूर्ण सुदृढ़ गोलाई व आरोग्य (Full Round Curve)</option>
+                                        <option value="wrist_extended">मणिकंठ तक विस्तृत (Extended to Wrist)</option>
+                                        <option value="broken_chain">मध्यम गोलाई (Medium Curve)</option>
+                                    </select>
+                                </div>
+
+                                <div class="verify-group">
+                                    <label><i class="fa-solid fa-gem" style="color: #DFAC6C;"></i> <strong>भाग्य रेखा (Fate Line):</strong></label>
+                                    <select id="vFateLine" class="verify-select">
+                                        <option value="wrist_saturn">मणिकंठ से शनि पर्वत तक (Wrist to Saturn Mount)</option>
+                                        <option value="center_palm">हथेली के मध्य से प्रारंभ (From Palm Center)</option>
+                                        <option value="subtle">हल्की / मध्यम (Subtle Line)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button id="confirmAndGenerateBtn" class="btn btn-gold full-width" style="margin-top: 10px;">
+                                <i class="fa-solid fa-square-check"></i> <span>पुष्टि करें एवं 4 ग्रंथों से वास्तविक फलकथन निकालें</span>
+                            </button>
+                        </div>
+
+                        <!-- STEP 3: FINAL AUTHENTICATED SCRIPTURE READING -->
                         <div id="readingResults" class="results-container hidden">
+                            <div class="card-header">
+                                <h2><i class="fa-solid fa-book-open-reader"></i> <span data-i18n="result_title">शास्त्र-आधारित फलादेश</span></h2>
+                                <span class="badge-shastra" data-i18n="badge_shastra">4 प्राचीन ग्रंथों द्वारा प्रमाणित</span>
+                            </div>
                             
                             <!-- Gauge & Line Scores Row -->
                             <div class="scores-row">
-                                <!-- Circular Gauge -->
                                 <div class="gauge-container">
                                     <svg class="gauge-svg" viewBox="0 0 100 100">
                                         <circle class="gauge-bg" cx="50" cy="50" r="40"></circle>
                                         <circle class="gauge-fill" id="gaugeCircle" cx="50" cy="50" r="40"></circle>
                                     </svg>
                                     <div class="gauge-text">
-                                        <span id="confidencePct">88%</span>
+                                        <span id="confidencePct">92%</span>
                                         <small data-i18n="accuracy">सटीकता</small>
                                     </div>
                                 </div>
 
-                                <!-- Line Progress Bars -->
                                 <div class="line-scores-list">
                                     <div class="score-item">
                                         <span data-i18n="line_heart">हृदय रेखा</span>
-                                        <div class="progress-bar"><div class="progress-fill" id="heartScore" style="width: 82%;"></div></div>
-                                        <strong>82%</strong>
+                                        <div class="progress-bar"><div class="progress-fill" id="heartScore" style="width: 88%;"></div></div>
+                                        <strong id="heartScorePct">88%</strong>
                                     </div>
                                     <div class="score-item">
                                         <span data-i18n="line_head">मस्तिष्क रेखा</span>
-                                        <div class="progress-bar"><div class="progress-fill" id="headScore" style="width: 90%;"></div></div>
-                                        <strong>90%</strong>
+                                        <div class="progress-bar"><div class="progress-fill" id="headScore" style="width: 92%;"></div></div>
+                                        <strong id="headScorePct">92%</strong>
                                     </div>
                                     <div class="score-item">
                                         <span data-i18n="line_life">जीवन रेखा</span>
-                                        <div class="progress-bar"><div class="progress-fill" id="lifeScore" style="width: 88%;"></div></div>
-                                        <strong>88%</strong>
+                                        <div class="progress-bar"><div class="progress-fill" id="lifeScore" style="width: 90%;"></div></div>
+                                        <strong id="lifeScorePct">90%</strong>
                                     </div>
                                     <div class="score-item">
                                         <span data-i18n="line_fate">भाग्य रेखा</span>
-                                        <div class="progress-bar"><div class="progress-fill" id="fateScore" style="width: 76%;"></div></div>
-                                        <strong>76%</strong>
+                                        <div class="progress-bar"><div class="progress-fill" id="fateScore" style="width: 84%;"></div></div>
+                                        <strong id="fateScorePct">84%</strong>
                                     </div>
                                 </div>
                             </div>
@@ -196,6 +251,9 @@
 
                             <!-- Actions Row -->
                             <div class="result-actions">
+                                <button id="reEditFeaturesBtn" class="btn btn-secondary">
+                                    <i class="fa-solid fa-pen-to-square"></i> <span>पुनः संपादन करें</span>
+                                </button>
                                 <button id="saveReadingBtn" class="btn btn-secondary">
                                     <i class="fa-solid fa-bookmark"></i> <span data-i18n="btn_save">सुरक्षित करें</span>
                                 </button>
@@ -205,11 +263,6 @@
                             </div>
                         </div>
 
-                        <!-- Default Empty Result Placeholder -->
-                        <div id="emptyResultPlaceholder" class="empty-placeholder">
-                            <i class="fa-solid fa-scroll placeholder-icon"></i>
-                            <p data-i18n="empty_result">स्कैन शुरू करने के बाद आपको यहाँ विस्तृत शास्त्र-आधारित विश्लेषण दिखाई देगा।</p>
-                        </div>
                     </div>
 
                 </div>
@@ -218,8 +271,6 @@
             <!-- SECTION 2: KUNDLI & PLANETARY CHART -->
             <section id="kundliSection" class="tab-section hidden">
                 <div class="section-grid">
-                    
-                    <!-- Left: Form Input -->
                     <div class="glass-card">
                         <div class="card-header">
                             <h2><i class="fa-solid fa-user-astronaut"></i> <span data-i18n="kundli_title">जन्म विवरण</span></h2>
@@ -248,7 +299,6 @@
                         </form>
                     </div>
 
-                    <!-- Right: Kundli Chart & Analysis -->
                     <div class="glass-card">
                         <div class="card-header">
                             <h2><i class="fa-solid fa-star-and-crescent"></i> <span data-i18n="kundli_chart_title">लग्न एवं ग्रह स्थिति</span></h2>
