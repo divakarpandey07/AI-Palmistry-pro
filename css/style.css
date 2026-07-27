@@ -235,16 +235,16 @@ body {
     background: transparent;
     border: none;
     color: var(--text-muted);
-    padding: 10px 20px;
+    padding: 10px 18px;
     border-radius: 40px;
     font-family: var(--font-heading);
-    font-size: 0.92rem;
+    font-size: 0.88rem;
     font-weight: 500;
     cursor: pointer;
     transition: var(--transition-smooth);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .nav-btn:hover {
@@ -283,13 +283,13 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 4px;
-    font-size: 0.72rem;
+    font-size: 0.7rem;
     cursor: pointer;
     flex: 1;
     transition: var(--transition-smooth);
 }
 
-.mobile-nav-btn i { font-size: 1.25rem; }
+.mobile-nav-btn i { font-size: 1.2rem; }
 
 .mobile-nav-btn.active {
     color: var(--gold-primary);
@@ -300,7 +300,7 @@ body {
     transform: translateY(-2px);
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1100px) {
     .desktop-nav { display: none; }
     .mobile-bottom-nav { display: flex; }
     .app-header { flex-direction: row; justify-content: space-between; gap: 12px; }
@@ -309,6 +309,83 @@ body {
 @media (max-width: 600px) {
     .app-header { flex-direction: column; text-align: center; gap: 12px; }
     .header-logo { justify-content: center; }
+}
+
+/* Daily Horoscope Rashi Grid */
+.rashi-selector-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+    .rashi-selector-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.rashi-btn {
+    background: rgba(10, 6, 22, 0.7);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-sm);
+    padding: 10px 8px;
+    color: var(--soft-white);
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    text-align: center;
+}
+
+.rashi-btn:hover {
+    border-color: var(--gold-primary);
+    background: rgba(223, 172, 108, 0.1);
+}
+
+.rashi-btn.active {
+    background: var(--gold-gradient);
+    color: #0A0616;
+    font-weight: 700;
+    box-shadow: 0 4px 15px var(--gold-glow);
+}
+
+.horoscope-content-card {
+    background: rgba(10, 6, 22, 0.75);
+    border: 1px solid rgba(223, 172, 108, 0.15);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    font-size: 0.92rem;
+    line-height: 1.7;
+}
+
+/* Gemstones Grid */
+.gemstones-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 600px) {
+    .gemstones-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.gem-card {
+    background: rgba(10, 6, 22, 0.75);
+    border: 1px solid var(--gold-primary);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+}
+
+.gem-icon {
+    font-size: 2rem;
 }
 
 /* 4-Layer Major Verification Pipeline Bar */
