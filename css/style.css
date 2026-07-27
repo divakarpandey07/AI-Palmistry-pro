@@ -7,26 +7,26 @@
 :root {
     --bg-dark: #0A0616;
     --royal-indigo: #130B27;
-    --card-bg: rgba(23, 14, 46, 0.75);
-    --card-border: rgba(223, 172, 108, 0.22);
-    --card-border-glow: rgba(223, 172, 108, 0.45);
+    --card-bg: rgba(23, 14, 46, 0.78);
+    --card-border: rgba(223, 172, 108, 0.35);
+    --card-border-glow: rgba(223, 172, 108, 0.6);
     
     /* Antique Gold Palette */
     --gold-primary: #DFAC6C;
     --gold-light: #F7E2BD;
     --gold-dark: #A67537;
     --gold-gradient: linear-gradient(135deg, #F7E2BD 0%, #DFAC6C 50%, #B88544 100%);
-    --gold-glow: rgba(223, 172, 108, 0.25);
+    --gold-glow: rgba(223, 172, 108, 0.35);
     
     /* Deep Velvet Violet Accents */
     --velvet-violet: #6D28D9;
-    --velvet-glow: rgba(109, 40, 217, 0.35);
+    --velvet-glow: rgba(109, 40, 217, 0.4);
 
     --soft-white: #F8FAFC;
     --text-muted: #94A3B8;
     --error-red: #F87171;
     
-    --radius-lg: 20px;
+    --radius-lg: 22px;
     --radius-md: 14px;
     --radius-sm: 8px;
     
@@ -35,6 +35,19 @@
     --font-body: 'Noto Serif Devanagari', 'Outfit', serif;
     
     --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dynamic Themes */
+body.theme-royal-gold {
+    background: radial-gradient(circle at 50% 0%, #1F113D 0%, #0A0616 75%);
+}
+
+body.theme-velvet-purple {
+    background: radial-gradient(circle at 50% 0%, #2A0845 0%, #0D001A 75%);
+    --gold-primary: #EC4899;
+    --gold-light: #F472B6;
+    --gold-gradient: linear-gradient(135deg, #F472B6 0%, #EC4899 50%, #BE185D 100%);
+    --gold-glow: rgba(236, 72, 153, 0.35);
 }
 
 * {
@@ -46,7 +59,6 @@
 }
 
 body {
-    background: radial-gradient(circle at 50% 0%, #1D103A 0%, #0A0616 70%);
     color: var(--soft-white);
     min-height: 100vh;
     overflow-x: hidden;
@@ -64,6 +76,102 @@ body {
     z-index: 0;
     pointer-events: none;
     opacity: 0.85;
+}
+
+/* Hero Welcome Card */
+.hero-welcome-card {
+    background: linear-gradient(135deg, rgba(223, 172, 108, 0.18), rgba(109, 40, 217, 0.25));
+    border: 1.5px solid var(--gold-primary);
+    border-radius: var(--radius-lg);
+    padding: 20px 26px;
+    margin-bottom: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), inset 0 0 25px var(--gold-glow);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hero-text-content h2 {
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    color: var(--gold-light);
+    margin-bottom: 6px;
+}
+
+.hero-text-content p {
+    font-size: 0.9rem;
+    color: var(--soft-white);
+}
+
+/* Mandala Compass Glow */
+.mandala-compass-glow {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mandala-compass-glow::after {
+    content: '';
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 1px dashed var(--gold-primary);
+    animation: rotateCompass 12s linear infinite;
+}
+
+@keyframes rotateCompass {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Theme Toggle Pill */
+.theme-toggle-pill {
+    background: rgba(10, 6, 22, 0.9);
+    border: 1.5px solid var(--gold-primary);
+    color: var(--gold-light);
+    padding: 8px 16px;
+    border-radius: 40px;
+    font-family: var(--font-heading);
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    transition: var(--transition-smooth);
+}
+
+.theme-toggle-pill:hover {
+    background: var(--gold-primary);
+    color: #0A0616;
+}
+
+/* Line Glow & Opacity Control Bar */
+.line-glow-control-bar {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(10, 6, 22, 0.85);
+    border: 1px solid var(--gold-primary);
+    padding: 6px 14px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 5;
+    font-size: 0.8rem;
+    color: var(--gold-light);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.6);
+}
+
+.line-glow-control-bar input[type=range] {
+    width: 90px;
+    accent-color: var(--gold-primary);
+    cursor: pointer;
 }
 
 /* Camera Hand Silhouette Overlay */
@@ -236,10 +344,10 @@ body {
     padding: 16px 24px;
     background: rgba(19, 11, 39, 0.85);
     backdrop-filter: blur(24px);
-    border: 1px solid var(--card-border);
+    border: 1.5px solid var(--card-border);
     border-radius: var(--radius-lg);
     margin-bottom: 20px;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.6);
 }
 
 .header-logo {
@@ -750,7 +858,7 @@ body {
 .glass-card {
     background: var(--card-bg);
     backdrop-filter: blur(24px);
-    border: 1px solid var(--card-border);
+    border: 1.5px solid var(--card-border);
     border-radius: var(--radius-lg);
     padding: 24px;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
@@ -988,7 +1096,7 @@ body {
 }
 
 .reading-text-box ul { margin-left: 18px; margin-bottom: 12px; }
-.result-actions { display: flex; gap: 12px; }
+.result-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
 .form-grid { display: flex; flex-direction: column; gap: 14px; }
 .form-group { display: flex; flex-direction: column; gap: 6px; }
