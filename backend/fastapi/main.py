@@ -15,11 +15,12 @@ from rag_engine import generate_reading, save_experience_to_memory
 
 app = FastAPI(title="AI Palmistry Pro Production API", version="1.0.0")
 
+# Valid CORS Policy: allow_origins=["*"] with allow_credentials=False for browser compliance
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -40,11 +41,9 @@ def generate_palm_reading(req: EncryptedRequest):
     try:
         user_data = decrypt_payload(req.payload)
         
-        # FIX P0 BUG 1: Extract question and user_metadata properly
         user_question = user_data.get("question", "Give complete authentic palm reading")
         user_metadata = {k: v for k, v in user_data.items() if k != "question"}
 
-        # Call generate_reading with (user_question, user_metadata)
         reading_text = generate_reading(user_question, user_metadata)
 
         response_payload = {
