@@ -1,6 +1,6 @@
 /* ==========================================================================
    AI Palmistry Pro - Production ES6 Main Entry Point
-   Imports Modular Subsystems for 3D PBR Hand, Computer Vision & XAI Engine
+   Wires Vision Detector, 3D PBR Hand Viewer, XAI Engine & Complete UI Controllers
    ========================================================================== */
 
 import { PalmDetector } from './modules/vision/palmDetector.js';
@@ -9,14 +9,15 @@ import { XAIEngine } from './modules/ai/xaiEngine.js';
 import { MainUIController } from './modules/ui/mainUI.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initialize Main UI Controller
+    // 1. Initialize Main UI Controller & Restored UI Listeners
     const ui = new MainUIController();
     ui.initUI();
 
-    // 2. Initialize Computer Vision Landmark Detector
+    // 2. Initialize Computer Vision Landmark Detector & Camera/Upload Event Handlers
     const detector = new PalmDetector();
+    detector.setupCameraAndUploadHandlers();
 
-    // 3. Initialize Photorealistic 3D PBR Hand Viewer with DOM Readiness Guard (FIX P1 ITEM 9)
+    // 3. Initialize Photorealistic 3D PBR Hand Viewer with DOM Readiness Guard
     let hand3D = null;
     function initWhenReady() {
         const container = document.getElementById('hand3DCanvas');
@@ -47,39 +48,75 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Capture & Scan Analysis Flow
+    // Capture & Scan Analysis Flow Handlers
     const captureBtn = document.getElementById('captureScanBtn');
     const confirmBtn = document.getElementById('confirmAndGenerateBtn');
+    const reEditBtn = document.getElementById('reEditFeaturesBtn');
+
     const readingTextContent = document.getElementById('readingTextContent');
     const readingResults = document.getElementById('readingResults');
     const palmVerificationBox = document.getElementById('palmVerificationBox');
     const readingLoading = document.getElementById('readingLoading');
     const emptyPlaceholder = document.getElementById('emptyResultPlaceholder');
+    const scanLaser = document.getElementById('scanLaser');
 
     if (captureBtn) {
         captureBtn.addEventListener('click', async () => {
+            const isValid = detector.validateHumanPalmImage();
+            if (!isValid) {
+                alert("⚠️ हाथ की हथेली पहचाने नहीं गई! कृपया अपने हाथ की स्पष्ट फोटो अपलोड करें।");
+                return;
+            }
+
+            ui.playTempleChime();
+            if (scanLaser) scanLaser.classList.remove('hidden');
             if (emptyPlaceholder) emptyPlaceholder.classList.add('hidden');
             if (readingResults) readingResults.classList.add('hidden');
             if (palmVerificationBox) palmVerificationBox.classList.add('hidden');
             if (readingLoading) readingLoading.classList.remove('hidden');
 
-            const result = await detector.detectLandmarks();
+            await detector.detectLandmarks();
 
             setTimeout(() => {
+                if (scanLaser) scanLaser.classList.add('hidden');
                 if (readingLoading) readingLoading.classList.add('hidden');
                 if (palmVerificationBox) palmVerificationBox.classList.remove('hidden');
-            }, 1500);
+            }, 1800);
         });
     }
 
     if (confirmBtn) {
         confirmBtn.addEventListener('click', () => {
+            ui.playTempleChime();
+            const selectedHeart = document.getElementById('vHeartLine')?.value || 'deep_jupiter';
+            const selectedHead = document.getElementById('vHeadLine')?.value || 'straight_sharp';
+            const selectedLife = document.getElementById('vLifeLine')?.value || 'full_curve';
+            const selectedFate = document.getElementById('vFateLine')?.value || 'wrist_saturn';
+            const selectedSkin = document.getElementById('vSkinColor')?.value || 'pink';
+            const selectedFinger = document.getElementById('vFingerType')?.value || 'conical';
+
+            const features = {
+                heart: selectedHeart,
+                head: selectedHead,
+                life: selectedLife,
+                fate: selectedFate,
+                skin: selectedSkin,
+                finger: selectedFinger
+            };
+
             const currentLang = localStorage.getItem('selectedLang') || 'hi';
-            const readingHTML = xai.generateExplainableReading(currentLang, {});
+            const readingHTML = xai.generateExplainableReading(currentLang, features);
 
             if (palmVerificationBox) palmVerificationBox.classList.add('hidden');
             if (readingResults) readingResults.classList.remove('hidden');
             if (readingTextContent) readingTextContent.innerHTML = readingHTML;
+        });
+    }
+
+    if (reEditBtn) {
+        reEditBtn.addEventListener('click', () => {
+            if (readingResults) readingResults.classList.add('hidden');
+            if (palmVerificationBox) palmVerificationBox.classList.remove('hidden');
         });
     }
 });
