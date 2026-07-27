@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Palmistry Pro - Multilingual & Hinglish Vedic App</title>
-    <meta name="description" content="कीरो हस्तरेखा शास्त्र एवं सामुद्रिक शास्त्र पर आधारित बहुभाषी (Multilingual & Hinglish) AI हस्तरेखा, कुंडली, टैरो, अंकशास्त्र व दैनिक राशिफल ऐप।">
+    <meta name="description" content="कीरो हस्तरेखा शास्त्र एवं सामुद्रिक शास्त्र पर आधारित बहुभाषी AI हस्तरेखा, कुंडली, टैरो, अंकशास्त्र, प्रेम मिलान व दैनिक राशिफल ऐप।">
     
     <!-- PWA Meta Tags & Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -81,6 +81,9 @@
                     </button>
                     <button class="nav-btn" data-tab="horoscope">
                         <i class="fa-solid fa-sun"></i> <span data-i18n="nav_horoscope">राशिफल</span>
+                    </button>
+                    <button class="nav-btn" data-tab="love">
+                        <i class="fa-solid fa-heart-pulse"></i> <span>प्रेम मिलान</span>
                     </button>
                     <button class="nav-btn" data-tab="kundli">
                         <i class="fa-solid fa-dharmachakra"></i> <span data-i18n="nav_kundli">कुंडली</span>
@@ -396,7 +399,38 @@
                 </div>
             </section>
 
-            <!-- SECTION 3: KUNDLI & PLANETARY CHART -->
+            <!-- SECTION 3: LOVE & MARRIAGE COMPATIBILITY MATCHER -->
+            <section id="loveSection" class="tab-section hidden">
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-heart-pulse"></i> <span>प्रेम एवं विवाह सामंजस्य कैलकुलेटर (Love & Marriage Matcher)</span></h2>
+                        <span class="badge-shastra">सामुद्रिक मिलान</span>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-user"></i> <span>प्रथम साथी का नाम (Partner 1 Name)</span></label>
+                            <input type="text" id="p1Name" placeholder="उदा. दिवाकर" value="दिवाकर">
+                        </div>
+                        <div class="form-group">
+                            <label><i class="fa-solid fa-user-tie"></i> <span>द्वितीय साथी का नाम (Partner 2 Name)</span></label>
+                            <input type="text" id="p2Name" placeholder="उदा. अनुराधा" value="अनुराधा">
+                        </div>
+                        <button id="calcLoveBtn" class="btn btn-gold full-width">
+                            <i class="fa-solid fa-heart"></i> <span>प्रेम सामंजस्य अंक निकालें (Calculate Match Score)</span>
+                        </button>
+                    </div>
+
+                    <div class="love-result-card hidden" id="loveResultCard" style="margin-top: 20px;">
+                        <div style="text-align: center;">
+                            <h2 style="font-size: 2.2rem; color: #EC4899;">96% <small style="font-size: 1rem; color: #DFAC6C;">(उत्तम सामंजस्य)</small></h2>
+                            <p style="margin-top: 10px; font-size: 0.95rem;">सामुद्रिक शास्त्र के अनुसार गुरु व शुक्र पर्वत के अद्भुत तालमेल से आपका वैवाहिक जीवन प्रगाढ़, समर्पित एवं चिरस्थायी रहेगा।</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 4: KUNDLI & PLANETARY CHART -->
             <section id="kundliSection" class="tab-section hidden">
                 <div class="section-grid">
                     <div class="glass-card">
@@ -464,7 +498,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 4: GEMSTONE & LUCKY COLOR CALCULATOR -->
+            <!-- SECTION 5: GEMSTONE & LUCKY COLOR CALCULATOR -->
             <section id="gemstonesSection" class="tab-section hidden">
                 <div class="glass-card">
                     <div class="card-header">
@@ -501,7 +535,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 5: TAROT CARD READING -->
+            <!-- SECTION 6: TAROT CARD READING -->
             <section id="tarotSection" class="tab-section hidden">
                 <div class="glass-card tarot-wrapper">
                     <div class="card-header center-header">
@@ -520,7 +554,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 6: NUMEROLOGY CALCULATOR -->
+            <!-- SECTION 7: NUMEROLOGY CALCULATOR -->
             <section id="numerologySection" class="tab-section hidden">
                 <div class="section-grid">
                     <div class="glass-card">
@@ -561,7 +595,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 7: HISTORY & PERSISTENCE -->
+            <!-- SECTION 8: HISTORY & PERSISTENCE -->
             <section id="historySection" class="tab-section hidden">
                 <div class="glass-card">
                     <div class="card-header">
@@ -589,6 +623,10 @@
                 <i class="fa-solid fa-sun"></i>
                 <span data-i18n="nav_horoscope">राशिफल</span>
             </button>
+            <button class="mobile-nav-btn" data-tab="love">
+                <i class="fa-solid fa-heart-pulse"></i>
+                <span>प्रेम</span>
+            </button>
             <button class="mobile-nav-btn" data-tab="kundli">
                 <i class="fa-solid fa-dharmachakra"></i>
                 <span data-i18n="nav_kundli">कुंडली</span>
@@ -600,10 +638,6 @@
             <button class="mobile-nav-btn" data-tab="tarot">
                 <i class="fa-solid fa-cards"></i>
                 <span data-i18n="nav_tarot">टैरो</span>
-            </button>
-            <button class="mobile-nav-btn" data-tab="numerology">
-                <i class="fa-solid fa-calculator"></i>
-                <span data-i18n="nav_numerology">अंकशास्त्र</span>
             </button>
             <button class="mobile-nav-btn" data-tab="history">
                 <i class="fa-solid fa-clock-rotate-left"></i>
