@@ -21,7 +21,7 @@ export class XAIEngine {
         const skin = features.skin || 'pink';
         const finger = features.finger || 'conical';
 
-        // Calculate dynamic confidence score based on feature alignment
+        // Dynamic confidence score calculation
         let score = 92.0;
         if (heart === 'deep_jupiter') score += 1.8;
         if (head === 'straight_sharp') score += 1.5;
@@ -83,18 +83,27 @@ export class XAIEngine {
             let lifeText = "Full curved Life Line strong immunity, long life aur energetic nature ka symbol hai.";
             let fateText = "Fate Line wrist se Saturn Mount tak ja rahi hai, jo ek clear Raj-Yoga aur career growth banati hai.";
 
+            let skinText = skin === 'pink' ? "Pinkish smooth palm tone good fortune aur smooth planetary blessings ko dikhata hai." : "Warm energetic skin tone courage aur leadership drive dikhata hai.";
+            let fingerText = finger === 'conical' ? "Long conical fingers creative thinking aur high artistic perception dikhati hain." : "Square fingers practical approach aur orderliness dikhati hain.";
+
             return `
                 <div class="xai-header-banner" style="background: rgba(223, 172, 108, 0.15); border: 1.5px solid #DFAC6C; padding: 14px; border-radius: 12px; margin-bottom: 16px;">
                     <h4 style="color: #DFAC6C;"><i class="fa-solid fa-microscope"></i> Explainable AI Precision Certificate</h4>
                     <p style="font-size: 0.85rem; color: #F8FAFC;">Dynamic AI Confidence Score: <strong>${confidenceScore}%</strong> | Verified against 4 Manuscripts</p>
                 </div>
 
-                <h3>✋ 1. Line Analysis:</h3>
+                <h3>✋ 1. Detailed Line Analysis:</h3>
                 <ul>
-                    <li><strong>Heart Line:</strong> ${heartText}</li>
-                    <li><strong>Head Line:</strong> ${headText}</li>
-                    <li><strong>Life Line:</strong> ${lifeText}</li>
-                    <li><strong>Fate Line:</strong> ${fateText}</li>
+                    <li><strong>Heart Line:</strong> ${heartText} <em>(Citation: ${this.citations.cheiro})</em></li>
+                    <li><strong>Head Line:</strong> ${headText} <em>(Citation: ${this.citations.vrihad})</em></li>
+                    <li><strong>Life Line:</strong> ${lifeText} <em>(Citation: ${this.citations.samudrik})</em></li>
+                    <li><strong>Fate Line:</strong> ${fateText} <em>(Citation: ${this.citations.garga})</em></li>
+                </ul>
+
+                <h3>🖐️ 2. Palm & Finger Attributes:</h3>
+                <ul>
+                    <li><strong>Palm Tone (${skin}):</strong> ${skinText}</li>
+                    <li><strong>Finger Shape (${finger}):</strong> ${fingerText}</li>
                 </ul>
 
                 <div class="raj-yoga-banner">
