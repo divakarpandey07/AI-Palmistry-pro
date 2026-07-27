@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Palmistry Pro - Multilingual & Hinglish Vedic App</title>
-    <meta name="description" content="कीरो हस्तरेखा शास्त्र एवं सामुद्रिक शास्त्र पर आधारित बहुभाषी AI हस्तरेखा, कुंडली, टैरो, अंकशास्त्र, प्रेम मिलान व दैनिक राशिफल ऐप।">
+    <meta name="description" content="कीरो हस्तरेखा शास्त्र एवं सामुद्रिक शास्त्र पर आधारित बहुभाषी AI हस्तरेखा, कुंडली, टैरो, अंकशास्त्र व दैनिक राशिफल ऐप।">
     
     <!-- PWA Meta Tags & Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -82,9 +82,6 @@
                     <button class="nav-btn" data-tab="horoscope">
                         <i class="fa-solid fa-sun"></i> <span data-i18n="nav_horoscope">राशिफल</span>
                     </button>
-                    <button class="nav-btn" data-tab="love">
-                        <i class="fa-solid fa-heart-pulse"></i> <span>प्रेम मिलान</span>
-                    </button>
                     <button class="nav-btn" data-tab="kundli">
                         <i class="fa-solid fa-dharmachakra"></i> <span data-i18n="nav_kundli">कुंडली</span>
                     </button>
@@ -143,6 +140,14 @@
                             <video id="webcamFeed" autoplay playsinline muted class="hidden"></video>
                             <img id="previewImage" class="hidden" alt="Palm Preview">
                             <canvas id="palmOverlayCanvas"></canvas>
+
+                            <!-- Camera Hand Silhouette Guide Overlay -->
+                            <div class="hand-silhouette-guide" id="handSilhouetteGuide">
+                                <svg viewBox="0 0 100 140" class="silhouette-svg">
+                                    <path d="M 30,130 C 25,100 15,70 15,50 C 15,40 25,35 28,45 C 32,30 40,25 44,38 C 48,20 58,18 62,35 C 66,22 75,25 76,42 C 80,35 88,40 85,55 C 80,85 75,100 70,130 Z" fill="none" stroke="rgba(223, 172, 108, 0.4)" stroke-width="1.8" stroke-dasharray="4,3"/>
+                                </svg>
+                                <span class="guide-text-overlay">हथेली को रूपरेखा में रखें</span>
+                            </div>
                             
                             <!-- Initial Placeholder -->
                             <div class="scanner-placeholder" id="scannerPlaceholder">
@@ -194,7 +199,7 @@
 
                             <div class="verify-form-grid">
                                 <div class="verify-group">
-                                    <label><i class="fa-solid fa-heart" style="color: #EC4899;"></i> <strong data-i18n="lbl_heart">हृदय रेखा:</strong></label>
+                                    <label><span class="line-color-badge badge-heart"><i class="fa-solid fa-heart"></i></span> <strong data-i18n="lbl_heart">हृदय रेखा:</strong></label>
                                     <select id="vHeartLine" class="verify-select">
                                         <option value="deep_jupiter" data-i18n="opt_h1">गुरु पर्वत तक गहरी व सुदृढ़</option>
                                         <option value="saturn_straight" data-i18n="opt_h2">शनि पर्वत तक सीधी</option>
@@ -203,7 +208,7 @@
                                 </div>
 
                                 <div class="verify-group">
-                                    <label><i class="fa-solid fa-brain" style="color: #6D28D9;"></i> <strong data-i18n="lbl_head">मस्तिष्क रेखा:</strong></label>
+                                    <label><span class="line-color-badge badge-head"><i class="fa-solid fa-brain"></i></span> <strong data-i18n="lbl_head">मस्तिष्क रेखा:</strong></label>
                                     <select id="vHeadLine" class="verify-select">
                                         <option value="straight_sharp" data-i18n="opt_hd1">सीधी व तीक्ष्ण तार्किक</option>
                                         <option value="curved_moon" data-i18n="opt_hd2">चंद्र पर्वत की ओर झुकी</option>
@@ -212,7 +217,7 @@
                                 </div>
 
                                 <div class="verify-group">
-                                    <label><i class="fa-solid fa-shield-halved" style="color: #10B981;"></i> <strong data-i18n="lbl_life">जीवन रेखा:</strong></label>
+                                    <label><span class="line-color-badge badge-life"><i class="fa-solid fa-shield-halved"></i></span> <strong data-i18n="lbl_life">जीवन रेखा:</strong></label>
                                     <select id="vLifeLine" class="verify-select">
                                         <option value="full_curve" data-i18n="opt_l1">पूर्ण सुदृढ़ गोलाई व आरोग्य</option>
                                         <option value="wrist_extended" data-i18n="opt_l2">मणिकंठ तक विस्तृत</option>
@@ -221,7 +226,7 @@
                                 </div>
 
                                 <div class="verify-group">
-                                    <label><i class="fa-solid fa-gem" style="color: #DFAC6C;"></i> <strong data-i18n="lbl_fate">भाग्य रेखा:</strong></label>
+                                    <label><span class="line-color-badge badge-fate"><i class="fa-solid fa-gem"></i></span> <strong data-i18n="lbl_fate">भाग्य रेखा:</strong></label>
                                     <select id="vFateLine" class="verify-select">
                                         <option value="wrist_saturn" data-i18n="opt_f1">मणिकंठ से शनि पर्वत तक</option>
                                         <option value="center_palm" data-i18n="opt_f2">हथेली के मध्य से प्रारंभ</option>
@@ -352,9 +357,19 @@
                     <p class="guide-subtitle" data-i18n="guide_subtitle">नीचे दिए गए 3D मॉडल को घुमाएं (Rotate in 3D) तथा किसी भी रेखा (Line) या नवग्रह पर्वत (Mount) पर क्लिक करके सामुद्रिक शास्त्र के अनुसार उनका महत्व जानें:</p>
                     
                     <div class="guide-content-row">
-                        <!-- Left Three.js 3D Canvas -->
+                        <!-- Left Three.js 3D Canvas & Interactive Control Bar -->
                         <div class="hand-3d-wrapper">
                             <canvas id="hand3DCanvas"></canvas>
+                            
+                            <!-- 3D Camera Controls Bar -->
+                            <div class="hand-3d-controls-bar">
+                                <button id="reset3DCamBtn" class="btn-3d-ctrl" title="Reset Camera Angle">
+                                    <i class="fa-solid fa-arrows-to-circle"></i> <span>रीसेट व्यू</span>
+                                </button>
+                                <button id="toggle3DRotateBtn" class="btn-3d-ctrl" title="Pause/Play Rotation">
+                                    <i class="fa-solid fa-pause"></i> <span id="rotateBtnLabel">घूमना रोकें</span>
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Right Info Card Details -->
@@ -383,7 +398,7 @@
                         <button class="rashi-btn" data-rashi="taurus">♉ वृषभ (Taurus)</button>
                         <button class="rashi-btn" data-rashi="gemini">♊ मिथुन (Gemini)</button>
                         <button class="rashi-btn" data-rashi="cancer">♋ कर्क (Cancer)</button>
-                        <button class="rashi-btn" data-rashi="leo">♌ सिंह (Leo)</button>
+                        <button class="rashi-btn" data-rashi="leo"><ctrl42> सिंह (Leo)</button>
                         <button class="rashi-btn" data-rashi="virgo">♍ कन्या (Virgo)</button>
                         <button class="rashi-btn" data-rashi="libra">♎ तुला (Libra)</button>
                         <button class="rashi-btn" data-rashi="scorpio">♏ वृश्चिक (Scorpio)</button>
@@ -399,38 +414,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 3: LOVE & MARRIAGE COMPATIBILITY MATCHER -->
-            <section id="loveSection" class="tab-section hidden">
-                <div class="glass-card">
-                    <div class="card-header">
-                        <h2><i class="fa-solid fa-heart-pulse"></i> <span>प्रेम एवं विवाह सामंजस्य कैलकुलेटर (Love & Marriage Matcher)</span></h2>
-                        <span class="badge-shastra">सामुद्रिक मिलान</span>
-                    </div>
-
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label><i class="fa-solid fa-user"></i> <span>प्रथम साथी का नाम (Partner 1 Name)</span></label>
-                            <input type="text" id="p1Name" placeholder="उदा. दिवाकर" value="दिवाकर">
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fa-solid fa-user-tie"></i> <span>द्वितीय साथी का नाम (Partner 2 Name)</span></label>
-                            <input type="text" id="p2Name" placeholder="उदा. अनुराधा" value="अनुराधा">
-                        </div>
-                        <button id="calcLoveBtn" class="btn btn-gold full-width">
-                            <i class="fa-solid fa-heart"></i> <span>प्रेम सामंजस्य अंक निकालें (Calculate Match Score)</span>
-                        </button>
-                    </div>
-
-                    <div class="love-result-card hidden" id="loveResultCard" style="margin-top: 20px;">
-                        <div style="text-align: center;">
-                            <h2 style="font-size: 2.2rem; color: #EC4899;">96% <small style="font-size: 1rem; color: #DFAC6C;">(उत्तम सामंजस्य)</small></h2>
-                            <p style="margin-top: 10px; font-size: 0.95rem;">सामुद्रिक शास्त्र के अनुसार गुरु व शुक्र पर्वत के अद्भुत तालमेल से आपका वैवाहिक जीवन प्रगाढ़, समर्पित एवं चिरस्थायी रहेगा।</p>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 4: KUNDLI & PLANETARY CHART -->
+            <!-- SECTION 3: KUNDLI & PLANETARY CHART -->
             <section id="kundliSection" class="tab-section hidden">
                 <div class="section-grid">
                     <div class="glass-card">
@@ -498,7 +482,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 5: GEMSTONE & LUCKY COLOR CALCULATOR -->
+            <!-- SECTION 4: GEMSTONE & LUCKY COLOR CALCULATOR -->
             <section id="gemstonesSection" class="tab-section hidden">
                 <div class="glass-card">
                     <div class="card-header">
@@ -535,7 +519,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 6: TAROT CARD READING -->
+            <!-- SECTION 5: TAROT CARD READING -->
             <section id="tarotSection" class="tab-section hidden">
                 <div class="glass-card tarot-wrapper">
                     <div class="card-header center-header">
@@ -554,7 +538,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 7: NUMEROLOGY CALCULATOR -->
+            <!-- SECTION 6: NUMEROLOGY CALCULATOR -->
             <section id="numerologySection" class="tab-section hidden">
                 <div class="section-grid">
                     <div class="glass-card">
@@ -595,7 +579,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 8: HISTORY & PERSISTENCE -->
+            <!-- SECTION 7: HISTORY & PERSISTENCE -->
             <section id="historySection" class="tab-section hidden">
                 <div class="glass-card">
                     <div class="card-header">
@@ -623,10 +607,6 @@
                 <i class="fa-solid fa-sun"></i>
                 <span data-i18n="nav_horoscope">राशिफल</span>
             </button>
-            <button class="mobile-nav-btn" data-tab="love">
-                <i class="fa-solid fa-heart-pulse"></i>
-                <span>प्रेम</span>
-            </button>
             <button class="mobile-nav-btn" data-tab="kundli">
                 <i class="fa-solid fa-dharmachakra"></i>
                 <span data-i18n="nav_kundli">कुंडली</span>
@@ -638,6 +618,10 @@
             <button class="mobile-nav-btn" data-tab="tarot">
                 <i class="fa-solid fa-cards"></i>
                 <span data-i18n="nav_tarot">टैरो</span>
+            </button>
+            <button class="mobile-nav-btn" data-tab="numerology">
+                <i class="fa-solid fa-calculator"></i>
+                <span data-i18n="nav_numerology">अंकशास्त्र</span>
             </button>
             <button class="mobile-nav-btn" data-tab="history">
                 <i class="fa-solid fa-clock-rotate-left"></i>
