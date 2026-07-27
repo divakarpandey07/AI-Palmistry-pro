@@ -349,7 +349,7 @@ body {
     box-shadow: 0 4px 15px var(--gold-glow);
 }
 
-/* 3D Palm & Mount Reference Guide */
+/* Real WebGL Three.js 3D Hand Guide */
 .hand-guide-card {
     display: flex;
     flex-direction: column;
@@ -363,7 +363,7 @@ body {
 
 .guide-content-row {
     display: grid;
-    grid-template-columns: 320px 1fr;
+    grid-template-columns: 340px 1fr;
     gap: 24px;
     align-items: center;
 }
@@ -374,41 +374,28 @@ body {
     }
 }
 
-.hand-svg-wrapper {
-    background: rgba(10, 6, 22, 0.7);
-    border: 1px solid var(--card-border);
+.hand-3d-wrapper {
+    background: radial-gradient(circle at 50% 50%, #1A0D36 0%, #080412 100%);
+    border: 1.5px solid var(--gold-primary);
     border-radius: var(--radius-md);
-    padding: 16px;
+    padding: 10px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(223, 172, 108, 0.15);
 }
 
-.interactive-hand-svg {
+#hand3DCanvas {
     width: 100%;
-    max-width: 280px;
-    height: auto;
+    height: 340px;
+    outline: none;
+    cursor: grab;
 }
 
-.mount-circle {
-    cursor: pointer;
-    transition: var(--transition-smooth);
-}
-
-.mount-circle:hover {
-    fill: rgba(223, 172, 108, 0.7);
-    stroke: var(--gold-light);
-    filter: drop-shadow(0 0 12px var(--gold-primary));
-}
-
-.guide-line-path {
-    cursor: pointer;
-    transition: var(--transition-smooth);
-}
-
-.guide-line-path:hover {
-    stroke-width: 5;
-    filter: drop-shadow(0 0 10px #FFF);
+#hand3DCanvas:active {
+    cursor: grabbing;
 }
 
 .guide-details-box {
