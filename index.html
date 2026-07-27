@@ -29,7 +29,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="theme-royal-gold">
     <!-- Background Cosmic Canvas -->
     <canvas id="starsCanvas"></canvas>
 
@@ -53,7 +53,9 @@
         <!-- Header Navigation -->
         <header class="app-header">
             <div class="header-logo">
-                <i class="fa-solid fa-hand-sparkles logo-icon"></i>
+                <div class="mandala-compass-glow">
+                    <i class="fa-solid fa-hand-sparkles logo-icon"></i>
+                </div>
                 <div class="logo-text">
                     <h1>AI Palmistry Pro</h1>
                     <span class="sub-logo" data-i18n="sub_logo">वैदिक सामुद्रिक शास्त्र एवं हस्तरेखा</span>
@@ -61,6 +63,11 @@
             </div>
             
             <div class="header-right-group">
+                <!-- Theme Toggle Button -->
+                <button id="themeToggleBtn" class="theme-toggle-pill" title="Toggle Theme (Royal Gold / Velvet Violet)">
+                    <i class="fa-solid fa-palette"></i> <span id="themeLabel">रॉयल थीम</span>
+                </button>
+
                 <!-- Multi-Language & Hinglish Selector Dropdown Pill -->
                 <div class="lang-selector-box">
                     <i class="fa-solid fa-globe lang-icon"></i>
@@ -107,6 +114,14 @@
             <!-- SECTION 1: PALMISTRY SCANNER, 4-LAYER PIPELINE & REAL 3D HAND MODEL GUIDE -->
             <section id="palmistrySection" class="tab-section active">
                 
+                <!-- HERO WELCOME BANNER WITH GOLD EMBOSS -->
+                <div class="hero-welcome-card">
+                    <div class="hero-text-content">
+                        <h2><i class="fa-solid fa-wand-magic-sparkles" style="color: #DFAC6C;"></i> 100% प्रामाणिक एआई हस्तरेखा एवं सामुद्रिक शास्त्र</h2>
+                        <p>अपनी हथेली की फोटो लें — एआई आपकी रेखाएं ट्रेस करके 4 प्राचीन ग्रंथों से सटीक फलादेश निकालेगा।</p>
+                    </div>
+                </div>
+
                 <!-- 4-LAYER MAJOR VERIFICATION PIPELINE BAR -->
                 <div class="pipeline-bar">
                     <div class="pipeline-step active">
@@ -147,6 +162,12 @@
                                     <path d="M 30,130 C 25,100 15,70 15,50 C 15,40 25,35 28,45 C 32,30 40,25 44,38 C 48,20 58,18 62,35 C 66,22 75,25 76,42 C 80,35 88,40 85,55 C 80,85 75,100 70,130 Z" fill="none" stroke="rgba(223, 172, 108, 0.4)" stroke-width="1.8" stroke-dasharray="4,3"/>
                                 </svg>
                                 <span class="guide-text-overlay">हथेली को रूपरेखा में रखें</span>
+                            </div>
+
+                            <!-- Line Glow & Thickness Opacity Slider Control -->
+                            <div class="line-glow-control-bar" id="lineGlowControlBar">
+                                <label><i class="fa-solid fa-sliders"></i> <span>रेखा चमक (Glow):</span></label>
+                                <input type="range" id="lineGlowSlider" min="2" max="8" step="0.5" value="3.5">
                             </div>
                             
                             <!-- Initial Placeholder -->
@@ -338,6 +359,9 @@
                                 <button id="saveReadingBtn" class="btn btn-secondary">
                                     <i class="fa-solid fa-bookmark"></i> <span data-i18n="btn_save">सुरक्षित करें</span>
                                 </button>
+                                <button id="shareStoryBtn" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); border: none;">
+                                    <i class="fa-brands fa-whatsapp"></i> <span>स्टोरी शेयर</span>
+                                </button>
                                 <button id="exportPdfBtn" class="btn btn-gold">
                                     <i class="fa-solid fa-file-pdf"></i> <span data-i18n="btn_pdf">PDF डाउनलोड</span>
                                 </button>
@@ -398,7 +422,7 @@
                         <button class="rashi-btn" data-rashi="taurus">♉ वृषभ (Taurus)</button>
                         <button class="rashi-btn" data-rashi="gemini">♊ मिथुन (Gemini)</button>
                         <button class="rashi-btn" data-rashi="cancer">♋ कर्क (Cancer)</button>
-                        <button class="rashi-btn" data-rashi="leo"><ctrl42> सिंह (Leo)</button>
+                        <button class="rashi-btn" data-rashi="leo">♌ सिंह (Leo)</button>
                         <button class="rashi-btn" data-rashi="virgo">♍ कन्या (Virgo)</button>
                         <button class="rashi-btn" data-rashi="libra">♎ तुला (Libra)</button>
                         <button class="rashi-btn" data-rashi="scorpio">♏ वृश्चिक (Scorpio)</button>
