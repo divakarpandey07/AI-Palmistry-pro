@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AI Palmistry Pro - Orientation-Aware Adaptive Hand Crease Tracing Engine
+   AI Palmistry Pro - Orientation-Aware Crease Engine & 3D Hand Guide Logic
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -72,6 +72,9 @@ document.addEventListener('DOMContentLoaded', () => {
             btn_pdf: "PDF डाउनलोड",
             empty_result: "स्कैन शुरू करने के बाद आपको यहाँ आपकी हथेली से निकली रेखाएं व संपादन विकल्प दिखाई देगा।",
             invalid_palm_error: "⚠️ हाथ की हथेली पहचाने नहीं गई! कृपया किसी दस्तावेज या अन्य वस्तु के बजाय केवल अपने हाथ की स्पष्ट फोटो अपलोड करें।",
+            guide_title: "3D हस्तरेखा एवं नवग्रह पर्वत निर्देशिका (3D Hand Guide)",
+            guide_badge: "सामुद्रिक शास्त्र गाइड",
+            guide_subtitle: "अपनी हथेली की रेखाओं एवं पर्वतों को समझने के लिए नीचे दिए गए 3D मॉडल पर किसी भी रेखा या पर्वत पर क्लिक करें:",
             kundli_title: "जन्म विवरण",
             kundli_desc: "अपनी जन्म पत्रिका हेतु विवरण भरें",
             lbl_fullname: "पूरा नाम",
@@ -157,6 +160,9 @@ document.addEventListener('DOMContentLoaded', () => {
             btn_pdf: "Download PDF",
             empty_result: "Start a scan to reveal detected features & editing options here.",
             invalid_palm_error: "⚠️ No human palm detected! Please upload or capture a clear photo of a real human hand/palm, not a document or object.",
+            guide_title: "3D Palm & Mount Reference Guide",
+            guide_badge: "Samudrik Shastra Guide",
+            guide_subtitle: "Click on any Line or Planetary Mount on the 3D model below to learn its Vedic astrological significance:",
             kundli_title: "Birth Details",
             kundli_desc: "Fill in your birth details for accurate Kundli chart",
             lbl_fullname: "Full Name",
@@ -242,6 +248,9 @@ document.addEventListener('DOMContentLoaded', () => {
             btn_pdf: "PDF Download",
             empty_result: "Scan karne ke baad aapko yahan aapki lines aur edit options dikhenge.",
             invalid_palm_error: "⚠️ Haath ki palm detect nahi hui! Kripya kisi document ki jagah apne haath ki clear photo upload karein.",
+            guide_title: "3D Palm & Mount Reference Guide",
+            guide_badge: "Samudrik Shastra Guide",
+            guide_subtitle: "Niche 3D model par kisi bhi Line ya Mount par click karke uska meaning janein:",
             kundli_title: "Birth Details",
             kundli_desc: "Sahi Kundli ke liye apna birth details bharein",
             lbl_fullname: "Full Name",
@@ -517,10 +526,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * ADAPTIVE HAND POSE & ORIENTATION SNAPPING ENGINE
-     * Detects actual palm bounding orientation (horizontal/vertical/angled) and snaps lines directly onto dark crease pixels
-     */
     function traceRealImageCreasesAndAutoDetect() {
         resizePalmCanvas();
         const w = palmCanvas.width;
@@ -537,44 +542,31 @@ document.addEventListener('DOMContentLoaded', () => {
         let source = previewImage.classList.contains('hidden') ? webcamFeed : previewImage;
         let isHorizontalPalm = false;
         let handCenterX = gridW / 2;
-        let handCenterY = gridH / 2;
 
         try {
             tCtx.drawImage(source, 0, 0, gridW, gridH);
             const imgData = tCtx.getImageData(0, 0, gridW, gridH);
             const data = imgData.data;
 
-            // Calculate Skin Centroid and Aspect Ratio to determine hand orientation
-            let skinSumX = 0, skinSumY = 0, skinCount = 0;
+            let skinSumX = 0, skinCount = 0;
             for (let y = 0; y < gridH; y++) {
                 for (let x = 0; x < gridW; x++) {
                     const idx = (y * gridW + x) * 4;
-                    const r = data[idx], g = data[idx+1], b = data[idx+2];
+                    const r = data[idx], g = data[idx+1];
                     if (r > 60 && r > g && (r - g) > 12) {
                         skinSumX += x;
-                        skinSumY += y;
                         skinCount++;
                     }
                 }
             }
 
-            if (skinCount > 0) {
-                handCenterX = skinSumX / skinCount;
-                handCenterY = skinSumY / skinCount;
-            }
-
-            // Detect if hand is horizontal (wide wrist-to-finger orientation)
-            if (handCenterX > gridW * 0.55 || handCenterX < gridW * 0.45) {
-                isHorizontalPalm = true;
-            }
+            if (skinCount > 0) handCenterX = skinSumX / skinCount;
+            if (handCenterX > gridW * 0.55 || handCenterX < gridW * 0.45) isHorizontalPalm = true;
         } catch (e) {
-            console.log('Using adaptive pose detection fallback');
+            console.log('Using adaptive pose fallback');
         }
 
-        // ORIENTATION-AWARE ADAPTIVE CANVAS PATH PROJECTOR
-        // If palm is horizontal (fingers pointing left/right in sideways photo)
         if (isHorizontalPalm) {
-            // 1. Heart Line (Yellow) - Upper Crease running horizontally across palm
             pCtx.strokeStyle = '#DFAC6C';
             pCtx.lineWidth = 3.5;
             pCtx.shadowColor = '#DFAC6C';
@@ -584,7 +576,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pCtx.quadraticCurveTo(w * 0.58, h * 0.28, w * 0.82, h * 0.26);
             pCtx.stroke();
 
-            // 2. Head Line (Purple) - Middle Crease sloping across palm
             pCtx.strokeStyle = '#6D28D9';
             pCtx.lineWidth = 3.5;
             pCtx.shadowColor = '#6D28D9';
@@ -594,7 +585,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pCtx.quadraticCurveTo(w * 0.55, h * 0.48, w * 0.78, h * 0.55);
             pCtx.stroke();
 
-            // 3. Life Line (Green) - Curved arc around Venus Mount
             pCtx.strokeStyle = '#10B981';
             pCtx.lineWidth = 3.5;
             pCtx.shadowColor = '#10B981';
@@ -604,7 +594,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pCtx.quadraticCurveTo(w * 0.42, h * 0.62, w * 0.35, h * 0.84);
             pCtx.stroke();
 
-            // 4. Fate Line (White) - Vertical Crease line
             pCtx.strokeStyle = '#F7E2BD';
             pCtx.lineWidth = 3;
             pCtx.shadowColor = '#F7E2BD';
@@ -614,7 +603,6 @@ document.addEventListener('DOMContentLoaded', () => {
             pCtx.quadraticCurveTo(w * 0.56, h * 0.58, w * 0.54, h * 0.34);
             pCtx.stroke();
         } else {
-            // Standard Vertical Palm Orientation
             pCtx.strokeStyle = '#DFAC6C';
             pCtx.lineWidth = 3.5;
             pCtx.shadowColor = '#DFAC6C';
@@ -720,6 +708,80 @@ document.addEventListener('DOMContentLoaded', () => {
     reEditFeaturesBtn.addEventListener('click', () => {
         readingResults.classList.add('hidden');
         palmVerificationBox.classList.remove('hidden');
+    });
+
+    // ----------------------------------------------------------------------
+    // 6. 3D HAND REFERENCE GUIDE INTERACTIVE CLICK DICTIONARY
+    // ----------------------------------------------------------------------
+    const guideDetailsBox = document.getElementById('guideDetailsBox');
+    const gTitle = document.getElementById('gTitle');
+    const gDesc = document.getElementById('gDesc');
+
+    const guideDict = {
+        jupiter: {
+            title: "🪐 गुरु पर्वत (Mount of Jupiter - Index Finger)",
+            desc: "तर्जनी (Index Finger) के नीचे स्थित गुरु पर्वत व्यक्ति के ज्ञान, नेतृत्व क्षमता, महत्वाकांक्षा, धार्मिकता एवं राज-योग का प्रतीक है। गुरु का उभार समाज में उच्च सम्मान दिलाता है।"
+        },
+        saturn: {
+            title: "🪐 शनि पर्वत (Mount of Saturn - Middle Finger)",
+            desc: "मध्यमा (Middle Finger) के नीचे शनि पर्वत स्थित होता है। यह व्यक्ति की भाग्य रेखा का गंतव्य, धन-धान्य, अनुशासन एवं गूढ़ विद्याओं का स्वामी है।"
+        },
+        sun: {
+            title: "☀️ सूर्य पर्वत (Mount of Sun - Ring Finger)",
+            desc: "अनामिका (Ring Finger) के नीचे सूर्य पर्वत व्यक्ति की प्रसिद्धि, सरकारी नौकरी, कलात्मक सफलता एवं उच्च सामाजिक प्रतिष्ठा का प्रतिनिधित्व करता है।"
+        },
+        mercury: {
+            title: "🪐 बुध पर्वत (Mount of Mercury - Little Finger)",
+            desc: "कनिष्ठिका (Little Finger) के नीचे बुध पर्वत व्यापारिक बुद्धि, वाक्-पटुता, विज्ञान, गणित एवं स्वास्थ्य रेखा का केंद्र है।"
+        },
+        venus: {
+            title: "♀️ शुक्र पर्वत (Mount of Venus - Thumb Base)",
+            desc: "अंगूठे के आधार पर स्थित शुक्र पर्वत व्यक्ति के जीवन में सौंदर्य, प्रेम, लग्जरी, दांपत्य सुख एवं आकर्षण शक्ति का प्रतिनिधित्व करता है।"
+        },
+        moon: {
+            title: "☽ चंद्र पर्वत (Mount of Moon - Lower Palm Edge)",
+            desc: "हथेली के निचले बाहरी भाग में स्थित चंद्र पर्वत व्यक्ति की अगाध कल्पनाशीलता, विदेश यात्रा, अंतर्ज्ञान एवं मानसिक शांति का प्रतीक है।"
+        },
+        mars: {
+            title: "♂️ मंगल पर्वत (Mount of Mars - Upper/Lower Palm)",
+            desc: "हथेली के मध्य एवं ऊपरी भाग में मंगल पर्वत साहस, शारीरिक पराक्रम, आत्मविश्वास एवं भूमि-भवन संपत्ति का प्रतीक है।"
+        },
+        heart: {
+            title: "🟡 हृदय रेखा (Heart Line - Emotional Profile)",
+            desc: "बुध पर्वत के नीचे से गुरु/शनि पर्वत की ओर जाने वाली हृदय रेखा व्यक्ति के भावनात्मक संतुलन, प्रेम संबंधों की प्रगाढ़ता एवं हृदय स्वास्थ्य का बोध कराती है।"
+        },
+        head: {
+            title: "🟣 मस्तिष्क रेखा (Head Line - Intellectual Power)",
+            desc: "जीवन रेखा के पास से हथेली के पार जाने वाली मस्तिष्क रेखा व्यक्ति की तार्किक क्षमता, एकाग्रता, निर्णय शक्ति एवं बौद्धिक स्तर को दर्शाती है।"
+        },
+        life: {
+            title: "🟢 जीवन रेखा (Life Line - Health & Longevity)",
+            desc: "शुक्र पर्वत को घेरती हुई मणिकंठ तक जाने वाली जीवन रेखा व्यक्ति की जीवन ऊर्जा, शारीरिक प्रतिरोधक क्षमता एवं दीर्घायु का प्रतीक है।"
+        },
+        fate: {
+            title: "⚪ भाग्य रेखा (Fate Line - Career & Wealth)",
+            desc: "मणिकंठ अथवा हथेली के मध्य से शनि पर्वत की ओर जाने वाली भाग्य रेखा व्यक्ति के करियर, धन-धान्य, राज-योग एवं व्यावसायिक सफलता को दर्शाती है।"
+        }
+    };
+
+    document.querySelectorAll('.mount-circle').forEach(circle => {
+        circle.addEventListener('click', () => {
+            const key = circle.getAttribute('data-mount');
+            if (guideDict[key]) {
+                gTitle.innerText = guideDict[key].title;
+                gDesc.innerText = guideDict[key].desc;
+            }
+        });
+    });
+
+    document.querySelectorAll('.guide-line-path').forEach(line => {
+        line.addEventListener('click', () => {
+            const key = line.getAttribute('data-line');
+            if (guideDict[key]) {
+                gTitle.innerText = guideDict[key].title;
+                gDesc.innerText = guideDict[key].desc;
+            }
+        });
     });
 
     /**
@@ -853,9 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // ----------------------------------------------------------------------
-    // INTERACTIVE SCRIPTURE CHATBOT LOGIC
-    // ----------------------------------------------------------------------
+    // INTERACTIVE CHATBOT LOGIC
     const sendChatBtn = document.getElementById('sendChatBtn');
     const chatInputText = document.getElementById('chatInputText');
     const chatMessagesBox = document.getElementById('chatMessagesBox');
