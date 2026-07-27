@@ -2,9 +2,17 @@
 <html lang="hi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Palmistry Pro - शुद्ध एवं प्रमाणिक वैदिक हस्तरेखा व ज्योतिष ऐप</title>
-    <meta name="description" content="कीरो हस्तरेखा शास्त्र, सामुद्रिक शास्त्र, वृहद् हस्तरेखा शास्त्र एवं सामुद्रिक हस्तरेखा विज्ञान पर आधारित AI संचालित हस्तरेखा, कुंडली, टैरो एवं अंकशास्त्र विश्लेषण।">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Palmistry Pro - शुद्ध एवं प्रमाणिक वैदिक हस्तरेखा PWA ऐप</title>
+    <meta name="description" content="कीरो हस्तरेखा शास्त्र, सामुद्रिक शास्त्र, वृहद् हस्तरेखा शास्त्र एवं सामुद्रिक हस्तरेखा विज्ञान पर आधारित PWA मोबाइल ऐप।">
+    
+    <!-- PWA Meta Tags & Web App Manifest -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1A0A2E">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PalmistryPro">
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +29,20 @@
     <!-- Background Cosmic Canvas -->
     <canvas id="starsCanvas"></canvas>
 
+    <!-- PWA Install Banner -->
+    <div id="pwaInstallBanner" class="pwa-install-banner hidden">
+        <div class="pwa-install-info">
+            <i class="fa-solid fa-mobile-screen-button pwa-icon"></i>
+            <div>
+                <strong>AI Palmistry Pro ऐप</strong>
+                <span>अपने मोबाइल होम स्क्रीन पर इनस्टॉल करें</span>
+            </div>
+        </div>
+        <button id="pwaInstallBtn" class="btn btn-gold btn-sm">
+            <i class="fa-solid fa-download"></i> इनस्टॉल करें
+        </button>
+    </div>
+
     <!-- App Container -->
     <div id="appContainer">
         
@@ -30,19 +52,19 @@
                 <i class="fa-solid fa-hand-sparkles logo-icon"></i>
                 <div class="logo-text">
                     <h1>AI Palmistry Pro</h1>
-                    <span class="sub-logo">वैदिक सामुद्रिक शास्त्र एवं हस्तरेखा</span>
+                    <span class="sub-logo">वैदिक सामुद्रिक शास्त्र एवं हस्तरेखा PWA</span>
                 </div>
             </div>
             
-            <nav class="nav-tabs" id="navTabs">
+            <nav class="nav-tabs desktop-nav" id="navTabs">
                 <button class="nav-btn active" data-tab="palmistry">
-                    <i class="fa-solid fa-hand"></i> हस्तरेखा (Palm)
+                    <i class="fa-solid fa-hand"></i> हस्तरेखा
                 </button>
                 <button class="nav-btn" data-tab="kundli">
-                    <i class="fa-solid fa-dharmachakra"></i> कुंडली (Kundli)
+                    <i class="fa-solid fa-dharmachakra"></i> कुंडली
                 </button>
                 <button class="nav-btn" data-tab="tarot">
-                    <i class="fa-solid fa-cards"></i> टैरो (Tarot)
+                    <i class="fa-solid fa-cards"></i> टैरो
                 </button>
                 <button class="nav-btn" data-tab="numerology">
                     <i class="fa-solid fa-calculator"></i> अंकशास्त्र
@@ -64,7 +86,7 @@
                     <div class="glass-card scanner-card">
                         <div class="card-header">
                             <h2><i class="fa-solid fa-camera"></i> लाइव हस्तरेखा स्कैन</h2>
-                            <p>अपने हाथ की स्पष्ट छवि कैमरे से लें या अपलोड करें</p>
+                            <p>हाथ की स्पष्ट छवि कैमरे से लें या फोटो अपलोड करें</p>
                         </div>
                         
                         <div class="scanner-viewport" id="scannerViewport">
@@ -130,22 +152,22 @@
                                 <!-- Line Progress Bars -->
                                 <div class="line-scores-list">
                                     <div class="score-item">
-                                        <span>हृदय रेखा (Heart Line)</span>
+                                        <span>हृदय रेखा</span>
                                         <div class="progress-bar"><div class="progress-fill" id="heartScore" style="width: 82%;"></div></div>
                                         <strong>82%</strong>
                                     </div>
                                     <div class="score-item">
-                                        <span>मस्तिष्क रेखा (Head Line)</span>
+                                        <span>मस्तिष्क रेखा</span>
                                         <div class="progress-bar"><div class="progress-fill" id="headScore" style="width: 90%;"></div></div>
                                         <strong>90%</strong>
                                     </div>
                                     <div class="score-item">
-                                        <span>जीवन रेखा (Life Line)</span>
+                                        <span>जीवन रेखा</span>
                                         <div class="progress-bar"><div class="progress-fill" id="lifeScore" style="width: 88%;"></div></div>
                                         <strong>88%</strong>
                                     </div>
                                     <div class="score-item">
-                                        <span>भाग्य रेखा (Fate Line)</span>
+                                        <span>भाग्य रेखा</span>
                                         <div class="progress-bar"><div class="progress-fill" id="fateScore" style="width: 76%;"></div></div>
                                         <strong>76%</strong>
                                     </div>
@@ -163,7 +185,7 @@
                                     <i class="fa-solid fa-bookmark"></i> सुरक्षित करें
                                 </button>
                                 <button id="exportPdfBtn" class="btn btn-gold">
-                                    <i class="fa-solid fa-file-pdf"></i> PDF रिपोर्ट डाउनलोड करें
+                                    <i class="fa-solid fa-file-pdf"></i> PDF डाउनलोड
                                 </button>
                             </div>
                         </div>
@@ -186,7 +208,7 @@
                     <div class="glass-card">
                         <div class="card-header">
                             <h2><i class="fa-solid fa-user-astronaut"></i> जन्म विवरण</h2>
-                            <p>अपनी सटीक जन्म पत्रिका व ग्रह स्थिति हेतु विवरण भरें</p>
+                            <p>अपनी जन्म पत्रिका हेतु विवरण भरें</p>
                         </div>
                         <form id="kundliForm" class="form-grid">
                             <div class="form-group">
@@ -221,15 +243,11 @@
                             <!-- Diamond Kundli SVG Chart -->
                             <div class="diamond-kundli" id="diamondKundli">
                                 <svg viewBox="0 0 300 300" class="kundli-svg">
-                                    <!-- Outer Square -->
                                     <rect x="10" y="10" width="280" height="280" fill="none" stroke="#F59E0B" stroke-width="2"/>
-                                    <!-- Inner Diagonals -->
                                     <line x1="10" y1="10" x2="290" y2="290" stroke="#7C3AED" stroke-width="1.5"/>
                                     <line x1="290" y1="10" x2="10" y2="290" stroke="#7C3AED" stroke-width="1.5"/>
-                                    <!-- Inner Diamond -->
                                     <polygon points="150,10 290,150 150,290 10,150" fill="none" stroke="#F59E0B" stroke-width="1.5"/>
                                     
-                                    <!-- House Labels -->
                                     <text x="150" y="70" text-anchor="middle" fill="#F1F5F9" font-size="12">1 (सूर्य/गुरु)</text>
                                     <text x="80" y="40" text-anchor="middle" fill="#F1F5F9" font-size="12">2 (चंद्र)</text>
                                     <text x="40" y="80" text-anchor="middle" fill="#F1F5F9" font-size="12">3 (मंगल)</text>
@@ -265,11 +283,11 @@
                 <div class="glass-card tarot-wrapper">
                     <div class="card-header center-header">
                         <h2><i class="fa-solid fa-cards"></i> 3-कार्ड टैरो दिव्य वाचन</h2>
-                        <p>अपने अतीत, वर्तमान एवं भविष्य का संकेत जानने के लिए 3 कार्ड चुनें</p>
+                        <p>अपने अतीत, वर्तमान एवं भविष्य हेतु 3 कार्ड चुनें</p>
                     </div>
 
                     <div class="tarot-deck-container" id="tarotDeck">
-                        <!-- Cards generated dynamically by JS -->
+                        <!-- Cards generated dynamically -->
                     </div>
 
                     <div class="tarot-reading-output hidden" id="tarotOutput">
@@ -285,14 +303,14 @@
                     <div class="glass-card">
                         <div class="card-header">
                             <h2><i class="fa-solid fa-calculator"></i> अंकशास्त्र मूलांक व भाग्यांक</h2>
-                            <p>अपनी जन्मतिथि दर्ज करके अपना लकी नंबर जानें</p>
+                            <p>अपनी जन्मतिथि दर्ज करके लकी नंबर जानें</p>
                         </div>
                         <div class="form-group">
                             <label><i class="fa-solid fa-calendar"></i> जन्मतिथि चुनें</label>
                             <input type="date" id="numDobInput" value="1998-07-14">
                         </div>
                         <button id="calcNumerologyBtn" class="btn btn-primary full-width">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> मूलांक व भाग्यांक की गणना करें
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> गणना करें
                         </button>
                     </div>
 
@@ -302,14 +320,14 @@
                         </div>
                         <div class="num-badges-row">
                             <div class="num-badge-card">
-                                <h3>मूलांक (Mulank)</h3>
+                                <h3>मूलांक</h3>
                                 <div class="num-circle" id="mulankVal">5</div>
-                                <span id="mulankPlanet">स्वामी: बुध (Mercury)</span>
+                                <span id="mulankPlanet">स्वामी: बुध</span>
                             </div>
                             <div class="num-badge-card">
-                                <h3>भाग्यांक (Bhagyank)</h3>
+                                <h3>भाग्यांक</h3>
                                 <div class="num-circle gold" id="bhagyankVal">3</div>
-                                <span id="bhagyankPlanet">स्वामी: गुरु (Jupiter)</span>
+                                <span id="bhagyankPlanet">स्वामी: गुरु</span>
                             </div>
                         </div>
 
@@ -324,7 +342,7 @@
             <section id="historySection" class="tab-section hidden">
                 <div class="glass-card">
                     <div class="card-header">
-                        <h2><i class="fa-solid fa-clock-rotate-left"></i> सहेजे गए फलकथन (Reading History)</h2>
+                        <h2><i class="fa-solid fa-clock-rotate-left"></i> सहेजे गए फलकथन</h2>
                         <button id="clearHistoryBtn" class="btn btn-danger-sm">
                             <i class="fa-solid fa-trash"></i> इतिहास साफ़ करें
                         </button>
@@ -338,9 +356,33 @@
 
         </main>
 
+        <!-- Mobile Bottom Navigation Bar -->
+        <nav class="mobile-bottom-nav" id="mobileNav">
+            <button class="mobile-nav-btn active" data-tab="palmistry">
+                <i class="fa-solid fa-hand"></i>
+                <span>हस्तरेखा</span>
+            </button>
+            <button class="mobile-nav-btn" data-tab="kundli">
+                <i class="fa-solid fa-dharmachakra"></i>
+                <span>कुंडली</span>
+            </button>
+            <button class="mobile-nav-btn" data-tab="tarot">
+                <i class="fa-solid fa-cards"></i>
+                <span>टैरो</span>
+            </button>
+            <button class="mobile-nav-btn" data-tab="numerology">
+                <i class="fa-solid fa-calculator"></i>
+                <span>अंकशास्त्र</span>
+            </button>
+            <button class="mobile-nav-btn" data-tab="history">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>इतिहास</span>
+            </button>
+        </nav>
+
         <!-- Footer -->
         <footer class="app-footer">
-            <p>© 2026 AI Palmistry Pro. 100% प्रमाणिक वैदिक ज्योतिष एवं सामुद्रिक शास्त्र पर आधारित।</p>
+            <p>© 2026 AI Palmistry Pro PWA App. 100% प्रमाणिक वैदिक ज्योतिष एवं सामुद्रिक शास्त्र।</p>
         </footer>
 
     </div>
