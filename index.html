@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Palmistry Pro - शुद्ध एवं प्रमाणिक वैदिक हस्तरेखा PWA ऐप</title>
-    <meta name="description" content="कीरो हस्तरेखा शास्त्र, सामुद्रिक शास्त्र, वृहद् हस्तरेखा शास्त्र एवं सामुद्रिक हस्तरेखा विज्ञान पर आधारित PWA मोबाइल ऐप।">
+    <title>AI Palmistry Pro - Multilingual Vedic Astrological App</title>
+    <meta name="description" content="कीरो हस्तरेखा शास्त्र एवं सामुद्रिक शास्त्र पर आधारित बहुभाषी (Multilingual) AI हस्तरेखा, कुंडली, टैरो व अंकशास्त्र ऐप।">
     
     <!-- PWA Meta Tags & Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -34,12 +34,12 @@
         <div class="pwa-install-info">
             <i class="fa-solid fa-mobile-screen-button pwa-icon"></i>
             <div>
-                <strong>AI Palmistry Pro ऐप</strong>
-                <span>अपने मोबाइल होम स्क्रीन पर इनस्टॉल करें</span>
+                <strong data-i18n="pwa_title">AI Palmistry Pro ऐप</strong>
+                <span data-i18n="pwa_subtitle">अपने मोबाइल होम स्क्रीन पर इनस्टॉल करें</span>
             </div>
         </div>
         <button id="pwaInstallBtn" class="btn btn-gold btn-sm">
-            <i class="fa-solid fa-download"></i> इनस्टॉल करें
+            <i class="fa-solid fa-download"></i> <span data-i18n="pwa_btn">इनस्टॉल करें</span>
         </button>
     </div>
 
@@ -52,27 +52,42 @@
                 <i class="fa-solid fa-hand-sparkles logo-icon"></i>
                 <div class="logo-text">
                     <h1>AI Palmistry Pro</h1>
-                    <span class="sub-logo">वैदिक सामुद्रिक शास्त्र एवं हस्तरेखा PWA</span>
+                    <span class="sub-logo" data-i18n="sub_logo">वैदिक सामुद्रिक शास्त्र एवं हस्तरेखा</span>
                 </div>
             </div>
             
-            <nav class="nav-tabs desktop-nav" id="navTabs">
-                <button class="nav-btn active" data-tab="palmistry">
-                    <i class="fa-solid fa-hand"></i> हस्तरेखा
-                </button>
-                <button class="nav-btn" data-tab="kundli">
-                    <i class="fa-solid fa-dharmachakra"></i> कुंडली
-                </button>
-                <button class="nav-btn" data-tab="tarot">
-                    <i class="fa-solid fa-cards"></i> टैरो
-                </button>
-                <button class="nav-btn" data-tab="numerology">
-                    <i class="fa-solid fa-calculator"></i> अंकशास्त्र
-                </button>
-                <button class="nav-btn" data-tab="history">
-                    <i class="fa-solid fa-clock-rotate-left"></i> इतिहास
-                </button>
-            </nav>
+            <div class="header-actions">
+                <!-- Multi-Language Selector Dropdown -->
+                <div class="lang-selector-box">
+                    <i class="fa-solid fa-globe lang-icon"></i>
+                    <select id="langSelect" class="lang-dropdown">
+                        <option value="hi" selected>हिंदी (Hindi)</option>
+                        <option value="en">English</option>
+                        <option value="sa">संस्कृतम् (Sanskrit)</option>
+                        <option value="mr">मराठी (Marathi)</option>
+                        <option value="gu">ગુજરાતી (Gujarati)</option>
+                        <option value="ta">தமிழ் (Tamil)</option>
+                    </select>
+                </div>
+
+                <nav class="nav-tabs desktop-nav" id="navTabs">
+                    <button class="nav-btn active" data-tab="palmistry">
+                        <i class="fa-solid fa-hand"></i> <span data-i18n="nav_palmistry">हस्तरेखा</span>
+                    </button>
+                    <button class="nav-btn" data-tab="kundli">
+                        <i class="fa-solid fa-dharmachakra"></i> <span data-i18n="nav_kundli">कुंडली</span>
+                    </button>
+                    <button class="nav-btn" data-tab="tarot">
+                        <i class="fa-solid fa-cards"></i> <span data-i18n="nav_tarot">टैरो</span>
+                    </button>
+                    <button class="nav-btn" data-tab="numerology">
+                        <i class="fa-solid fa-calculator"></i> <span data-i18n="nav_numerology">अंकशास्त्र</span>
+                    </button>
+                    <button class="nav-btn" data-tab="history">
+                        <i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="nav_history">इतिहास</span>
+                    </button>
+                </nav>
+            </div>
         </header>
 
         <!-- Main Content Area -->
@@ -85,8 +100,8 @@
                     <!-- Left: Camera / Scanner Card -->
                     <div class="glass-card scanner-card">
                         <div class="card-header">
-                            <h2><i class="fa-solid fa-camera"></i> लाइव हस्तरेखा स्कैन</h2>
-                            <p>हाथ की स्पष्ट छवि कैमरे से लें या फोटो अपलोड करें</p>
+                            <h2><i class="fa-solid fa-camera"></i> <span data-i18n="scanner_title">लाइव हस्तरेखा स्कैन</span></h2>
+                            <p data-i18n="scanner_desc">हाथ की स्पष्ट छवि कैमरे से लें या फोटो अपलोड करें</p>
                         </div>
                         
                         <div class="scanner-viewport" id="scannerViewport">
@@ -97,7 +112,7 @@
                             <!-- Initial Placeholder -->
                             <div class="scanner-placeholder" id="scannerPlaceholder">
                                 <i class="fa-solid fa-hand-holding-hand placeholder-icon"></i>
-                                <p>हस्तरेखा स्कैन शुरू करने के लिए कैमरा चालू करें या फोटो अपलोड करें</p>
+                                <p data-i18n="scanner_placeholder">हस्तरेखा स्कैन शुरू करने के लिए कैमरा चालू करें या फोटो अपलोड करें</p>
                             </div>
                             
                             <!-- Glowing Scan Line Animation -->
@@ -107,14 +122,14 @@
                         <!-- Scanner Controls -->
                         <div class="scanner-actions">
                             <button id="startCamBtn" class="btn btn-primary">
-                                <i class="fa-solid fa-video"></i> कैमरा चालू करें
+                                <i class="fa-solid fa-video"></i> <span data-i18n="btn_camera">कैमरा चालू करें</span>
                             </button>
                             <label for="uploadInput" class="btn btn-secondary">
-                                <i class="fa-solid fa-upload"></i> फोटो अपलोड करें
+                                <i class="fa-solid fa-upload"></i> <span data-i18n="btn_upload">फोटो अपलोड करें</span>
                                 <input type="file" id="uploadInput" accept="image/*" class="hidden-input">
                             </label>
                             <button id="captureScanBtn" class="btn btn-accent hidden">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> विश्लेषण करें
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btn_analyze">विश्लेषण करें</span>
                             </button>
                         </div>
                     </div>
@@ -122,14 +137,14 @@
                     <!-- Right: Reading Results & Scores -->
                     <div class="glass-card result-card">
                         <div class="card-header">
-                            <h2><i class="fa-solid fa-book-open-reader"></i> शास्त्र-आधारित फलकथन</h2>
-                            <span class="badge-shastra">4 प्राचीन ग्रंथों द्वारा प्रमाणित</span>
+                            <h2><i class="fa-solid fa-book-open-reader"></i> <span data-i18n="result_title">शास्त्र-आधारित फलकथन</span></h2>
+                            <span class="badge-shastra" data-i18n="badge_shastra">4 प्राचीन ग्रंथों द्वारा प्रमाणित</span>
                         </div>
 
                         <!-- Initial Loading State -->
                         <div id="readingLoading" class="loading-state hidden">
                             <div class="spinner"></div>
-                            <p class="loading-text">कीरो हस्तरेखा, सामुद्रिक शास्त्र, वृहद् हस्तरेखा शास्त्र एवं सामुद्रिक हस्तरेखा विज्ञान से मिलान किया जा रहा है...</p>
+                            <p class="loading-text" data-i18n="loading_text">कीरो हस्तरेखा, सामुद्रिक शास्त्र, वृहद् हस्तरेखा शास्त्र एवं सामुद्रिक हस्तरेखा विज्ञान से मिलान किया जा रहा है...</p>
                         </div>
 
                         <!-- Results Container -->
@@ -145,36 +160,36 @@
                                     </svg>
                                     <div class="gauge-text">
                                         <span id="confidencePct">88%</span>
-                                        <small>सटीकता</small>
+                                        <small data-i18n="accuracy">सटीकता</small>
                                     </div>
                                 </div>
 
                                 <!-- Line Progress Bars -->
                                 <div class="line-scores-list">
                                     <div class="score-item">
-                                        <span>हृदय रेखा</span>
+                                        <span data-i18n="line_heart">हृदय रेखा</span>
                                         <div class="progress-bar"><div class="progress-fill" id="heartScore" style="width: 82%;"></div></div>
                                         <strong>82%</strong>
                                     </div>
                                     <div class="score-item">
-                                        <span>मस्तिष्क रेखा</span>
+                                        <span data-i18n="line_head">मस्तिष्क रेखा</span>
                                         <div class="progress-bar"><div class="progress-fill" id="headScore" style="width: 90%;"></div></div>
                                         <strong>90%</strong>
                                     </div>
                                     <div class="score-item">
-                                        <span>जीवन रेखा</span>
+                                        <span data-i18n="line_life">जीवन रेखा</span>
                                         <div class="progress-bar"><div class="progress-fill" id="lifeScore" style="width: 88%;"></div></div>
                                         <strong>88%</strong>
                                     </div>
                                     <div class="score-item">
-                                        <span>भाग्य रेखा</span>
+                                        <span data-i18n="line_fate">भाग्य रेखा</span>
                                         <div class="progress-bar"><div class="progress-fill" id="fateScore" style="width: 76%;"></div></div>
                                         <strong>76%</strong>
                                     </div>
                                 </div>
                             </div>
 
-                            <!-- Detailed Hindi Text Output -->
+                            <!-- Detailed Text Output -->
                             <div class="reading-text-box" id="readingTextContent">
                                 <!-- Populated dynamically by JS -->
                             </div>
@@ -182,10 +197,10 @@
                             <!-- Actions Row -->
                             <div class="result-actions">
                                 <button id="saveReadingBtn" class="btn btn-secondary">
-                                    <i class="fa-solid fa-bookmark"></i> सुरक्षित करें
+                                    <i class="fa-solid fa-bookmark"></i> <span data-i18n="btn_save">सुरक्षित करें</span>
                                 </button>
                                 <button id="exportPdfBtn" class="btn btn-gold">
-                                    <i class="fa-solid fa-file-pdf"></i> PDF डाउनलोड
+                                    <i class="fa-solid fa-file-pdf"></i> <span data-i18n="btn_pdf">PDF डाउनलोड</span>
                                 </button>
                             </div>
                         </div>
@@ -193,7 +208,7 @@
                         <!-- Default Empty Result Placeholder -->
                         <div id="emptyResultPlaceholder" class="empty-placeholder">
                             <i class="fa-solid fa-scroll placeholder-icon"></i>
-                            <p>स्कैन शुरू करने के बाद आपको यहाँ विस्तृत शास्त्र-आधारित विश्लेषण दिखाई देगा।</p>
+                            <p data-i18n="empty_result">स्कैन शुरू करने के बाद आपको यहाँ विस्तृत शास्त्र-आधारित विश्लेषण दिखाई देगा।</p>
                         </div>
                     </div>
 
@@ -207,28 +222,28 @@
                     <!-- Left: Form Input -->
                     <div class="glass-card">
                         <div class="card-header">
-                            <h2><i class="fa-solid fa-user-astronaut"></i> जन्म विवरण</h2>
-                            <p>अपनी जन्म पत्रिका हेतु विवरण भरें</p>
+                            <h2><i class="fa-solid fa-user-astronaut"></i> <span data-i18n="kundli_title">जन्म विवरण</span></h2>
+                            <p data-i18n="kundli_desc">अपनी जन्म पत्रिका हेतु विवरण भरें</p>
                         </div>
                         <form id="kundliForm" class="form-grid">
                             <div class="form-group">
-                                <label><i class="fa-solid fa-user"></i> पूरा नाम</label>
+                                <label><i class="fa-solid fa-user"></i> <span data-i18n="lbl_fullname">पूरा नाम</span></label>
                                 <input type="text" id="kName" placeholder="उदा. दिवाकर पांडेय" required>
                             </div>
                             <div class="form-group">
-                                <label><i class="fa-solid fa-calendar-day"></i> जन्म तिथि</label>
+                                <label><i class="fa-solid fa-calendar-day"></i> <span data-i18n="lbl_dob">जन्म तिथि</span></label>
                                 <input type="date" id="kDob" required>
                             </div>
                             <div class="form-group">
-                                <label><i class="fa-solid fa-clock"></i> जन्म समय</label>
+                                <label><i class="fa-solid fa-clock"></i> <span data-i18n="lbl_time">जन्म समय</span></label>
                                 <input type="time" id="kTime" required>
                             </div>
                             <div class="form-group">
-                                <label><i class="fa-solid fa-location-dot"></i> जन्म स्थान</label>
+                                <label><i class="fa-solid fa-location-dot"></i> <span data-i18n="lbl_place">जन्म स्थान</span></label>
                                 <input type="text" id="kPlace" placeholder="उदा. नई दिल्ली" required>
                             </div>
                             <button type="submit" class="btn btn-primary full-width">
-                                <i class="fa-solid fa-dharmachakra"></i> कुंडली निर्मित करें
+                                <i class="fa-solid fa-dharmachakra"></i> <span data-i18n="btn_gen_kundli">कुंडली निर्मित करें</span>
                             </button>
                         </form>
                     </div>
@@ -236,41 +251,34 @@
                     <!-- Right: Kundli Chart & Analysis -->
                     <div class="glass-card">
                         <div class="card-header">
-                            <h2><i class="fa-solid fa-star-and-crescent"></i> लग्न एवं ग्रह स्थिति</h2>
-                            <span class="badge-shastra">वैदिक ज्योतिष</span>
+                            <h2><i class="fa-solid fa-star-and-crescent"></i> <span data-i18n="kundli_chart_title">लग्न एवं ग्रह स्थिति</span></h2>
+                            <span class="badge-shastra" data-i18n="badge_astrology">वैदिक ज्योतिष</span>
                         </div>
                         <div id="kundliChartContainer" class="kundli-chart-wrapper">
-                            <!-- Diamond Kundli SVG Chart -->
                             <div class="diamond-kundli" id="diamondKundli">
                                 <svg viewBox="0 0 300 300" class="kundli-svg">
-                                    <rect x="10" y="10" width="280" height="280" fill="none" stroke="#F59E0B" stroke-width="2"/>
-                                    <line x1="10" y1="10" x2="290" y2="290" stroke="#7C3AED" stroke-width="1.5"/>
-                                    <line x1="290" y1="10" x2="10" y2="290" stroke="#7C3AED" stroke-width="1.5"/>
-                                    <polygon points="150,10 290,150 150,290 10,150" fill="none" stroke="#F59E0B" stroke-width="1.5"/>
+                                    <rect x="10" y="10" width="280" height="280" fill="none" stroke="#DFAC6C" stroke-width="2"/>
+                                    <line x1="10" y1="10" x2="290" y2="290" stroke="#6D28D9" stroke-width="1.5"/>
+                                    <line x1="290" y1="10" x2="10" y2="290" stroke="#6D28D9" stroke-width="1.5"/>
+                                    <polygon points="150,10 290,150 150,290 10,150" fill="none" stroke="#DFAC6C" stroke-width="1.5"/>
                                     
-                                    <text x="150" y="70" text-anchor="middle" fill="#F1F5F9" font-size="12">1 (सूर्य/गुरु)</text>
-                                    <text x="80" y="40" text-anchor="middle" fill="#F1F5F9" font-size="12">2 (चंद्र)</text>
-                                    <text x="40" y="80" text-anchor="middle" fill="#F1F5F9" font-size="12">3 (मंगल)</text>
-                                    <text x="70" y="150" text-anchor="middle" fill="#F1F5F9" font-size="12">4 (बुध)</text>
-                                    <text x="40" y="220" text-anchor="middle" fill="#F1F5F9" font-size="12">5 (शुक्र)</text>
-                                    <text x="80" y="260" text-anchor="middle" fill="#F1F5F9" font-size="12">6</text>
-                                    <text x="150" y="230" text-anchor="middle" fill="#F1F5F9" font-size="12">7 (शनि)</text>
-                                    <text x="220" y="260" text-anchor="middle" fill="#F1F5F9" font-size="12">8</text>
-                                    <text x="260" y="220" text-anchor="middle" fill="#F1F5F9" font-size="12">9 (राहु)</text>
-                                    <text x="230" y="150" text-anchor="middle" fill="#F1F5F9" font-size="12">10</text>
-                                    <text x="260" y="80" text-anchor="middle" fill="#F1F5F9" font-size="12">11 (केतु)</text>
-                                    <text x="220" y="40" text-anchor="middle" fill="#F1F5F9" font-size="12">12</text>
+                                    <text x="150" y="70" text-anchor="middle" fill="#F8FAFC" font-size="12">1 (सूर्य/गुरु)</text>
+                                    <text x="80" y="40" text-anchor="middle" fill="#F8FAFC" font-size="12">2 (चंद्र)</text>
+                                    <text x="40" y="80" text-anchor="middle" fill="#F8FAFC" font-size="12">3 (मंगल)</text>
+                                    <text x="70" y="150" text-anchor="middle" fill="#F8FAFC" font-size="12">4 (बुध)</text>
+                                    <text x="40" y="220" text-anchor="middle" fill="#F8FAFC" font-size="12">5 (शुक्र)</text>
+                                    <text x="80" y="260" text-anchor="middle" fill="#F8FAFC" font-size="12">6</text>
+                                    <text x="150" y="230" text-anchor="middle" fill="#F8FAFC" font-size="12">7 (शनि)</text>
+                                    <text x="220" y="260" text-anchor="middle" fill="#F8FAFC" font-size="12">8</text>
+                                    <text x="260" y="220" text-anchor="middle" fill="#F8FAFC" font-size="12">9 (राहु)</text>
+                                    <text x="230" y="150" text-anchor="middle" fill="#F8FAFC" font-size="12">10</text>
+                                    <text x="260" y="80" text-anchor="middle" fill="#F8FAFC" font-size="12">11 (केतु)</text>
+                                    <text x="220" y="40" text-anchor="middle" fill="#F8FAFC" font-size="12">12</text>
                                 </svg>
                             </div>
 
-                            <!-- Planetary Strengths & Analysis -->
                             <div class="kundli-analysis-text" id="kundliAnalysisText">
-                                <h3><i class="fa-solid fa-gem"></i> मुख्य ग्रह दशा एवं उपाय:</h3>
-                                <ul>
-                                    <li><strong>गुरु एवं सूर्य (प्रथम भाव):</strong> आपकी कुंडली में गुरु व सूर्य का राजयोग है जो समाज में मान-सम्मान एवं उच्च पद दिलाता है।</li>
-                                    <li><strong>शनि (सप्तम भाव):</strong> व्यवसाय में संयम रखें। शनिवार को सरसों के तेल का दीपक जलाएं।</li>
-                                    <li><strong>अचूक उपाय:</strong> प्रतिदिन प्रातः ॐ नमो भगवते वासुदेवाय का 108 बार जाप करें।</li>
-                                </ul>
+                                <!-- Dynamic Kundli analysis text -->
                             </div>
                         </div>
                     </div>
@@ -282,8 +290,8 @@
             <section id="tarotSection" class="tab-section hidden">
                 <div class="glass-card tarot-wrapper">
                     <div class="card-header center-header">
-                        <h2><i class="fa-solid fa-cards"></i> 3-कार्ड टैरो दिव्य वाचन</h2>
-                        <p>अपने अतीत, वर्तमान एवं भविष्य हेतु 3 कार्ड चुनें</p>
+                        <h2><i class="fa-solid fa-cards"></i> <span data-i18n="tarot_title">3-कार्ड टैरो दिव्य वाचन</span></h2>
+                        <p data-i18n="tarot_desc">अपने अतीत, वर्तमान एवं भविष्य हेतु 3 कार्ड चुनें</p>
                     </div>
 
                     <div class="tarot-deck-container" id="tarotDeck">
@@ -302,30 +310,30 @@
                 <div class="section-grid">
                     <div class="glass-card">
                         <div class="card-header">
-                            <h2><i class="fa-solid fa-calculator"></i> अंकशास्त्र मूलांक व भाग्यांक</h2>
-                            <p>अपनी जन्मतिथि दर्ज करके लकी नंबर जानें</p>
+                            <h2><i class="fa-solid fa-calculator"></i> <span data-i18n="num_title">अंकशास्त्र मूलांक व भाग्यांक</span></h2>
+                            <p data-i18n="num_desc">अपनी जन्मतिथि दर्ज करके लकी नंबर जानें</p>
                         </div>
                         <div class="form-group">
-                            <label><i class="fa-solid fa-calendar"></i> जन्मतिथि चुनें</label>
+                            <label><i class="fa-solid fa-calendar"></i> <span data-i18n="lbl_dob">जनम्तिथि चुनें</span></label>
                             <input type="date" id="numDobInput" value="1998-07-14">
                         </div>
                         <button id="calcNumerologyBtn" class="btn btn-primary full-width">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> गणना करें
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btn_calc">गणना करें</span>
                         </button>
                     </div>
 
                     <div class="glass-card" id="numerologyResultsCard">
                         <div class="card-header">
-                            <h2><i class="fa-solid fa-chart-pie"></i> अंकशास्त्र फलादेश</h2>
+                            <h2><i class="fa-solid fa-chart-pie"></i> <span data-i18n="num_result_title">अंकशास्त्र फलादेश</span></h2>
                         </div>
                         <div class="num-badges-row">
                             <div class="num-badge-card">
-                                <h3>मूलांक</h3>
+                                <h3 data-i18n="mulank">मूलांक</h3>
                                 <div class="num-circle" id="mulankVal">5</div>
                                 <span id="mulankPlanet">स्वामी: बुध</span>
                             </div>
                             <div class="num-badge-card">
-                                <h3>भाग्यांक</h3>
+                                <h3 data-i18n="bhagyank">भाग्यांक</h3>
                                 <div class="num-circle gold" id="bhagyankVal">3</div>
                                 <span id="bhagyankPlanet">स्वामी: गुरु</span>
                             </div>
@@ -342,9 +350,9 @@
             <section id="historySection" class="tab-section hidden">
                 <div class="glass-card">
                     <div class="card-header">
-                        <h2><i class="fa-solid fa-clock-rotate-left"></i> सहेजे गए फलकथन</h2>
+                        <h2><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="history_title">सहेजे गए फलकथन</span></h2>
                         <button id="clearHistoryBtn" class="btn btn-danger-sm">
-                            <i class="fa-solid fa-trash"></i> इतिहास साफ़ करें
+                            <i class="fa-solid fa-trash"></i> <span data-i18n="btn_clear_history">इतिहास साफ़ करें</span>
                         </button>
                     </div>
 
@@ -360,29 +368,29 @@
         <nav class="mobile-bottom-nav" id="mobileNav">
             <button class="mobile-nav-btn active" data-tab="palmistry">
                 <i class="fa-solid fa-hand"></i>
-                <span>हस्तरेखा</span>
+                <span data-i18n="nav_palmistry">हस्तरेखा</span>
             </button>
             <button class="mobile-nav-btn" data-tab="kundli">
                 <i class="fa-solid fa-dharmachakra"></i>
-                <span>कुंडली</span>
+                <span data-i18n="nav_kundli">कुंडली</span>
             </button>
             <button class="mobile-nav-btn" data-tab="tarot">
                 <i class="fa-solid fa-cards"></i>
-                <span>टैरो</span>
+                <span data-i18n="nav_tarot">टैरो</span>
             </button>
             <button class="mobile-nav-btn" data-tab="numerology">
                 <i class="fa-solid fa-calculator"></i>
-                <span>अंकशास्त्र</span>
+                <span data-i18n="nav_numerology">अंकशास्त्र</span>
             </button>
             <button class="mobile-nav-btn" data-tab="history">
                 <i class="fa-solid fa-clock-rotate-left"></i>
-                <span>इतिहास</span>
+                <span data-i18n="nav_history">इतिहास</span>
             </button>
         </nav>
 
         <!-- Footer -->
         <footer class="app-footer">
-            <p>© 2026 AI Palmistry Pro PWA App. 100% प्रमाणिक वैदिक ज्योतिष एवं सामुद्रिक शास्त्र।</p>
+            <p data-i18n="footer_text">© 2026 AI Palmistry Pro Multilingual PWA App. 100% प्रमाणिक वैदिक ज्योतिष एवं सामुद्रिक शास्त्र।</p>
         </footer>
 
     </div>
