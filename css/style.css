@@ -311,6 +311,61 @@ body {
     .header-logo { justify-content: center; }
 }
 
+/* Step-2 Verification Box */
+.verification-box {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.verify-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.verify-form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background: rgba(10, 6, 22, 0.6);
+    padding: 16px;
+    border-radius: var(--radius-md);
+    border: 1px solid rgba(223, 172, 108, 0.15);
+}
+
+.verify-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.verify-group label {
+    font-size: 0.88rem;
+    color: var(--soft-white);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.verify-select {
+    background: rgba(19, 11, 39, 0.95);
+    border: 1px solid var(--gold-primary);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    color: var(--gold-light);
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    font-weight: 600;
+    outline: none;
+}
+
+.verify-select option {
+    background: #130B27;
+    color: #F8FAFC;
+}
+
 /* Main Cards System */
 .main-content { flex: 1; display: flex; flex-direction: column; }
 
