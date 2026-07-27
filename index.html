@@ -46,7 +46,27 @@
     <!-- App Container -->
     <div id="appContainer">
         
-        <!-- Header / Navigation -->
+        <!-- ALWAYS VISIBLE TOP UTILITY BAR (Language Switcher) -->
+        <div class="top-bar">
+            <div class="header-logo-sm">
+                <i class="fa-solid fa-hand-sparkles logo-icon-sm"></i>
+                <span class="logo-title-sm">AI Palmistry Pro</span>
+            </div>
+            
+            <div class="lang-selector-box">
+                <i class="fa-solid fa-globe lang-icon"></i>
+                <select id="langSelect" class="lang-dropdown" aria-label="Select Language">
+                    <option value="hi" selected>🌐 हिंदी (Hindi)</option>
+                    <option value="en">🌐 English</option>
+                    <option value="sa">🌐 संस्कृतम् (Sanskrit)</option>
+                    <option value="mr">🌐 मराठी (Marathi)</option>
+                    <option value="gu">🌐 ગુજરાતી (Gujarati)</option>
+                    <option value="ta">🌐 தமிழ் (Tamil)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Header Navigation -->
         <header class="app-header">
             <div class="header-logo">
                 <i class="fa-solid fa-hand-sparkles logo-icon"></i>
@@ -56,38 +76,23 @@
                 </div>
             </div>
             
-            <div class="header-actions">
-                <!-- Multi-Language Selector Dropdown -->
-                <div class="lang-selector-box">
-                    <i class="fa-solid fa-globe lang-icon"></i>
-                    <select id="langSelect" class="lang-dropdown">
-                        <option value="hi" selected>हिंदी (Hindi)</option>
-                        <option value="en">English</option>
-                        <option value="sa">संस्कृतम् (Sanskrit)</option>
-                        <option value="mr">मराठी (Marathi)</option>
-                        <option value="gu">ગુજરાતી (Gujarati)</option>
-                        <option value="ta">தமிழ் (Tamil)</option>
-                    </select>
-                </div>
-
-                <nav class="nav-tabs desktop-nav" id="navTabs">
-                    <button class="nav-btn active" data-tab="palmistry">
-                        <i class="fa-solid fa-hand"></i> <span data-i18n="nav_palmistry">हस्तरेखा</span>
-                    </button>
-                    <button class="nav-btn" data-tab="kundli">
-                        <i class="fa-solid fa-dharmachakra"></i> <span data-i18n="nav_kundli">कुंडली</span>
-                    </button>
-                    <button class="nav-btn" data-tab="tarot">
-                        <i class="fa-solid fa-cards"></i> <span data-i18n="nav_tarot">टैरो</span>
-                    </button>
-                    <button class="nav-btn" data-tab="numerology">
-                        <i class="fa-solid fa-calculator"></i> <span data-i18n="nav_numerology">अंकशास्त्र</span>
-                    </button>
-                    <button class="nav-btn" data-tab="history">
-                        <i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="nav_history">इतिहास</span>
-                    </button>
-                </nav>
-            </div>
+            <nav class="nav-tabs desktop-nav" id="navTabs">
+                <button class="nav-btn active" data-tab="palmistry">
+                    <i class="fa-solid fa-hand"></i> <span data-i18n="nav_palmistry">हस्तरेखा</span>
+                </button>
+                <button class="nav-btn" data-tab="kundli">
+                    <i class="fa-solid fa-dharmachakra"></i> <span data-i18n="nav_kundli">कुंडली</span>
+                </button>
+                <button class="nav-btn" data-tab="tarot">
+                    <i class="fa-solid fa-cards"></i> <span data-i18n="nav_tarot">टैरो</span>
+                </button>
+                <button class="nav-btn" data-tab="numerology">
+                    <i class="fa-solid fa-calculator"></i> <span data-i18n="nav_numerology">अंकशास्त्र</span>
+                </button>
+                <button class="nav-btn" data-tab="history">
+                    <i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="nav_history">इतिहास</span>
+                </button>
+            </nav>
         </header>
 
         <!-- Main Content Area -->
