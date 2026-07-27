@@ -101,19 +101,19 @@
                 <div class="pipeline-bar">
                     <div class="pipeline-step active">
                         <i class="fa-solid fa-user-check"></i>
-                        <span data-i18n="pipe_1">1. त्वचा व रूपरेखा (Skin & Contour)</span>
+                        <span data-i18n="pipe_1">1. त्वचा व रूपरेखा जांच</span>
                     </div>
                     <div class="pipeline-step active">
                         <i class="fa-solid fa-eye"></i>
-                        <span data-i18n="pipe_2">2. रेखा निष्कर्षण (Line Features)</span>
+                        <span data-i18n="pipe_2">2. रेखा निष्कर्षण</span>
                     </div>
                     <div class="pipeline-step active">
                         <i class="fa-solid fa-book-journal-whills"></i>
-                        <span data-i18n="pipe_3">3. 4 शास्त्र ग्रंथ (4 Scripture RAG)</span>
+                        <span data-i18n="pipe_3">3. 4 शास्त्र ग्रंथ</span>
                     </div>
                     <div class="pipeline-step active">
                         <i class="fa-solid fa-shield-halved"></i>
-                        <span data-i18n="pipe_4">4. AES-256 सुरक्षा (Encrypted Security)</span>
+                        <span data-i18n="pipe_4">4. AES-256 सुरक्षा</span>
                     </div>
                 </div>
 
@@ -168,13 +168,13 @@
                         <!-- Initial Loading State -->
                         <div id="readingLoading" class="loading-state hidden">
                             <div class="spinner"></div>
-                            <p class="loading-text" data-i18n="loading_text">हथेली की प्रामाणिकता जांच कर रेखाओं व पर्वतों का पिक्सेल डेटा निकाला जा रहा है...</p>
+                            <p class="loading-text" data-i18n="loading_text">हथेली की प्रामाणिकता जांच कर पिक्सेल कंट्रास्ट द्वारा रेखाएं ट्रेस की जा रही हैं...</p>
                         </div>
 
-                        <!-- STEP 2: PALM LANDMARK VERIFICATION & EDIT BOX -->
+                        <!-- STEP 2: PALM LANDMARK VERIFICATION & SCRIPTURE QUESTIONNAIRE BOX -->
                         <div id="palmVerificationBox" class="verification-box hidden">
                             <div class="card-header">
-                                <h2><i class="fa-solid fa-user-check"></i> <span data-i18n="step2_title">चरण 2: स्कैन की गई रेखाओं की पुष्टि करें</span></h2>
+                                <h2><i class="fa-solid fa-user-check"></i> <span data-i18n="step2_title">चरण 2: स्कैन की गई रेखाओं एवं लक्षणों की पुष्टि करें</span></h2>
                                 <span class="badge-shastra" data-i18n="badge_editable">संपादन योग्य</span>
                             </div>
                             <p class="verify-subtitle" data-i18n="step2_subtitle">आपकी हथेली से निम्नलिखित रेखाएं एवं लक्षण मिले हैं। आप इन्हें जांचें या अपनी इच्छा अनुसार संपादित करें:</p>
@@ -215,14 +215,33 @@
                                         <option value="subtle" data-i18n="opt_f3">हल्की / मध्यम रेखा</option>
                                     </select>
                                 </div>
+
+                                <!-- ADDITIONAL SCRIPTURE CLARIFICATION QUESTIONS FOR 100% ACCURACY -->
+                                <div class="verify-group">
+                                    <label><i class="fa-solid fa-palette" style="color: #F472B6;"></i> <strong data-i18n="lbl_skin_color">हथेली का रंग (Samudrik Shastra):</strong></label>
+                                    <select id="vSkinColor" class="verify-select">
+                                        <option value="pink" data-i18n="opt_skin_pink">गुलाबी व स्निग्ध (सौभाग्यशाली)</option>
+                                        <option value="red" data-i18n="opt_skin_red">लाल व उग्र (ऊर्जावान)</option>
+                                        <option value="yellow" data-i18n="opt_skin_yellow">पीताभ व मध्यम (गंभीर)</option>
+                                    </select>
+                                </div>
+
+                                <div class="verify-group">
+                                    <label><i class="fa-solid fa-hand-fist" style="color: #60A5FA;"></i> <strong data-i18n="lbl_finger_type">उंगलियों की बनावट (Cheiro Shastra):</strong></label>
+                                    <select id="vFingerType" class="verify-select">
+                                        <option value="conical" data-i18n="opt_fing_conical">लंबी व सुडौल (कलात्मक)</option>
+                                        <option value="square" data-i18n="opt_fing_square">वर्गाकार (व्यावहारिक व अनुशासित)</option>
+                                        <option value="spatulate" data-i18n="opt_fing_spatulate">चमचाकार (सृजनशील)</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <button id="confirmAndGenerateBtn" class="btn btn-gold full-width" style="margin-top: 10px;">
-                                <i class="fa-solid fa-square-check"></i> <span data-i18n="btn_confirm_gen">पुष्टि करें एवं 4 ग्रंथों से वास्तविक फलकथन निकालें</span>
+                                <i class="fa-solid fa-square-check"></i> <span data-i18n="btn_confirm_gen">पुष्टि करें एवं 4 ग्रंथों से विस्तृत फलादेश निकालें</span>
                             </button>
                         </div>
 
-                        <!-- STEP 3: FINAL AUTHENTICATED SCRIPTURE READING -->
+                        <!-- STEP 3: FINAL AUTHENTICATED SCRIPTURE READING & SCRIPTURE CHATBOT -->
                         <div id="readingResults" class="results-container hidden">
                             <div class="card-header">
                                 <h2><i class="fa-solid fa-book-open-reader"></i> <span data-i18n="result_title">शास्त्र-आधारित फलादेश</span></h2>
@@ -237,7 +256,7 @@
                                         <circle class="gauge-fill" id="gaugeCircle" cx="50" cy="50" r="40"></circle>
                                     </svg>
                                     <div class="gauge-text">
-                                        <span id="confidencePct">92%</span>
+                                        <span id="confidencePct">94%</span>
                                         <small data-i18n="accuracy">सटीकता</small>
                                     </div>
                                 </div>
@@ -269,6 +288,23 @@
                             <!-- Detailed Text Output -->
                             <div class="reading-text-box" id="readingTextContent">
                                 <!-- Populated dynamically by JS -->
+                            </div>
+
+                            <!-- INTERACTIVE SCRIPTURE CHATBOT BOX -->
+                            <div class="shastra-chat-container" id="shastraChatContainer">
+                                <div class="chat-header">
+                                    <i class="fa-solid fa-comments"></i>
+                                    <strong data-i18n="chat_header_title">शास्त्र सलाहकार से प्रश्न पूछें (Ask Scripture Chatbot)</strong>
+                                </div>
+                                <div class="chat-messages-box" id="chatMessagesBox">
+                                    <div class="chat-msg bot-msg">
+                                        <span data-i18n="chat_welcome">🙏 प्रणाम! आप अपनी हस्तरेखा फलादेश, करियर, विवाह या ग्रह शांति के विषय में कोई भी प्रश्न यहाँ पूछ सकते हैं।</span>
+                                    </div>
+                                </div>
+                                <div class="chat-input-row">
+                                    <input type="text" id="chatInputText" placeholder="उदा. मेरी सरकारी नौकरी या विवाह का योग कब है?" data-i18n-ph="chat_ph">
+                                    <button id="sendChatBtn" class="btn btn-gold btn-sm"><i class="fa-solid fa-paper-plane"></i></button>
+                                </div>
                             </div>
 
                             <!-- Actions Row -->
