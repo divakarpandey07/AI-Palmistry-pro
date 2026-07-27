@@ -1,11 +1,47 @@
 /* ==========================================================================
-   AI Palmistry Pro - Interactive JavaScript Web Application Engine
+   AI Palmistry Pro - Interactive JavaScript PWA Mobile App Engine
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
     
     // ----------------------------------------------------------------------
-    // 1. Cosmic Background Canvas Animation (Twinkling Stars)
+    // 1. PWA Service Worker Registration & Installation Manager
+    // ----------------------------------------------------------------------
+    let deferredPrompt = null;
+    const pwaInstallBanner = document.getElementById('pwaInstallBanner');
+    const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('./sw.js')
+            .then(reg => console.log('Service Worker Registered Successfully:', reg.scope))
+            .catch(err => console.error('Service Worker Registration Failed:', err));
+    }
+
+    // Capture PWA Install Prompt Event
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (pwaInstallBanner) {
+            pwaInstallBanner.classList.remove('hidden');
+        }
+    });
+
+    if (pwaInstallBtn) {
+        pwaInstallBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    console.log('User accepted PWA installation');
+                }
+                deferredPrompt = null;
+                pwaInstallBanner.classList.add('hidden');
+            }
+        });
+    }
+
+    // ----------------------------------------------------------------------
+    // 2. Cosmic Starfield Background Canvas
     // ----------------------------------------------------------------------
     const canvas = document.getElementById('starsCanvas');
     const ctx = canvas.getContext('2d');
@@ -44,34 +80,47 @@ document.addEventListener('DOMContentLoaded', () => {
     animateStars();
 
     // ----------------------------------------------------------------------
-    // 2. Tab Navigation System
+    // 3. Navigation System (Desktop & Mobile Bottom Bar Sync)
     // ----------------------------------------------------------------------
-    const navButtons = document.querySelectorAll('.nav-btn');
+    const desktopNavBtns = document.querySelectorAll('.desktop-nav .nav-btn');
+    const mobileNavBtns = document.querySelectorAll('.mobile-bottom-nav .mobile-nav-btn');
     const tabSections = document.querySelectorAll('.tab-section');
 
-    navButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            const targetTab = btn.getAttribute('data-tab');
-            
-            navButtons.forEach(b => b.classList.remove('active'));
-            tabSections.forEach(s => s.classList.remove('active'));
-            tabSections.forEach(s => s.classList.add('hidden'));
-
-            btn.classList.add('active');
-            const activeSection = document.getElementById(`${targetTab}Section`);
-            if (activeSection) {
-                activeSection.classList.remove('hidden');
-                activeSection.classList.add('active');
-            }
-
-            if (targetTab === 'history') {
-                renderHistoryList();
-            }
+    function switchTab(targetTab) {
+        desktopNavBtns.forEach(b => {
+            if (b.getAttribute('data-tab') === targetTab) b.classList.add('active');
+            else b.classList.remove('active');
         });
+
+        mobileNavBtns.forEach(b => {
+            if (b.getAttribute('data-tab') === targetTab) b.classList.add('active');
+            else b.classList.remove('active');
+        });
+
+        tabSections.forEach(s => s.classList.remove('active'));
+        tabSections.forEach(s => s.classList.add('hidden'));
+
+        const activeSection = document.getElementById(`${targetTab}Section`);
+        if (activeSection) {
+            activeSection.classList.remove('hidden');
+            activeSection.classList.add('active');
+        }
+
+        if (targetTab === 'history') {
+            renderHistoryList();
+        }
+    }
+
+    desktopNavBtns.forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
+    });
+
+    mobileNavBtns.forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab')));
     });
 
     // ----------------------------------------------------------------------
-    // 3. Palmistry Scanner (Webcam & File Upload & Interactive Canvas Overlay)
+    // 4. Palmistry Scanner Engine
     // ----------------------------------------------------------------------
     const startCamBtn = document.getElementById('startCamBtn');
     const captureScanBtn = document.getElementById('captureScanBtn');
@@ -90,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let isCameraActive = false;
 
-    // Start Live Camera Feed
+    // Camera Feed Handler
     startCamBtn.addEventListener('click', async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
@@ -107,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Handle File Upload
+    // File Upload Handler
     uploadInput.addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -124,9 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     isCameraActive = false;
                 }
                 
-                previewImage.onload = () => {
-                    resizePalmCanvas();
-                };
+                previewImage.onload = () => resizePalmCanvas();
             };
             reader.readAsDataURL(file);
         }
@@ -138,14 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
         palmCanvas.height = viewport.clientHeight;
     }
 
-    // Draw Simulated Animated Glowing Palm Lines on Canvas
     function drawGlowingPalmOverlay() {
         resizePalmCanvas();
         const w = palmCanvas.width;
         const h = palmCanvas.height;
         pCtx.clearRect(0, 0, w, h);
 
-        // Heart Line (Top curved line)
         pCtx.strokeStyle = '#EC4899';
         pCtx.lineWidth = 4;
         pCtx.shadowColor = '#EC4899';
@@ -155,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
         pCtx.quadraticCurveTo(w * 0.5, h * 0.35, w * 0.8, h * 0.32);
         pCtx.stroke();
 
-        // Head Line (Middle line)
         pCtx.strokeStyle = '#7C3AED';
         pCtx.lineWidth = 4;
         pCtx.shadowColor = '#7C3AED';
@@ -165,7 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
         pCtx.quadraticCurveTo(w * 0.5, h * 0.48, w * 0.75, h * 0.58);
         pCtx.stroke();
 
-        // Life Line (Curved around thumb)
         pCtx.strokeStyle = '#10B981';
         pCtx.lineWidth = 4;
         pCtx.shadowColor = '#10B981';
@@ -175,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
         pCtx.quadraticCurveTo(w * 0.38, h * 0.65, w * 0.3, h * 0.85);
         pCtx.stroke();
 
-        // Fate Line (Vertical line up palm)
         pCtx.strokeStyle = '#F59E0B';
         pCtx.lineWidth = 3.5;
         pCtx.shadowColor = '#F59E0B';
@@ -186,7 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
         pCtx.stroke();
     }
 
-    // Trigger AI Scan & Reading Generation
     captureScanBtn.addEventListener('click', () => {
         scanLaser.classList.remove('hidden');
         emptyPlaceholder.classList.add('hidden');
@@ -200,23 +241,12 @@ document.addEventListener('DOMContentLoaded', () => {
             readingLoading.classList.add('hidden');
             readingResults.classList.remove('hidden');
 
-            // Generate Pure Hindi Shastra Reading
             const readingText = generatePureHindiShastraReading();
             readingTextContent.innerHTML = readingText;
-
-            // Save state for PDF Export
             window.latestReadingText = readingText;
         }, 2200);
     });
 
-    /**
-     * Pure High-Quality Hindi (शुद्ध एवं प्रमाणिक हिंदी) Palmistry Analysis
-     * Grounded in 4 Classical Texts:
-     * 1. Cheiro Hast Rekha Shastra (कीरो हस्तरेखा शास्त्र)
-     * 2. Samudrik Shastra (सामुद्रिक शास्त्र)
-     * 3. Vrihad Hastrekha Shastra (वृहद् हस्तरेखा शास्त्र)
-     * 4. Samudrik Hastrekha Vigyan (सामुद्रिक हस्तरेखा विज्ञान)
-     */
     function generatePureHindiShastraReading() {
         return `
             <h3>📌 शास्त्र-आधारित हस्तरेखा एवं फलकथन विश्लेषण</h3>
@@ -226,7 +256,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <ul>
                 <li><strong>हृदय रेखा (Heart Line):</strong> कीरो हस्तरेखा शास्त्र के अनुसार आपकी हृदय रेखा अत्यंत स्पष्ट, गहरी एवं गुरु पर्वत तक विस्तृत है। यह आपके उच्च भावनात्मक संतुलन, निष्ठावान स्वभाव एवं प्रगाढ़ आत्म-बल का प्रतीक है।</li>
                 <li><strong>मस्तिष्क रेखा (Head Line):</strong> वृहद् हस्तरेखा शास्त्र के अनुसार आपकी मस्तिष्क रेखा सीधी एवं सुदृढ़ है। यह आपकी तीव्र तार्किक क्षमता, दूरदर्शिता एवं त्वरित निर्णय शक्ति को दर्शाती है।</li>
-                <li><strong>जीवन रेखा (Life Line):</strong> सामुद्रic शास्त्र के अनुसार आपकी जीवन रेखा की गोलाई आरोग्य, दीर्घायु एवं असीम ऊर्जा शक्ति का संकेत देती है।</li>
+                <li><strong>जीवन रेखा (Life Line):</strong> सामुद्रिक शास्त्र के अनुसार आपकी जीवन रेखा की गोलाई आरोग्य, दीर्घायु एवं असीम ऊर्जा शक्ति का संकेत देती है।</li>
                 <li><strong>भाग्य रेखा एवं पर्वत (Fate Line & Mounts):</strong> गुरु एवं मंगल पर्वत पूर्ण विकसित हैं। भाग्य रेखा मणिकंठ से निकलकर शनि पर्वत की ओर अग्रसर है, जो राज-योग एवं अपार व्यावसायिक सफलता का योग निर्मित करती है।</li>
             </ul>
 
@@ -244,7 +274,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // Save Reading to History
     document.getElementById('saveReadingBtn').addEventListener('click', () => {
         if (!window.latestReadingText) return;
         const history = JSON.parse(localStorage.getItem('palmistryHistory') || '[]');
@@ -258,7 +287,6 @@ document.addEventListener('DOMContentLoaded', () => {
         alert('फलकथन आपके इतिहास में सुरक्षित कर लिया गया है!');
     });
 
-    // Download PDF Report
     document.getElementById('exportPdfBtn').addEventListener('click', () => {
         if (!window.latestReadingText) return;
         const element = document.createElement('div');
@@ -270,7 +298,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <hr style="border: 1px solid #F59E0B; margin: 15px 0;">
             ${window.latestReadingText}
             <br><hr>
-            <p style="text-align: center; font-size: 12px; color: #666;">© 2026 AI Palmistry Pro. सर्वाधिकार सुरक्षित।</p>
+            <p style="text-align: center; font-size: 12px; color: #666;">© 2026 AI Palmistry Pro PWA. सर्वाधिकार सुरक्षित।</p>
         `;
         html2pdf().set({
             margin: 10,
@@ -281,41 +309,31 @@ document.addEventListener('DOMContentLoaded', () => {
         }).from(element).save();
     });
 
-    // ----------------------------------------------------------------------
-    // 4. Kundli Section Generator
-    // ----------------------------------------------------------------------
+    // Kundli Section
     const kundliForm = document.getElementById('kundliForm');
     kundliForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const kName = document.getElementById('kName').value;
         const kDob = document.getElementById('kDob').value;
         
-        const kundliAnalysisText = document.getElementById('kundliAnalysisText');
-        kundliAnalysisText.innerHTML = `
-            <h3><i class="fa-solid fa-gem"></i> ${kName} जी की जन्म पत्रिका विश्लेषण (${kDob}):</h3>
+        document.getElementById('kundliAnalysisText').innerHTML = `
+            <h3><i class="fa-solid fa-gem"></i> ${kName} जी की जन्म पत्रिका (${kDob}):</h3>
             <ul>
-                <li><strong>लग्न एवं स्वामी:</strong> आपका मेष लग्न है जिसके स्वामी मंगल ग्रह हैं। यह आपको नेतृत्व क्षमता एवं ऊर्जा प्रदान करता है।</li>
-                <li><strong>सूर्य व गुरु (प्रथम भाव):</strong> सूर्य व गुरु का केंद्र प्रभाव अत्यंत शुभ राजयोग बना रहा है।</li>
-                <li><strong>शनि महादशा फलादेश:</strong> करियर में उन्नति होगी। शनिवार को पीपल के पेड़ के नीचे सरसों तेल का दीपक जलाएं।</li>
-                <li><strong>अनुकूल रत्न:</strong> पुखराज या माणिक्य धारण करना अत्यंत लाभदायक रहेगा।</li>
+                <li><strong>लग्न एवं स्वामी:</strong> मेष लग्न (स्वामी मंगल)। यह आपको ऊर्जा व नेतृत्व शक्ति प्रदान करता है।</li>
+                <li><strong>सूर्य व गुरु (प्रथम भाव):</strong> प्रथम भाव में सूर्य-गुरु की युति से उच्च राजयोग बनता है।</li>
+                <li><strong>शनि महादशा फलादेश:</strong> शनिवार को पीपल पर सरसों तेल का दीपक जलाएं।</li>
             </ul>
         `;
     });
 
-    // ----------------------------------------------------------------------
-    // 5. 3D Tarot Deck Generator & Reading
-    // ----------------------------------------------------------------------
+    // Tarot Section
     const tarotDeck = document.getElementById('tarotDeck');
-    const tarotOutput = document.getElementById('tarotOutput');
-    const selectedCardsSpread = document.getElementById('selectedCardsSpread');
-    const tarotTextResult = document.getElementById('tarotTextResult');
-
     const tarotCardsData = [
-        { name: "द मैजिशियन (The Magician)", title: "इच्छाशक्ति व सफलता", text: "आपकी इच्छाशक्ति अत्यंत प्रबल है। आपके प्रयास शीघ्र ही रंग लाएंगे।" },
-        { name: "द सन (The Sun)", title: "आनंद व समृद्धि", text: "आपके जीवन में नई ऊर्जा, प्रसन्नता एवं धन-धान्य की वृद्धि होने वाली है।" },
-        { name: "द व्हील ऑफ फॉर्च्यून (Wheel of Fortune)", title: "भाग्य परिवर्तन", text: "समय चक्र आपके अनुकूल घूम रहा है। रुका हुआ कार्य पूरा होगा।" },
-        { name: "द स्टार (The Star)", title: "आशा व प्रेरणा", text: "आपके विचार दूरदर्शी हैं। स्वास्थ्य एवं मानसिक शांति में सुधार होगा।" },
-        { name: "द एम्प्रेस (The Empress)", title: "समृद्धि व प्रेम", text: "पारिवारिक जीवन में मधुरता एवं नए संबंधों की शुरुआत होगी।" }
+        { name: "द मैजिशियन (The Magician)" },
+        { name: "द सन (The Sun)" },
+        { name: "द व्हील ऑफ फॉर्च्यून (Wheel of Fortune)" },
+        { name: "द स्टार (The Star)" },
+        { name: "द एम्प्रेस (The Empress)" }
     ];
 
     function buildTarotDeck() {
@@ -337,26 +355,18 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             cardEl.addEventListener('click', () => {
                 cardEl.classList.toggle('flipped');
-                renderTarotReading();
+                document.getElementById('tarotOutput').classList.remove('hidden');
+                document.getElementById('tarotTextResult').innerHTML = `
+                    <h3>🔮 दिव्य टैरो फलादेश:</h3>
+                    <p><strong>वर्तमान स्थिति:</strong> आपके द्वारा चुने गए ताश के पत्ते बताते हैं कि आपके जीवन में सकारात्मक ऊर्जा का संचार हो रहा है।</p>
+                `;
             });
             tarotDeck.appendChild(cardEl);
         }
     }
-
-    function renderTarotReading() {
-        tarotOutput.classList.remove('hidden');
-        tarotTextResult.innerHTML = `
-            <h3>🔮 दिव्य टैरो फलादेश:</h3>
-            <p><strong>वर्तमान स्थिति:</strong> आपके द्वारा चुने गए ताश के पत्ते बताते हैं कि आपके जीवन में सकारात्मक ऊर्जा का संचार हो रहा है।</p>
-            <p><strong>मार्गदर्शन:</strong> अपने अंतर्ज्ञान (Intuition) पर भरोसा रखें तथा नए अवसरों को स्वीकार करें।</p>
-        `;
-    }
-
     buildTarotDeck();
 
-    // ----------------------------------------------------------------------
-    // 6. Numerology Life Path Calculator
-    // ----------------------------------------------------------------------
+    // Numerology Section
     const calcNumerologyBtn = document.getElementById('calcNumerologyBtn');
     calcNumerologyBtn.addEventListener('click', () => {
         const dobStr = document.getElementById('numDobInput').value;
@@ -365,20 +375,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const dateParts = dobStr.split('-');
         const day = parseInt(dateParts[2], 10);
         
-        // Mulank = single digit sum of day
         let mulank = day;
-        while (mulank > 9) {
-            mulank = Math.floor(mulank / 10) + (mulank % 10);
-        }
+        while (mulank > 9) mulank = Math.floor(mulank / 10) + (mulank % 10);
 
-        // Bhagyank = single digit sum of full date
         let digitsSum = dobStr.replace(/-/g, '').split('').reduce((acc, d) => acc + parseInt(d, 10), 0);
         let bhagyank = digitsSum;
-        while (bhagyank > 9) {
-            bhagyank = Math.floor(bhagyank / 10) + (bhagyank % 10);
-        }
+        while (bhagyank > 9) bhagyank = Math.floor(bhagyank / 10) + (bhagyank % 10);
 
-        const planets = ["", "सूर्य (Sun)", "चंद्र (Moon)", "गुरु (Jupiter)", "राहु (Rahu)", "बुध (Mercury)", "शुक्र (Venus)", "केतु (Ketu)", "शनि (Saturn)", "मंगल (Mars)"];
+        const planets = ["", "सूर्य", "चंद्र", "गुरु", "राहु", "बुध", "शुक्र", "केतु", "शनि", "मंगल"];
 
         document.getElementById('mulankVal').innerText = mulank;
         document.getElementById('mulankPlanet').innerText = `स्वामी: ${planets[mulank] || ''}`;
@@ -388,20 +392,14 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('numerologyText').innerHTML = `
             <h3><i class="fa-solid fa-star"></i> मूलांक ${mulank} एवं भाग्यांक ${bhagyank} का फलकथन:</h3>
             <ul>
-                <li><strong>व्यक्तित्व:</strong> आप बौद्धिक, विचारशील एवं स्वतंत्र विचारधारा वाले व्यक्ति हैं।</li>
-                <li><strong>शुभ रंग:</strong> पीला (Yellow), हरा (Green) एवं सफेद (White)।</li>
-                <li><strong>शुभ दिन:</strong> बुधवार एवं गुरुवार।</li>
-                <li><strong>मार्गदर्शन:</strong> अपने कार्यों में निरंतरता बनाए रखें, व्यापार व करियर में सफलता मिलेगी।</li>
+                <li><strong>व्यक्तित्व:</strong> बौद्धिक, विचारशील एवं स्वतंत्र विचारधारा वाले व्यक्ति।</li>
+                <li><strong>शुभ रंग:</strong> पीला, हरा एवं सफेद।</li>
             </ul>
         `;
     });
-
-    // Trigger initial calculation for default date
     calcNumerologyBtn.click();
 
-    // ----------------------------------------------------------------------
-    // 7. History Drawer & Persistence Renderer
-    // ----------------------------------------------------------------------
+    // History Section
     function renderHistoryList() {
         const historyList = document.getElementById('historyList');
         const history = JSON.parse(localStorage.getItem('palmistryHistory') || '[]');
@@ -417,9 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <span><i class="fa-solid fa-calendar"></i> ${item.date}</span>
                     <button onclick="deleteHistoryItem(${item.id})" class="btn btn-danger-sm"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <div class="history-item-body">
-                    ${item.text}
-                </div>
+                <div class="history-item-body">${item.text}</div>
             </div>
         `).join('');
     }
