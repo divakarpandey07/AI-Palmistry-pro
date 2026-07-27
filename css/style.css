@@ -349,6 +349,75 @@ body {
     box-shadow: 0 4px 15px var(--gold-glow);
 }
 
+/* Interactive Scripture Chatbot */
+.shastra-chat-container {
+    background: rgba(10, 6, 22, 0.7);
+    border: 1px solid var(--gold-primary);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.92rem;
+    color: var(--gold-light);
+    border-bottom: 1px solid rgba(223, 172, 108, 0.15);
+    padding-bottom: 8px;
+}
+
+.chat-messages-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.chat-msg {
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 0.88rem;
+    line-height: 1.5;
+    max-width: 88%;
+}
+
+.bot-msg {
+    background: rgba(109, 40, 217, 0.25);
+    border: 1px solid rgba(109, 40, 217, 0.4);
+    color: var(--soft-white);
+    align-self: flex-start;
+}
+
+.user-msg {
+    background: rgba(223, 172, 108, 0.2);
+    border: 1px solid var(--gold-primary);
+    color: var(--gold-light);
+    align-self: flex-end;
+}
+
+.chat-input-row {
+    display: flex;
+    gap: 8px;
+}
+
+.chat-input-row input {
+    flex: 1;
+    background: rgba(19, 11, 39, 0.95);
+    border: 1px solid rgba(223, 172, 108, 0.3);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    color: var(--soft-white);
+    font-size: 0.88rem;
+    outline: none;
+}
+
 /* Step-2 Verification Box */
 .verification-box {
     display: flex;
@@ -652,18 +721,20 @@ body {
     padding: 20px;
     font-size: 0.92rem;
     line-height: 1.7;
-    max-height: 280px;
+    max-height: 320px;
     overflow-y: auto;
 }
 
 .reading-text-box h3 {
     font-family: var(--font-serif);
     color: var(--gold-primary);
-    margin: 12px 0 6px 0;
+    margin: 14px 0 8px 0;
     font-size: 1.05rem;
+    border-bottom: 1px solid rgba(223, 172, 108, 0.15);
+    padding-bottom: 4px;
 }
 
-.reading-text-box ul { margin-left: 18px; margin-bottom: 10px; }
+.reading-text-box ul { margin-left: 18px; margin-bottom: 12px; }
 .result-actions { display: flex; gap: 12px; }
 
 .form-grid { display: flex; flex-direction: column; gap: 14px; }
