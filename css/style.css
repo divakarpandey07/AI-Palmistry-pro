@@ -66,6 +66,108 @@ body {
     opacity: 0.85;
 }
 
+/* Camera Hand Silhouette Overlay */
+.hand-silhouette-guide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.silhouette-svg {
+    width: 170px;
+    height: 220px;
+    opacity: 0.7;
+    filter: drop-shadow(0 0 8px rgba(223, 172, 108, 0.4));
+}
+
+.guide-text-overlay {
+    font-size: 0.78rem;
+    color: var(--gold-light);
+    background: rgba(10, 6, 22, 0.75);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--gold-primary);
+    margin-top: 6px;
+    letter-spacing: 0.5px;
+}
+
+/* 3D Camera Controls Bar */
+.hand-3d-controls-bar {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+    z-index: 5;
+}
+
+.btn-3d-ctrl {
+    background: rgba(10, 6, 22, 0.88);
+    border: 1px solid var(--gold-primary);
+    color: var(--gold-light);
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 0.78rem;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition-smooth);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+.btn-3d-ctrl:hover {
+    background: var(--gold-primary);
+    color: #0A0616;
+    box-shadow: 0 0 15px var(--gold-glow);
+}
+
+/* Step-2 Form Color Badges */
+.line-color-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    color: #FFF;
+}
+
+.badge-heart { background: #EC4899; box-shadow: 0 0 8px rgba(236, 72, 153, 0.6); }
+.badge-head { background: #6D28D9; box-shadow: 0 0 8px rgba(109, 40, 217, 0.6); }
+.badge-life { background: #10B981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.6); }
+.badge-fate { background: #DFAC6C; box-shadow: 0 0 8px rgba(223, 172, 108, 0.6); }
+
+/* Raj Yoga & Remedy Callout Banners */
+.raj-yoga-banner {
+    background: linear-gradient(135deg, rgba(223, 172, 108, 0.15), rgba(109, 40, 217, 0.2));
+    border: 1.5px solid var(--gold-primary);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    margin: 14px 0;
+    box-shadow: 0 0 20px rgba(223, 172, 108, 0.15);
+}
+
+.remedy-banner {
+    background: rgba(16, 185, 129, 0.12);
+    border: 1.5px solid #10B981;
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    margin: 14px 0;
+}
+
 /* PWA Install Banner */
 .pwa-install-banner {
     position: fixed;
@@ -604,7 +706,7 @@ body {
     color: var(--soft-white);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .verify-select {
