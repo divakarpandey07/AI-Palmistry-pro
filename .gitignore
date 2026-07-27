@@ -1,0 +1,12 @@
+.system_generated/
+.user_uploaded/
+scratch/
+*.metadata.json
+.gradle/
+build/
+app/build/
+.idea/
+*.iml
+local.properties
+__pycache__/
+*.pyc

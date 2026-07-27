@@ -1,0 +1,14 @@
+WARNING: git-filter-branch has a glut of gotchas generating mangled history
+	 rewrites.  Hit Ctrl-C before proceeding to abort, then use an
+	 alternative filtering tool such as 'git filter-repo'
+	 (https://github.com/newren/git-filter-repo/) instead.  See the
+	 filter-branch manual page for more details; to squelch this warning,
+	 set FILTER_BRANCH_SQUELCH_WARNING=1.
+Proceeding with filter-branch...
+
+Rewrite 50f4160e7e4eeaa00dd87787bad6548f7e5702e7 (1/2) (0 seconds passed, remaining 0 predicted)    rm '.env'
+Rewrite 99f195614fcade937fec07a610c87a39ba2b96da (2/2) (0 seconds passed, remaining 0 predicted)    
+Ref 'refs/heads/main' was rewritten
+branch 'main' set up to track 'origin/main'.
+To https://github.com/divakarpandey07/AI-Palmistry-pro.git
+ * [new branch]      main -> main

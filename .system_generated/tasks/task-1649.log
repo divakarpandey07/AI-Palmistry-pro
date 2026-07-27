@@ -1,0 +1,5 @@
+warning: in the working copy of '.system_generated/logs/transcript.jsonl', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.system_generated/logs/transcript_full.jsonl', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'AI Palmistry Pro/backend/fastapi/.github/workflows/android_build.yml', LF will be replaced by CRLF the next time Git touches it
+M	.system_generated/logs/transcript.jsonl
+M	.system_generated/logs/transcript_full.jsonl

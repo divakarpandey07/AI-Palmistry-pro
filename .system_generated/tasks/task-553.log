@@ -1,0 +1,9 @@
+C:\Users\hp\.antigravity\extensions\redhat.java-1.54.0-win32-x64\jre\21.0.10-win32-x86_64\bin\java.exe
+C:\Users\hp\.antigravity-ide\extensions\redhat.java-1.55.0-win32-x64\jre\21.0.11-win32-x86_64\bin\java.exe
+Get-ChildItem : The system cannot find the file specified
+At line:1 char:93
++ ... TTP_PROXY); Get-ChildItem -Path "C:\Program Files", "C:\Program Files ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [Get-ChildItem], Win32Exception
+    + FullyQualifiedErrorId : System.ComponentModel.Win32Exception,Microsoft.PowerShell.Commands.GetChildItemCommand
+ 

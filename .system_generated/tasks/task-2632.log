@@ -1,0 +1,7 @@
+Successfully scheduled one-shot timer.
+Expected to fire at: 2026-07-23T20:07:21+05:30
+Prompt: Check job steps of run 30016569206 via get_job_logs.py and report final conclusion
+Early Termination: never
+
+[2026-07-23T20:07:11+05:30] Still waiting. Remaining time: 10s
+[2026-07-23T20:07:21+05:30] Timer fired.

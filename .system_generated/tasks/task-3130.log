@@ -1,0 +1,8 @@
+Successfully scheduled one-shot timer.
+Expected to fire at: 2026-07-23T21:46:33+05:30
+Prompt: Check completion status of run #30024332410 and report result
+Early Termination: never
+
+[2026-07-23T21:46:13+05:30] Still waiting. Remaining time: 20s
+[2026-07-23T21:46:23+05:30] Still waiting. Remaining time: 10s
+[2026-07-23T21:46:33+05:30] Timer fired.

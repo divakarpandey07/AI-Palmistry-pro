@@ -1,0 +1,12 @@
+============================================================
+   AI PALMISTRY PRO - END TO END TEST
+============================================================
+
+[1] Health: 200 => {'status': 'ok'}
+
+[2] Sending encrypted palm reading request...
+    Encrypted payload length: 312 chars
+
+[3] Response status: 500
+
+[ERROR] Internal Server Error
