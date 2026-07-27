@@ -126,7 +126,7 @@ body {
     min-height: 100vh;
 }
 
-/* Classy Header */
+/* Classy Header & Language Selector */
 .app-header {
     display: flex;
     justify-content: space-between;
@@ -173,6 +173,46 @@ body {
     color: var(--text-muted);
     letter-spacing: 0.8px;
     font-weight: 400;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Language Dropdown Box */
+.lang-selector-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(10, 6, 22, 0.8);
+    border: 1px solid var(--gold-primary);
+    padding: 6px 14px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+}
+
+.lang-icon {
+    color: var(--gold-primary);
+    font-size: 1rem;
+}
+
+.lang-dropdown {
+    background: transparent;
+    border: none;
+    color: var(--soft-white);
+    font-family: var(--font-heading);
+    font-size: 0.88rem;
+    font-weight: 600;
+    outline: none;
+    cursor: pointer;
+}
+
+.lang-dropdown option {
+    background: #130B27;
+    color: #F8FAFC;
+    padding: 8px;
 }
 
 /* Desktop Navigation */
@@ -254,10 +294,11 @@ body {
     transform: translateY(-2px);
 }
 
-@media (max-width: 840px) {
+@media (max-width: 960px) {
     .desktop-nav { display: none; }
     .mobile-bottom-nav { display: flex; }
     .app-header { flex-direction: column; gap: 12px; text-align: center; }
+    .header-actions { justify-content: center; width: 100%; }
 }
 
 /* Main Cards System */
@@ -385,7 +426,6 @@ body {
 
 .scanner-actions { display: flex; gap: 12px; flex-wrap: wrap; }
 
-/* Elegant Classy Buttons */
 .btn {
     padding: 12px 24px;
     border-radius: 40px;
@@ -407,18 +447,11 @@ body {
     box-shadow: 0 4px 18px var(--velvet-glow);
 }
 
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 24px var(--velvet-glow);
-}
-
 .btn-secondary {
     background: rgba(255, 255, 255, 0.08);
     color: var(--soft-white);
     border: 1px solid rgba(223, 172, 108, 0.2);
 }
-
-.btn-secondary:hover { background: rgba(255, 255, 255, 0.16); }
 
 .btn-accent {
     background: linear-gradient(135deg, #059669, #047857);
@@ -430,11 +463,6 @@ body {
     color: #0A0616;
     font-weight: 700;
     box-shadow: 0 4px 18px var(--gold-glow);
-}
-
-.btn-gold:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 24px var(--gold-glow);
 }
 
 .btn-sm { padding: 6px 14px; font-size: 0.82rem; }
@@ -555,11 +583,6 @@ body {
     transition: var(--transition-smooth);
 }
 
-.form-group input:focus {
-    border-color: var(--gold-primary);
-    box-shadow: 0 0 12px var(--gold-glow);
-}
-
 .kundli-chart-wrapper { display: flex; flex-direction: column; align-items: center; gap: 18px; }
 
 .diamond-kundli {
@@ -584,7 +607,6 @@ body {
     line-height: 1.6;
 }
 
-/* Velvet & Gold 3D Tarot Cards */
 .tarot-wrapper { align-items: center; }
 .tarot-deck-container { display: flex; justify-content: center; gap: 16px; margin: 20px 0; flex-wrap: wrap; }
 .tarot-card-item { width: 130px; height: 205px; perspective: 1000px; cursor: pointer; }
