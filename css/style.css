@@ -349,6 +349,93 @@ body {
     box-shadow: 0 4px 15px var(--gold-glow);
 }
 
+/* 3D Palm & Mount Reference Guide */
+.hand-guide-card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.guide-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+}
+
+.guide-content-row {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .guide-content-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.hand-svg-wrapper {
+    background: rgba(10, 6, 22, 0.7);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.interactive-hand-svg {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+}
+
+.mount-circle {
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.mount-circle:hover {
+    fill: rgba(223, 172, 108, 0.7);
+    stroke: var(--gold-light);
+    filter: drop-shadow(0 0 12px var(--gold-primary));
+}
+
+.guide-line-path {
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.guide-line-path:hover {
+    stroke-width: 5;
+    filter: drop-shadow(0 0 10px #FFF);
+}
+
+.guide-details-box {
+    background: rgba(10, 6, 22, 0.8);
+    border: 1.5px solid var(--gold-primary);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.guide-info-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    color: var(--gold-primary);
+}
+
+.guide-info-desc {
+    font-size: 0.92rem;
+    line-height: 1.7;
+    color: var(--soft-white);
+}
+
 /* Interactive Scripture Chatbot */
 .shastra-chat-container {
     background: rgba(10, 6, 22, 0.7);
