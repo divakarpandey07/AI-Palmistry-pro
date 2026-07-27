@@ -11,7 +11,9 @@ document.addEventListener('DOMContentLoaded', () => {
         hi: {
             sub_logo: "वैदिक सामुद्रिक शास्त्र एवं हस्तरेखा",
             nav_palmistry: "हस्तरेखा",
+            nav_horoscope: "राशिफल",
             nav_kundli: "कुंडली",
+            nav_gemstones: "रत्न सुझाव",
             nav_tarot: "टैरो",
             nav_numerology: "अंकशास्त्र",
             nav_history: "इतिहास",
@@ -58,6 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn_confirm_gen: "पुष्टि करें एवं 4 ग्रंथों से विस्तृत फलकथन निकालें",
             result_title: "शास्त्र-आधारित फलकथन",
             badge_shastra: "4 प्राचीन ग्रंथों द्वारा प्रमाणित",
+            btn_listen: "शास्त्र वॉयस सुनें",
             loading_text: "हथेली के कोण एवं पिक्सेल कंट्रास्ट द्वारा रेखाएं स्नैप की जा रही हैं...",
             accuracy: "सटीकता",
             line_heart: "हृदय रेखा",
@@ -99,7 +102,9 @@ document.addEventListener('DOMContentLoaded', () => {
         en: {
             sub_logo: "Vedic Samudrik Shastra & Palmistry",
             nav_palmistry: "Palmistry",
+            nav_horoscope: "Horoscope",
             nav_kundli: "Kundli",
+            nav_gemstones: "Gemstones",
             nav_tarot: "Tarot",
             nav_numerology: "Numerology",
             nav_history: "History",
@@ -146,6 +151,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn_confirm_gen: "Confirm & Generate Detailed Scripture Reading",
             result_title: "Scripture-Grounded Reading",
             badge_shastra: "Certified by 4 Classical Texts",
+            btn_listen: "Listen Voice",
             loading_text: "Detecting hand orientation & snapping pixel creases...",
             accuracy: "Accuracy",
             line_heart: "Heart Line",
@@ -187,7 +193,9 @@ document.addEventListener('DOMContentLoaded', () => {
         hin: {
             sub_logo: "Vedic Samudrik Shastra & Palmistry",
             nav_palmistry: "Hastrekha",
+            nav_horoscope: "Rashiphal",
             nav_kundli: "Kundli",
+            nav_gemstones: "Ratna",
             nav_tarot: "Tarot",
             nav_numerology: "Ank-Shastra",
             nav_history: "History",
@@ -234,6 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn_confirm_gen: "Confirm Karein & 4 Grantho Se Reading Nikalein",
             result_title: "Shastra-Based Reading Result",
             badge_shastra: "4 Ancient Books Certified",
+            btn_listen: "Voice Sunein",
             loading_text: "Palm angle check karke crease lines snap ki ja rahi hain...",
             accuracy: "Accuracy",
             line_heart: "Heart Line",
@@ -411,6 +420,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (targetTab === 'history') {
             renderHistoryList();
+        } else if (targetTab === 'horoscope') {
+            renderHoroscope('aries');
         }
     }
 
@@ -711,57 +722,108 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ----------------------------------------------------------------------
-    // 6. ULTRA-REALISTIC PHOTOREALISTIC 3D HUMAN HAND MODEL ENGINE (WebGL Three.js)
+    // 6. AUDIO TEXT-TO-SPEECH NARRATION ENGINE
     // ----------------------------------------------------------------------
-    const guideDict = {
-        jupiter: {
-            title: "🪐 गुरु पर्वत (Mount of Jupiter - Index Finger)",
-            desc: "तर्जनी (Index Finger) के नीचे स्थित गुरु पर्वत व्यक्ति के ज्ञान, नेतृत्व क्षमता, महत्वाकांक्षा, धार्मिकता एवं राज-योग का प्रतीक है। गुरु का उभार समाज में उच्च सम्मान दिलाता है।"
-        },
-        saturn: {
-            title: "🪐 शनि पर्वत (Mount of Saturn - Middle Finger)",
-            desc: "मध्यमा (Middle Finger) के नीचे शनि पर्वत स्थित होता है। यह व्यक्ति की भाग्य रेखा का गंतव्य, धन-धान्य, अनुशासन एवं गूढ़ विद्याओं का स्वामी है।"
-        },
-        sun: {
-            title: "☀️ सूर्य पर्वत (Mount of Sun - Ring Finger)",
-            desc: "अनामिका (Ring Finger) के नीचे सूर्य पर्वत व्यक्ति की प्रसिद्धि, सरकारी नौकरी, कलात्मक सफलता एवं उच्च सामाजिक प्रतिष्ठा का प्रतिनिधित्व करता है।"
-        },
-        mercury: {
-            title: "🪐 बुध पर्वत (Mount of Mercury - Little Finger)",
-            desc: "कनिष्ठिका (Little Finger) के नीचे बुध पर्वत व्यापारिक बुद्धि, वाक्-पटुता, विज्ञान, गणित एवं स्वास्थ्य रेखा का केंद्र है।"
-        },
-        venus: {
-            title: "♀️ शुक्र पर्वत (Mount of Venus - Thumb Base)",
-            desc: "अंगूठे के आधार पर स्थित शुक्र पर्वत व्यक्ति के जीवन में सौंदर्य, प्रेम, लग्जरी, दांपत्य सुख एवं आकर्षण शक्ति का प्रतिनिधित्व करता है।"
-        },
-        moon: {
-            title: "☽ चंद्र पर्वत (Mount of Moon - Lower Palm Edge)",
-            desc: "हथेली के निचले बाहरी भाग में स्थित चंद्र पर्वत व्यक्ति की अगाध कल्पनाशीलता, विदेश यात्रा, अंतर्ज्ञान एवं मानसिक शांति का प्रतीक है।"
-        },
-        mars: {
-            title: "♂️ मंगल पर्वत (Mount of Mars - Upper/Lower Palm)",
-            desc: "हथेली के मध्य एवं ऊपरी भाग में मंगल पर्वत साहस, शारीरिक पराक्रम, आत्मविश्वास एवं भूमि-भवन संपत्ति का प्रतीक है।"
-        },
-        heart: {
-            title: "🟡 हृदय रेखा (Heart Line - Emotional Profile)",
-            desc: "बुध पर्वत के नीचे से गुरु/शनि पर्वत की ओर जाने वाली हृदय रेखा व्यक्ति के भावनात्मक संतुलन, प्रेम संबंधों की प्रगाढ़ता एवं हृदय स्वास्थ्य का बोध कराती है।"
-        },
-        head: {
-            title: "🟣 मस्तिष्क रेखा (Head Line - Intellectual Power)",
-            desc: "जीवन रेखा के पास से हथेली के पार जाने वाली मस्तिष्क रेखा व्यक्ति की तार्किक क्षमता, एकाग्रता, निर्णय शक्ति एवं बौद्धिक स्तर को दर्शाती है।"
-        },
-        life: {
-            title: "🟢 जीवन रेखा (Life Line - Health & Longevity)",
-            desc: "शुक्र पर्वत को घेरती हुई मणिकंठ तक जाने वाली जीवन रेखा व्यक्ति की जीवन ऊर्जा, शारीरिक प्रतिरोधक क्षमता एवं दीर्घायु का प्रतीक है।"
-        },
-        fate: {
-            title: "⚪ भाग्य रेखा (Fate Line - Career & Wealth)",
-            desc: "मणिकंठ अथवा हथेली के मध्य से शनि पर्वत की ओर जाने वाली भाग्य रेखा व्यक्ति के करियर, धन-धान्य, राज-योग एवं व्यावसायिक सफलता को दर्शाती है।"
-        }
+    const listenReadingBtn = document.getElementById('listenReadingBtn');
+    let isSpeaking = false;
+
+    if (listenReadingBtn) {
+        listenReadingBtn.addEventListener('click', () => {
+            if (!('speechSynthesis' in window)) {
+                alert('Audio Speech Synthesis is not supported in your browser.');
+                return;
+            }
+
+            if (isSpeaking) {
+                window.speechSynthesis.cancel();
+                isSpeaking = false;
+                listenReadingBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> <span>शास्त्र वॉयस सुनें</span>';
+                return;
+            }
+
+            const rawText = readingTextContent.innerText;
+            if (!rawText) return;
+
+            const utterance = new SpeechSynthesisUtterance(rawText);
+            utterance.lang = currentLang === 'en' ? 'en-US' : 'hi-IN';
+            utterance.rate = 0.95;
+            utterance.pitch = 1.0;
+
+            utterance.onstart = () => {
+                isSpeaking = true;
+                listenReadingBtn.innerHTML = '<i class="fa-solid fa-square-stop"></i> <span>रोकें (Stop Audio)</span>';
+            };
+
+            utterance.onend = () => {
+                isSpeaking = false;
+                listenReadingBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> <span>शास्त्र वॉयस सुनें</span>';
+            };
+
+            window.speechSynthesis.speak(utterance);
+        });
+    }
+
+    // ----------------------------------------------------------------------
+    // 7. DAILY HOROSCOPE & TRANSIT RASHI SELECTOR
+    // ----------------------------------------------------------------------
+    const rashiGrid = document.getElementById('rashiGrid');
+    const horoscopeContent = document.getElementById('horoscopeContent');
+
+    const horoscopeData = {
+        aries: { name: "♈ मेष (Aries)", text: "आज सूर्य एवं मंगल की स्थिति से आपको कार्यक्षेत्र में असीम सफलता एवं नेतृत्व का अवसर प्राप्त होगा।" },
+        taurus: { name: "♉ वृषभ (Taurus)", text: "शुक्र ग्रह की अनुकूलता से आर्थिक लाभ, लग्जरी एवं पारिबारिक सुख शांति का प्रबल योग है।" },
+        gemini: { name: "♊ मिथुन (Gemini)", text: "बुध देव की कृपा से व्यापारिक सौदे सफल होंगे एवं तार्किक बुद्धि से धन-धान्य वृद्धि होगी।" },
+        cancer: { name: "♋ कर्क (Cancer)", text: "चंद्रमा का शुभ गोचर आपके मन में शांति, उच्च अंतर्ज्ञान एवं पारिवारिक स्नेह बढ़ाएगा।" },
+        leo: { name: "♌ सिंह (Leo)", text: "सूर्यदेव का प्रताप आपके मान-सम्मान एवं प्रशासनिक जिम्मेदारियों में वृद्धि करेगा।" },
+        virgo: { name: "♍ कन्या (Virgo)", text: "बुध ग्रह की शुभता से बौद्धिक कार्यों में बड़ी सफलता एवं स्वास्थ लाभ प्राप्त होगा।" },
+        libra: { name: "♎ तुला (Libra)", text: "शुक्र गोचर से दांपत्य जीवन में मधुरता एवं कलात्मक कार्यों से धन लाभ होगा।" },
+        scorpio: { name: "♏ वृश्चिक (Scorpio)", text: "मंगल देव का पराक्रम आपके आत्मविश्वास को चरम पर पहुंचाएगा एवं भूमि लाभ देगा।" },
+        sagittarius: { name: "♐ धनु (Sagittarius)", text: "गुरु बृहस्पति की कृपा से उच्च शिक्षा, धार्मिक यात्रा व धन समृद्धि का योग है।" },
+        capricorn: { name: "♑ मकर (Capricorn)", text: "शनिदेव का आशीर्वाद आपको कर्मक्षेत्र में स्थायित्व एवं दूरगामी सफलता प्रदान करेगा।" },
+        aquarius: { name: "♒ कुंभ (Aquarius)", text: "शनि एवं राहु के गोचर से नए व्यापारिक अवसर एवं अचानक धन लाभ होगा।" },
+        pisces: { name: "♓ मीन (Pisces)", text: "गुरु देव की अनुकंपा से आध्यात्मिक उन्नति, शांति एवं परिवार का पूर्ण सहयोग मिलेगा।" }
     };
 
+    function renderHoroscope(rashiKey) {
+        if (!horoscopeContent) return;
+        const h = horoscopeData[rashiKey] || horoscopeData.aries;
+        horoscopeContent.innerHTML = `
+            <h3><i class="fa-solid fa-star"></i> ${h.name} - दैनिक राशिफल 2026</h3>
+            <p style="margin-top: 10px;">${h.text}</p>
+            <hr style="border: 1px solid rgba(223,172,108,0.15); margin: 15px 0;">
+            <p><strong>उपाय:</strong> सूर्य देव को हल्दी जल अर्पित करें एवं ॐ नमो भगवते वासुदेवाय का जाप करें।</p>
+        `;
+    }
+
+    if (rashiGrid) {
+        rashiGrid.querySelectorAll('.rashi-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                rashiGrid.querySelectorAll('.rashi-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderHoroscope(btn.getAttribute('data-rashi'));
+            });
+        });
+    }
+
+    // ----------------------------------------------------------------------
+    // 8. REAL WEBGL THREE.JS 3D HAND RENDERER
+    // ----------------------------------------------------------------------
     const gTitle = document.getElementById('gTitle');
     const gDesc = document.getElementById('gDesc');
+
+    const guideDict = {
+        jupiter: { title: "🪐 गुरु पर्वत", desc: "तर्जनी के नीचे स्थित गुरु पर्वत ज्ञान, नेतृत्व व राज-योग का प्रतीक है।" },
+        saturn: { title: "🪐 शनि पर्वत", desc: "मध्यमा के नीचे शनि पर्वत अनुशासन, कर्म व भाग्य रेखा का स्वामी है।" },
+        sun: { title: "☉ सूर्य पर्वत", desc: "अनामिका के नीचे सूर्य पर्वत प्रसिद्धि व सरकारी नौकरी का प्रतीक है।" },
+        mercury: { title: "☿ बुध पर्वत", desc: "कनिष्ठिका के नीचे बुध पर्वत व्यापार व बुद्धि का केंद्र है।" },
+        venus: { title: "♀ शुक्र पर्वत", desc: "अंगूठे के पास शुक्र पर्वत सौंदर्य, प्रेम व लग्जरी दर्शाता है।" },
+        moon: { title: "☽ चंद्र पर्वत", desc: "हथेली के निचले भाग में चंद्र पर्वत कल्पना व अंतर्ज्ञान दर्शाता है।" },
+        mars: { title: "♂ मंगल पर्वत", desc: "मंगल पर्वत साहस, पराक्रम व भूमि संपत्ति का प्रतीक है।" },
+        heart: { title: "🟡 हृदय रेखा", desc: "भावनात्मक संतुलन व प्रेम संबंधों की सूचक है।" },
+        head: { title: "🟣 मस्तिष्क रेखा", desc: "तार्किक क्षमता व निर्णय शक्ति दर्शाती है।" },
+        life: { title: "🟢 जीवन रेखा", desc: "आरोग्य, ऊर्जा व दीर्घायु की प्रतीक है।" },
+        fate: { title: "⚪ भाग्य रेखा", desc: "करियर व अपार धन-धान्य का राज-योग बनाती है।" }
+    };
 
     function initPhotorealistic3DHandRenderer() {
         const container = document.getElementById('hand3DCanvas');
@@ -786,7 +848,6 @@ document.addEventListener('DOMContentLoaded', () => {
             controls.enableZoom = false;
         }
 
-        // Realistic Studio Lighting Setup
         const ambientLight = new THREE.AmbientLight(0xFFE4CE, 0.9);
         scene.add(ambientLight);
 
@@ -794,45 +855,29 @@ document.addEventListener('DOMContentLoaded', () => {
         keyLight.position.set(10, 15, 20);
         scene.add(keyLight);
 
-        const goldFillLight = new THREE.PointLight(0xDFAC6C, 1.2, 50);
-        goldFillLight.position.set(-10, -10, 15);
-        scene.add(goldFillLight);
-
         const handGroup = new THREE.Group();
 
-        // Organic Realistic Human Skin Material (Physical Material with Roughness & Subsurface Scattering Color)
         const skinMat = new THREE.MeshPhysicalMaterial({
             color: 0xE8B896,
             roughness: 0.45,
             metalness: 0.05,
             clearcoat: 0.15,
-            clearcoatRoughness: 0.2,
             subsurfaceColor: 0xCC5533
         });
 
-        // 1. Organic Palm Base Geometry (Rounded Extruded Shape)
         const shape = new THREE.Shape();
         shape.moveTo(-1.8, -2.5);
-        shape.quadraticCurveTo(-2.3, 0, -1.9, 2.2); // Left edge / Thenar
-        shape.quadraticCurveTo(-1.0, 2.5, 1.9, 2.2);  // Upper knuckles
-        shape.quadraticCurveTo(2.3, 0, 1.8, -2.5);  // Right edge / Hypothenar
-        shape.quadraticCurveTo(0, -2.9, -1.8, -2.5); // Wrist joint
+        shape.quadraticCurveTo(-2.3, 0, -1.9, 2.2);
+        shape.quadraticCurveTo(-1.0, 2.5, 1.9, 2.2);
+        shape.quadraticCurveTo(2.3, 0, 1.8, -2.5);
+        shape.quadraticCurveTo(0, -2.9, -1.8, -2.5);
 
-        const extrudeSettings = {
-            steps: 2,
-            depth: 0.7,
-            bevelEnabled: true,
-            bevelThickness: 0.3,
-            bevelSize: 0.3,
-            bevelSegments: 8
-        };
-
+        const extrudeSettings = { steps: 2, depth: 0.7, bevelEnabled: true, bevelThickness: 0.3, bevelSize: 0.3, bevelSegments: 8 };
         const palmGeo = new THREE.ExtrudeGeometry(shape, extrudeSettings);
         palmGeo.center();
         const palmMesh = new THREE.Mesh(palmGeo, skinMat);
         handGroup.add(palmMesh);
 
-        // 2. Realistic 5 Curved Human Fingers
         const fingerData = [
             { name: "Index", x: -1.4, y: 2.5, rotZ: 0.08, len: 2.5, radius: 0.36 },
             { name: "Middle", x: -0.4, y: 2.7, rotZ: 0.02, len: 2.9, radius: 0.38 },
@@ -845,13 +890,11 @@ document.addEventListener('DOMContentLoaded', () => {
             fGroup.position.set(f.x, f.y, 0);
             fGroup.rotation.z = f.rotZ;
 
-            // Proximal & Distal Phalanges
             const pGeo = new THREE.CylinderGeometry(f.radius * 0.9, f.radius, f.len, 16);
             const pMesh = new THREE.Mesh(pGeo, skinMat);
             pMesh.position.y = f.len / 2;
             fGroup.add(pMesh);
 
-            // Rounded Fingertip
             const tipGeo = new THREE.SphereGeometry(f.radius * 0.9, 16, 16);
             const tipMesh = new THREE.Mesh(tipGeo, skinMat);
             tipMesh.position.y = f.len;
@@ -860,7 +903,6 @@ document.addEventListener('DOMContentLoaded', () => {
             handGroup.add(fGroup);
         });
 
-        // Anatomical Thumb
         const thumbGroup = new THREE.Group();
         thumbGroup.position.set(-2.2, -0.6, 0.2);
         thumbGroup.rotation.z = Math.PI / 3.8;
@@ -877,7 +919,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         handGroup.add(thumbGroup);
 
-        // 3. GLOWING 3D MOUNT SPHERES
         const mounts = [
             { key: 'jupiter', name: '♃ गुरु', x: -1.3, y: 1.8, z: 0.6, color: 0x6D28D9 },
             { key: 'saturn', name: '♄ शनि', x: -0.4, y: 2.0, z: 0.6, color: 0xDFAC6C },
@@ -899,7 +940,6 @@ document.addEventListener('DOMContentLoaded', () => {
             mountObjects.push(mMesh);
         });
 
-        // 4. GLOWING 3D LINE TUBES ATTACHED TO REAL ORGANIC PALM SURFACE
         function create3DLineTube(points, color, key) {
             const curve = new THREE.CatmullRomCurve3(points);
             const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.07, 8, false);
@@ -910,37 +950,13 @@ document.addEventListener('DOMContentLoaded', () => {
             mountObjects.push(tubeMesh);
         }
 
-        // Heart Line (Yellow)
-        create3DLineTube([
-            new THREE.Vector3(1.6, 1.0, 0.62),
-            new THREE.Vector3(0.2, 1.2, 0.62),
-            new THREE.Vector3(-1.3, 1.4, 0.62)
-        ], 0xF59E0B, 'heart');
-
-        // Head Line (Purple)
-        create3DLineTube([
-            new THREE.Vector3(-1.4, 0.8, 0.62),
-            new THREE.Vector3(0.0, 0.2, 0.62),
-            new THREE.Vector3(1.3, -0.6, 0.62)
-        ], 0x6D28D9, 'head');
-
-        // Life Line (Green)
-        create3DLineTube([
-            new THREE.Vector3(-1.4, 0.8, 0.62),
-            new THREE.Vector3(-0.5, -0.8, 0.62),
-            new THREE.Vector3(-1.0, -2.4, 0.62)
-        ], 0x10B981, 'life');
-
-        // Fate Line (Gold)
-        create3DLineTube([
-            new THREE.Vector3(0.0, -2.3, 0.62),
-            new THREE.Vector3(-0.2, -0.2, 0.62),
-            new THREE.Vector3(-0.4, 1.8, 0.62)
-        ], 0xF7E2BD, 'fate');
+        create3DLineTube([new THREE.Vector3(1.6, 1.0, 0.62), new THREE.Vector3(0.2, 1.2, 0.62), new THREE.Vector3(-1.3, 1.4, 0.62)], 0xF59E0B, 'heart');
+        create3DLineTube([new THREE.Vector3(-1.4, 0.8, 0.62), new THREE.Vector3(0.0, 0.2, 0.62), new THREE.Vector3(1.3, -0.6, 0.62)], 0x6D28D9, 'head');
+        create3DLineTube([new THREE.Vector3(-1.4, 0.8, 0.62), new THREE.Vector3(-0.5, -0.8, 0.62), new THREE.Vector3(-1.0, -2.4, 0.62)], 0x10B981, 'life');
+        create3DLineTube([new THREE.Vector3(0.0, -2.3, 0.62), new THREE.Vector3(-0.2, -0.2, 0.62), new THREE.Vector3(-0.4, 1.8, 0.62)], 0xF7E2BD, 'fate');
 
         scene.add(handGroup);
 
-        // Raycaster Click Handler
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
@@ -961,10 +977,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Smooth Animation Render Loop
         function animate3D() {
             requestAnimationFrame(animate3D);
-            handGroup.rotation.y += 0.0025; // Gentle 3D auto-rotation
+            handGroup.rotation.y += 0.0025;
             if (controls) controls.update();
             renderer.render(scene, camera);
         }
