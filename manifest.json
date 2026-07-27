@@ -1,24 +1,36 @@
 {
-  "name": "AI Palmistry Pro - वैदिक हस्तरेखा",
-  "short_name": "PalmistryPro",
-  "description": "कीरो हस्तरेखा शास्त्र एवं सामुद्रिक शास्त्र पर आधारित PWA ऐप",
+  "name": "AI Palmistry Pro - Vedic Samudrik Shastra",
+  "short_name": "Palmistry Pro",
+  "description": "Enterprise Multilingual AI Palmistry & Samudrik Shastra Application",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0F0C29",
-  "theme_color": "#1A0A2E",
+  "background_color": "#0A0616",
+  "theme_color": "#130B27",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/svgs/solid/hand-sparkles.svg",
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23130B27'/><text x='50%' y='55%' fill='%23DFAC6C' font-size='90' text-anchor='middle' dominant-baseline='middle'>🖐️</text></svg>",
       "sizes": "192x192",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/svgs/solid/hand-sparkles.svg",
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23130B27'/><circle cx='96' cy='96' r='80' fill='%231F113D'/><text x='50%' y='55%' fill='%23DFAC6C' font-size='75' text-anchor='middle' dominant-baseline='middle'>🖐️</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23130B27'/><text x='50%' y='55%' fill='%23DFAC6C' font-size='240' text-anchor='middle' dominant-baseline='middle'>🖐️</text></svg>",
       "sizes": "512x512",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' fill='%23130B27'/><circle cx='256' cy='256' r='220' fill='%231F113D'/><text x='50%' y='55%' fill='%23DFAC6C' font-size='200' text-anchor='middle' dominant-baseline='middle'>🖐️</text></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ]
 }
