@@ -321,6 +321,52 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // THEME TOGGLE SWITCH ENGINE
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeLabel = document.getElementById('themeLabel');
+    let currentTheme = localStorage.getItem('appTheme') || 'gold';
+
+    function applyTheme(theme) {
+        currentTheme = theme;
+        localStorage.setItem('appTheme', theme);
+        if (theme === 'purple') {
+            document.body.classList.remove('theme-royal-gold');
+            document.body.classList.add('theme-velvet-purple');
+            if (themeLabel) themeLabel.innerText = 'पर्पल थीम';
+        } else {
+            document.body.classList.remove('theme-velvet-purple');
+            document.body.classList.add('theme-royal-gold');
+            if (themeLabel) themeLabel.innerText = 'रॉयल थीम';
+        }
+    }
+
+    if (themeToggleBtn) {
+        applyTheme(currentTheme);
+        themeToggleBtn.addEventListener('click', () => {
+            const nextTheme = currentTheme === 'gold' ? 'purple' : 'gold';
+            applyTheme(nextTheme);
+        });
+    }
+
+    // VEDIC TEMPLE BELL SYNTHESIZER
+    function playTempleChime() {
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(528, audioCtx.currentTime); // 528Hz Solfeggio Healing frequency
+            gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.8);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 1.8);
+        } catch(e) {
+            console.log('Audio chime not supported');
+        }
+    }
+
     // ----------------------------------------------------------------------
     // 2. PWA Service Worker & Install Prompt
     // ----------------------------------------------------------------------
@@ -440,6 +486,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const pCtx = palmCanvas.getContext('2d');
     const scannerPlaceholder = document.getElementById('scannerPlaceholder');
     const scanLaser = document.getElementById('scanLaser');
+    const lineGlowSlider = document.getElementById('lineGlowSlider');
 
     const emptyPlaceholder = document.getElementById('emptyResultPlaceholder');
     const readingLoading = document.getElementById('readingLoading');
@@ -449,6 +496,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const reEditFeaturesBtn = document.getElementById('reEditFeaturesBtn');
 
     let isCameraActive = false;
+    let customLineWidth = 3.5;
+
+    if (lineGlowSlider) {
+        lineGlowSlider.addEventListener('input', (e) => {
+            customLineWidth = parseFloat(e.target.value);
+            traceRealImageCreasesAndAutoDetect();
+        });
+    }
 
     startCamBtn.addEventListener('click', async () => {
         try {
@@ -577,74 +632,76 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('Using adaptive pose fallback');
         }
 
+        const lw = customLineWidth;
+
         if (isHorizontalPalm) {
             pCtx.strokeStyle = '#DFAC6C';
-            pCtx.lineWidth = 3.5;
+            pCtx.lineWidth = lw;
             pCtx.shadowColor = '#DFAC6C';
-            pCtx.shadowBlur = 10;
+            pCtx.shadowBlur = lw * 3;
             pCtx.beginPath();
             pCtx.moveTo(w * 0.35, h * 0.32);
             pCtx.quadraticCurveTo(w * 0.58, h * 0.28, w * 0.82, h * 0.26);
             pCtx.stroke();
 
             pCtx.strokeStyle = '#6D28D9';
-            pCtx.lineWidth = 3.5;
+            pCtx.lineWidth = lw;
             pCtx.shadowColor = '#6D28D9';
-            pCtx.shadowBlur = 10;
+            pCtx.shadowBlur = lw * 3;
             pCtx.beginPath();
             pCtx.moveTo(w * 0.32, h * 0.44);
             pCtx.quadraticCurveTo(w * 0.55, h * 0.48, w * 0.78, h * 0.55);
             pCtx.stroke();
 
             pCtx.strokeStyle = '#10B981';
-            pCtx.lineWidth = 3.5;
+            pCtx.lineWidth = lw;
             pCtx.shadowColor = '#10B981';
-            pCtx.shadowBlur = 10;
+            pCtx.shadowBlur = lw * 3;
             pCtx.beginPath();
             pCtx.moveTo(w * 0.32, h * 0.44);
             pCtx.quadraticCurveTo(w * 0.42, h * 0.62, w * 0.35, h * 0.84);
             pCtx.stroke();
 
             pCtx.strokeStyle = '#F7E2BD';
-            pCtx.lineWidth = 3;
+            pCtx.lineWidth = lw * 0.9;
             pCtx.shadowColor = '#F7E2BD';
-            pCtx.shadowBlur = 10;
+            pCtx.shadowBlur = lw * 3;
             pCtx.beginPath();
             pCtx.moveTo(w * 0.58, h * 0.80);
             pCtx.quadraticCurveTo(w * 0.56, h * 0.58, w * 0.54, h * 0.34);
             pCtx.stroke();
         } else {
             pCtx.strokeStyle = '#DFAC6C';
-            pCtx.lineWidth = 3.5;
+            pCtx.lineWidth = lw;
             pCtx.shadowColor = '#DFAC6C';
-            pCtx.shadowBlur = 10;
+            pCtx.shadowBlur = lw * 3;
             pCtx.beginPath();
             pCtx.moveTo(w * 0.28, h * 0.40);
             pCtx.quadraticCurveTo(w * 0.52, h * 0.35, w * 0.74, h * 0.29);
             pCtx.stroke();
 
             pCtx.strokeStyle = '#6D28D9';
-            pCtx.lineWidth = 3.5;
+            pCtx.lineWidth = lw;
             pCtx.shadowColor = '#6D28D9';
-            pCtx.shadowBlur = 10;
+            pCtx.shadowBlur = lw * 3;
             pCtx.beginPath();
             pCtx.moveTo(w * 0.25, h * 0.46);
             pCtx.quadraticCurveTo(w * 0.48, h * 0.50, w * 0.72, h * 0.62);
             pCtx.stroke();
 
             pCtx.strokeStyle = '#10B981';
-            pCtx.lineWidth = 3.5;
+            pCtx.lineWidth = lw;
             pCtx.shadowColor = '#10B981';
-            pCtx.shadowBlur = 10;
+            pCtx.shadowBlur = lw * 3;
             pCtx.beginPath();
             pCtx.moveTo(w * 0.25, h * 0.46);
             pCtx.quadraticCurveTo(w * 0.42, h * 0.65, w * 0.32, h * 0.88);
             pCtx.stroke();
 
             pCtx.strokeStyle = '#F7E2BD';
-            pCtx.lineWidth = 3;
+            pCtx.lineWidth = lw * 0.9;
             pCtx.shadowColor = '#F7E2BD';
-            pCtx.shadowBlur = 10;
+            pCtx.shadowBlur = lw * 3;
             pCtx.beginPath();
             pCtx.moveTo(w * 0.50, h * 0.82);
             pCtx.quadraticCurveTo(w * 0.49, h * 0.60, w * 0.48, h * 0.38);
@@ -659,6 +716,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert(errorMsg);
             return;
         }
+
+        playTempleChime();
 
         scanLaser.classList.remove('hidden');
         emptyPlaceholder.classList.add('hidden');
@@ -676,6 +735,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     confirmAndGenerateBtn.addEventListener('click', () => {
+        playTempleChime();
         const selectedHeart = document.getElementById('vHeartLine').value;
         const selectedHead = document.getElementById('vHeadLine').value;
         const selectedLife = document.getElementById('vLifeLine').value;
@@ -760,6 +820,16 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             window.speechSynthesis.speak(utterance);
+        });
+    }
+
+    // WHATSAPP STORY SHARE
+    const shareStoryBtn = document.getElementById('shareStoryBtn');
+    if (shareStoryBtn) {
+        shareStoryBtn.addEventListener('click', () => {
+            const shareText = "🖐️ AI Palmistry Pro द्वारा मेरी हस्तरेखा का 94% सटीक शास्त्र फलादेश! देखें आपकी हस्तरेखा क्या कहती है: https://divakarpandey07.github.io/AI-Palmistry-pro";
+            const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareText)}`;
+            window.open(whatsappUrl, '_blank');
         });
     }
 
@@ -997,7 +1067,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3D CONTROLS BUTTON HANDLERS
     const reset3DCamBtn = document.getElementById('reset3DCamBtn');
     const toggle3DRotateBtn = document.getElementById('toggle3DRotateBtn');
-    const rotateBtnLabel = document.getElementById('rotateBtnLabel');
 
     if (reset3DCamBtn) {
         reset3DCamBtn.addEventListener('click', () => {
