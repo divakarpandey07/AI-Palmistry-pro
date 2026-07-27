@@ -7,21 +7,17 @@ from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 logger = logging.getLogger(__name__)
 
-# Strict Security Guard: Fail loudly if AES_SECRET_KEY is missing or invalid
+# Strict Production Fail-Loud Security Guard: No weak fallback defaults
 SECRET_KEY_RAW = os.getenv("AES_SECRET_KEY")
 
-if not SECRET_KEY_RAW or len(SECRET_KEY_RAW) < 32:
-    # In development/test mode, check if DEV_ALLOW_UNSECURE is set
-    if os.getenv("DEV_ALLOW_UNSECURE") == "true":
-        logger.warning("⚠️ Running in DEV mode with auto-generated 32-byte key. DO NOT USE IN PRODUCTION.")
-        SECRET_KEY_RAW = "12345678901234567890123456789012"
-    else:
-        raise EnvironmentError(
-            "CRITICAL SECURITY CONFIG ERROR: 'AES_SECRET_KEY' environment variable must be set "
-            "as a secure 32-byte value in production/environment secrets manager."
-        )
+if not SECRET_KEY_RAW or len(SECRET_KEY_RAW) != 32 or "REPLACE_WITH" in SECRET_KEY_RAW:
+    # Fail loudly to prevent running with unconfigured or insecure keys
+    raise EnvironmentError(
+        "CRITICAL SECURITY CONFIG ERROR: 'AES_SECRET_KEY' environment variable must be set "
+        "as an exact 32-byte secret string via environment/secrets manager."
+    )
 
-AES_KEY_BYTES = SECRET_KEY_RAW.encode()[:32]
+AES_KEY_BYTES = SECRET_KEY_RAW.encode('utf-8')[:32]
 aesgcm = AESGCM(AES_KEY_BYTES)
 
 def encrypt_payload(data: dict) -> str:
