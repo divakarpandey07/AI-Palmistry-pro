@@ -22,6 +22,10 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
+    <!-- Three.js 3D WebGL Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -94,7 +98,7 @@
         <!-- Main Content Area -->
         <main class="main-content">
             
-            <!-- SECTION 1: PALMISTRY SCANNER, 4-LAYER PIPELINE & 3D HAND GUIDE -->
+            <!-- SECTION 1: PALMISTRY SCANNER, 4-LAYER PIPELINE & REAL 3D HAND MODEL GUIDE -->
             <section id="palmistrySection" class="tab-section active">
                 
                 <!-- 4-LAYER MAJOR VERIFICATION PIPELINE BAR -->
@@ -325,65 +329,30 @@
 
                 </div>
 
-                <!-- 3D PALM & MOUNT REFERENCE GUIDE AT THE BOTTOM -->
+                <!-- REAL 3D INTERACTIVE HAND MODEL GUIDE (WebGL Three.js) AT THE BOTTOM -->
                 <div class="glass-card hand-guide-card" style="margin-top: 24px;">
                     <div class="card-header">
-                        <h2><i class="fa-solid fa-hand-holding-dots"></i> <span data-i18n="guide_title">3D हस्तरेखा एवं नवग्रह पर्वत निर्देशिका (3D Hand Guide)</span></h2>
-                        <span class="badge-shastra" data-i18n="guide_badge">सामुद्रिक शास्त्र गाइड</span>
+                        <h2><i class="fa-solid fa-cube"></i> <span data-i18n="guide_title">3D हस्तरेखा एवं नवग्रह पर्वत निर्देशिका (Interactive 3D Hand Model)</span></h2>
+                        <span class="badge-shastra" data-i18n="guide_badge">WebGL 3D मॉडल</span>
                     </div>
-                    <p class="guide-subtitle" data-i18n="guide_subtitle">अपनी हथेली की रेखाओं एवं पर्वतों को समझने के लिए नीचे दिए गए 3D मॉडल पर किसी भी रेखा या पर्वत पर क्लिक करें:</p>
+                    <p class="guide-subtitle" data-i18n="guide_subtitle">नीचे दिए गए 3D मॉडल को घुमाएं (Rotate in 3D) तथा किसी भी रेखा (Line) या नवग्रह पर्वत (Mount) पर क्लिक करके सामुद्रिक शास्त्र के अनुसार उनका महत्व जानें:</p>
                     
                     <div class="guide-content-row">
-                        <!-- Left 3D Hand SVG Diagram -->
-                        <div class="hand-svg-wrapper">
-                            <svg viewBox="0 0 320 420" class="interactive-hand-svg">
-                                <!-- Hand Outline Base -->
-                                <path d="M 60 220 C 50 180, 55 120, 75 70 C 82 50, 95 50, 100 70 L 110 160 C 115 130, 125 40, 140 20 C 148 10, 160 10, 165 20 L 175 160 C 180 130, 195 50, 210 40 C 218 35, 228 38, 232 50 L 235 170 C 242 150, 255 80, 270 75 C 278 72, 286 78, 288 90 L 285 240 C 285 300, 250 380, 180 400 L 120 400 C 70 370, 60 300, 60 220 Z" fill="rgba(19, 11, 39, 0.8)" stroke="#DFAC6C" stroke-width="2.5" filter="drop-shadow(0 0 15px rgba(223, 172, 108, 0.3))"/>
-                                
-                                <!-- Thumb Base -->
-                                <path d="M 60 220 C 40 240, 15 220, 25 180 C 35 150, 50 160, 70 190 Z" fill="rgba(19, 11, 39, 0.85)" stroke="#DFAC6C" stroke-width="2"/>
-
-                                <!-- PALM MOUNTS INTERACTIVE ZONES -->
-                                <circle cx="90" cy="110" r="18" fill="rgba(109, 40, 217, 0.3)" stroke="#6D28D9" stroke-width="1.5" class="mount-circle" data-mount="jupiter"/>
-                                <text x="90" y="114" text-anchor="middle" fill="#F7E2BD" font-size="10" font-weight="bold">♃ गुरु</text>
-
-                                <circle cx="145" cy="90" r="18" fill="rgba(223, 172, 108, 0.3)" stroke="#DFAC6C" stroke-width="1.5" class="mount-circle" data-mount="saturn"/>
-                                <text x="145" y="94" text-anchor="middle" fill="#F7E2BD" font-size="10" font-weight="bold">♄ शनि</text>
-
-                                <circle cx="205" cy="95" r="18" fill="rgba(245, 158, 11, 0.3)" stroke="#F59E0B" stroke-width="1.5" class="mount-circle" data-mount="sun"/>
-                                <text x="205" y="99" text-anchor="middle" fill="#F7E2BD" font-size="10" font-weight="bold">☉ सूर्य</text>
-
-                                <circle cx="260" cy="120" r="18" fill="rgba(59, 130, 246, 0.3)" stroke="#3B82F6" stroke-width="1.5" class="mount-circle" data-mount="mercury"/>
-                                <text x="260" y="124" text-anchor="middle" fill="#F7E2BD" font-size="10" font-weight="bold">☿ बुध</text>
-
-                                <circle cx="95" cy="270" r="24" fill="rgba(236, 72, 153, 0.3)" stroke="#EC4899" stroke-width="1.5" class="mount-circle" data-mount="venus"/>
-                                <text x="95" y="274" text-anchor="middle" fill="#F7E2BD" font-size="11" font-weight="bold">♀ शुक्र</text>
-
-                                <circle cx="240" cy="260" r="22" fill="rgba(16, 185, 129, 0.3)" stroke="#10B981" stroke-width="1.5" class="mount-circle" data-mount="moon"/>
-                                <text x="240" y="264" text-anchor="middle" fill="#F7E2BD" font-size="11" font-weight="bold">☽ चंद्र</text>
-
-                                <circle cx="245" cy="180" r="18" fill="rgba(239, 68, 68, 0.3)" stroke="#EF4444" stroke-width="1.5" class="mount-circle" data-mount="mars"/>
-                                <text x="245" y="184" text-anchor="middle" fill="#F7E2BD" font-size="10" font-weight="bold">♂ मंगल</text>
-
-                                <!-- PALM LINES OVERLAY -->
-                                <!-- Heart Line (Yellow) -->
-                                <path d="M 270 155 Q 180 140, 95 125" fill="none" stroke="#F59E0B" stroke-width="3.5" class="guide-line-path" data-line="heart"/>
-                                <!-- Head Line (Purple) -->
-                                <path d="M 80 185 Q 160 185, 235 220" fill="none" stroke="#6D28D9" stroke-width="3.5" class="guide-line-path" data-line="head"/>
-                                <!-- Life Line (Green) -->
-                                <path d="M 80 185 Q 140 240, 115 360" fill="none" stroke="#10B981" stroke-width="3.5" class="guide-line-path" data-line="life"/>
-                                <!-- Fate Line (White) -->
-                                <path d="M 165 370 L 150 110" fill="none" stroke="#F7E2BD" stroke-dasharray="4,4" stroke-width="3" class="guide-line-path" data-line="fate"/>
-                            </svg>
+                        <!-- Left Three.js 3D Canvas -->
+                        <div class="hand-3d-wrapper">
+                            <canvas id="hand3DCanvas"></canvas>
+                            <div class="3d-instruction-hint">
+                                <i class="fa-solid fa-arrows-spin"></i> <span>माउस या उंगली से घुमाएं (Drag to Rotate 3D Hand)</span>
+                            </div>
                         </div>
 
                         <!-- Right Info Card Details -->
                         <div class="guide-details-box" id="guideDetailsBox">
                             <div class="guide-info-header">
-                                <i class="fa-solid fa-circle-info"></i>
-                                <strong id="gTitle">हस्तरेखा एवं पर्वत गाइड (Click any zone)</strong>
+                                <i class="fa-solid fa-hand-holding-sparkles"></i>
+                                <strong id="gTitle">3D हस्तरेखा एवं नवग्रह पर्वत (Click 3D Spheres or Lines)</strong>
                             </div>
-                            <p id="gDesc" class="guide-info-desc">हथेली में स्थित रेखाओं या पर्वतों (गुरु, शनि, सूर्य, बुध, शुक्र, चंद्र, मंगल) पर क्लिक करके सामुद्रिक शास्त्र के अनुसार उनका महत्व जानें।</p>
+                            <p id="gDesc" class="guide-info-desc">3D हथेली मॉडल में चमकते हुए नवग्रह पर्वतों (गुरु, शनि, सूर्य, बुध, शुक्र, चंद्र, मंगल) या रेखाओं (हृदय, मस्तिष्क, जीवन, भाग्य) पर क्लिक करके उनका सटीक अर्थ समझें।</p>
                         </div>
                     </div>
                 </div>
