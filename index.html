@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AI Palmistry Pro - Multilingual & Hinglish Vedic App</title>
-    <meta name="description" content="कीरो हस्तरेखा शास्त्र एवं सामुद्रिक शास्त्र पर आधारित बहुभाषी (Multilingual & Hinglish) AI हस्तरेखा, कुंडली, टैरो व अंकशास्त्र ऐप।">
+    <meta name="description" content="कीरो हस्तरेखा शास्त्र एवं सामुद्रिक शास्त्र पर आधारित बहुभाषी (Multilingual & Hinglish) AI हस्तरेखा, कुंडली, टैरो, अंकशास्त्र व दैनिक राशिफल ऐप।">
     
     <!-- PWA Meta Tags & Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -79,8 +79,14 @@
                     <button class="nav-btn active" data-tab="palmistry">
                         <i class="fa-solid fa-hand"></i> <span data-i18n="nav_palmistry">हस्तरेखा</span>
                     </button>
+                    <button class="nav-btn" data-tab="horoscope">
+                        <i class="fa-solid fa-sun"></i> <span data-i18n="nav_horoscope">राशिफल</span>
+                    </button>
                     <button class="nav-btn" data-tab="kundli">
                         <i class="fa-solid fa-dharmachakra"></i> <span data-i18n="nav_kundli">कुंडली</span>
+                    </button>
+                    <button class="nav-btn" data-tab="gemstones">
+                        <i class="fa-solid fa-gem"></i> <span data-i18n="nav_gemstones">रत्न सुझाव</span>
                     </button>
                     <button class="nav-btn" data-tab="tarot">
                         <i class="fa-solid fa-cards"></i> <span data-i18n="nav_tarot">टैरो</span>
@@ -249,7 +255,12 @@
                         <div id="readingResults" class="results-container hidden">
                             <div class="card-header">
                                 <h2><i class="fa-solid fa-book-open-reader"></i> <span data-i18n="result_title">शास्त्र-आधारित फलादेश</span></h2>
-                                <span class="badge-shastra" data-i18n="badge_shastra">4 प्राचीन ग्रंथों द्वारा प्रमाणित</span>
+                                <div style="display: flex; gap: 8px; align-items: center;">
+                                    <button id="listenReadingBtn" class="btn btn-gold btn-sm" title="Listen Audio Narration">
+                                        <i class="fa-solid fa-volume-high"></i> <span data-i18n="btn_listen">शास्त्र वॉयस सुनें</span>
+                                    </button>
+                                    <span class="badge-shastra" data-i18n="badge_shastra">4 प्राचीन ग्रंथों द्वारा प्रमाणित</span>
+                                </div>
                             </div>
                             
                             <!-- Gauge & Line Scores Row -->
@@ -332,8 +343,8 @@
                 <!-- REAL 3D INTERACTIVE HAND MODEL GUIDE (WebGL Three.js) AT THE BOTTOM -->
                 <div class="glass-card hand-guide-card" style="margin-top: 24px;">
                     <div class="card-header">
-                        <h2><i class="fa-solid fa-cube"></i> <span data-i18n="guide_title">3D हस्तरेखा एवं नवग्रह पर्वत निर्देशिका (Interactive 3D Hand Model)</span></h2>
-                        <span class="badge-shastra" data-i18n="guide_badge">WebGL 3D मॉडल</span>
+                        <h2><i class="fa-solid fa-cube"></i> <span data-i18n="guide_title">3D हस्तरेखा एवं नवग्रह पर्वत निर्देशिका (Photorealistic 3D Hand)</span></h2>
+                        <span class="badge-shastra" data-i18n="guide_badge">3D फोटोरिएलिस्टिक मॉडल</span>
                     </div>
                     <p class="guide-subtitle" data-i18n="guide_subtitle">नीचे दिए गए 3D मॉडल को घुमाएं (Rotate in 3D) तथा किसी भी रेखा (Line) या नवग्रह पर्वत (Mount) पर क्लिक करके सामुद्रिक शास्त्र के अनुसार उनका महत्व जानें:</p>
                     
@@ -341,9 +352,6 @@
                         <!-- Left Three.js 3D Canvas -->
                         <div class="hand-3d-wrapper">
                             <canvas id="hand3DCanvas"></canvas>
-                            <div class="3d-instruction-hint">
-                                <i class="fa-solid fa-arrows-spin"></i> <span>माउस या उंगली से घुमाएं (Drag to Rotate 3D Hand)</span>
-                            </div>
                         </div>
 
                         <!-- Right Info Card Details -->
@@ -359,7 +367,36 @@
 
             </section>
 
-            <!-- SECTION 2: KUNDLI & PLANETARY CHART -->
+            <!-- SECTION 2: DAILY HOROSCOPE & TRANSIT -->
+            <section id="horoscopeSection" class="tab-section hidden">
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-sun"></i> <span>दैनिक राशिफल एवं ग्रह गोचर (Daily Horoscope)</span></h2>
+                        <span class="badge-shastra">वैदिक पंचांग 2026</span>
+                    </div>
+
+                    <div class="rashi-selector-grid" id="rashiGrid">
+                        <button class="rashi-btn active" data-rashi="aries">♈ मेष (Aries)</button>
+                        <button class="rashi-btn" data-rashi="taurus">♉ वृषभ (Taurus)</button>
+                        <button class="rashi-btn" data-rashi="gemini">♊ मिथुन (Gemini)</button>
+                        <button class="rashi-btn" data-rashi="cancer">♋ कर्क (Cancer)</button>
+                        <button class="rashi-btn" data-rashi="leo">♌ सिंह (Leo)</button>
+                        <button class="rashi-btn" data-rashi="virgo">♍ कन्या (Virgo)</button>
+                        <button class="rashi-btn" data-rashi="libra">♎ तुला (Libra)</button>
+                        <button class="rashi-btn" data-rashi="scorpio">♏ वृश्चिक (Scorpio)</button>
+                        <button class="rashi-btn" data-rashi="sagittarius">♐ धनु (Sagittarius)</button>
+                        <button class="rashi-btn" data-rashi="capricorn">♑ मकर (Capricorn)</button>
+                        <button class="rashi-btn" data-rashi="aquarius">♒ कुंभ (Aquarius)</button>
+                        <button class="rashi-btn" data-rashi="pisces">♓ मीन (Pisces)</button>
+                    </div>
+
+                    <div class="horoscope-content-card" id="horoscopeContent">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 3: KUNDLI & PLANETARY CHART -->
             <section id="kundliSection" class="tab-section hidden">
                 <div class="section-grid">
                     <div class="glass-card">
@@ -427,7 +464,44 @@
                 </div>
             </section>
 
-            <!-- SECTION 3: TAROT CARD READING -->
+            <!-- SECTION 4: GEMSTONE & LUCKY COLOR CALCULATOR -->
+            <section id="gemstonesSection" class="tab-section hidden">
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-gem"></i> <span>रत्न एवं शुभ रंग सुझाव (Gemstones & Lucky Colors)</span></h2>
+                        <span class="badge-shastra">रत्न शास्त्र</span>
+                    </div>
+
+                    <div class="gemstones-grid" id="gemstonesGrid">
+                        <div class="gem-card">
+                            <i class="fa-solid fa-ring gem-icon" style="color: #F59E0B;"></i>
+                            <h3>पुखराज (Yellow Sapphire)</h3>
+                            <p><strong>स्वामी:</strong> गुरु ग्रह | <strong>उंगली:</strong> तर्जनी (Index Finger)</p>
+                            <p>ज्ञान, उच्च शिक्षा, आर्थिक समृद्धि एवं राज-योग हेतु गुरु की कृपा प्रदान करता है।</p>
+                        </div>
+                        <div class="gem-card">
+                            <i class="fa-solid fa-ring gem-icon" style="color: #6D28D9;"></i>
+                            <h3>नीलम (Blue Sapphire)</h3>
+                            <p><strong>स्वामी:</strong> शनि ग्रह | <strong>उंगली:</strong> मध्यमा (Middle Finger)</p>
+                            <p>अनुशासन, त्वरित धन-धान्य लाभ एवं शनि दोष शांति हेतु अत्यंत प्रभावशाली।</p>
+                        </div>
+                        <div class="gem-card">
+                            <i class="fa-solid fa-ring gem-icon" style="color: #10B981;"></i>
+                            <h3>पन्ना (Emerald)</h3>
+                            <p><strong>स्वामी:</strong> बुध ग्रह | <strong>उंगली:</strong> कनिष्ठिका (Little Finger)</p>
+                            <p>व्यापारिक उन्नति, वाक्-पटुता, तार्किक निर्णय शक्ति व स्वास्थ्य लाभ हेतु।</p>
+                        </div>
+                        <div class="gem-card">
+                            <i class="fa-solid fa-ring gem-icon" style="color: #EF4444;"></i>
+                            <h3>माणिक्य (Ruby)</h3>
+                            <p><strong>स्वामी:</strong> सूर्य ग्रह | <strong>उंगली:</strong> अनामिका (Ring Finger)</p>
+                            <p>सरकारी नौकरी, उच्च सामाजिक मान-सम्मान एवं नेतृत्व क्षमता में वृद्धि।</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 5: TAROT CARD READING -->
             <section id="tarotSection" class="tab-section hidden">
                 <div class="glass-card tarot-wrapper">
                     <div class="card-header center-header">
@@ -446,7 +520,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 4: NUMEROLOGY CALCULATOR -->
+            <!-- SECTION 6: NUMEROLOGY CALCULATOR -->
             <section id="numerologySection" class="tab-section hidden">
                 <div class="section-grid">
                     <div class="glass-card">
@@ -487,7 +561,7 @@
                 </div>
             </section>
 
-            <!-- SECTION 5: HISTORY & PERSISTENCE -->
+            <!-- SECTION 7: HISTORY & PERSISTENCE -->
             <section id="historySection" class="tab-section hidden">
                 <div class="glass-card">
                     <div class="card-header">
@@ -511,9 +585,17 @@
                 <i class="fa-solid fa-hand"></i>
                 <span data-i18n="nav_palmistry">हस्तरेखा</span>
             </button>
+            <button class="mobile-nav-btn" data-tab="horoscope">
+                <i class="fa-solid fa-sun"></i>
+                <span data-i18n="nav_horoscope">राशिफल</span>
+            </button>
             <button class="mobile-nav-btn" data-tab="kundli">
                 <i class="fa-solid fa-dharmachakra"></i>
                 <span data-i18n="nav_kundli">कुंडली</span>
+            </button>
+            <button class="mobile-nav-btn" data-tab="gemstones">
+                <i class="fa-solid fa-gem"></i>
+                <span data-i18n="nav_gemstones">रत्न</span>
             </button>
             <button class="mobile-nav-btn" data-tab="tarot">
                 <i class="fa-solid fa-cards"></i>
