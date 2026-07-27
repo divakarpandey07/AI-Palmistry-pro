@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AI Palmistry Pro - Strict Palm Validation & Real Feature Extraction Engine
+   AI Palmistry Pro - Interactive Multilingual i18n & Dynamic Result Translation Engine
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -105,11 +105,208 @@ document.addEventListener('DOMContentLoaded', () => {
             history_title: "Saved Readings History",
             btn_clear_history: "Clear History",
             footer_text: "© 2026 AI Palmistry Pro Multilingual PWA App. 100% Authentic Vedic Astrology."
+        },
+        sa: {
+            sub_logo: "वैदिक सामुद्रिक शास्त्रं तथा हस्तरेखा",
+            nav_palmistry: "हस्तरेखा",
+            nav_kundli: "कुण्डली",
+            nav_tarot: "टैरो",
+            nav_numerology: "अङ्कशास्त्रम्",
+            nav_history: "इतिहासः",
+            pwa_title: "AI Palmistry Pro",
+            pwa_subtitle: "चलदूरभापे संस्थापयतु",
+            pwa_btn: "संस्थापयतु",
+            scanner_title: "प्रत्यक्ष हस्तरेखा परीक्षा",
+            scanner_desc: "हस्तस्य स्पष्टं चित्रं गृह्णातु",
+            scanner_placeholder: "हस्तपरीक्षायाः कृते कैमेरा चालयतु अथवा चित्रं प्रेषयतु",
+            btn_camera: "कैमेरा चालयतु",
+            btn_upload: "चित्रं प्रेषयतु",
+            btn_analyze: "परीक्षणं करोतु",
+            result_title: "शास्त्रोक्त फलकथनम्",
+            badge_shastra: "४ प्राचीन ग्रन्थैः प्रमाणितम्",
+            loading_text: "सामुद्रिकशास्त्रैः सह मेलनं क्रियते...",
+            accuracy: "शुद्धता",
+            line_heart: "हृदय रेखा",
+            line_head: "मस्तिष्क रेखा",
+            line_life: "जीवन रेखा",
+            line_fate: "भाग्य रेखा",
+            btn_save: "सुरक्षितं करोतु",
+            btn_pdf: "PDF डाउनलोड",
+            empty_result: "परीक्षणानन्तरम् अत्र विस्तृत शास्त्रोक्त फलादेशः दृश्यते।",
+            invalid_palm_error: "⚠️ हस्तस्य हथेली न प्रत्यभिज्ञाता! कृपया कस्यापि दस्तावेजस्य स्थाने केवलं हस्तस्य चित्रं प्रेषयतु।",
+            kundli_title: "जन्म विवरणम्",
+            kundli_desc: "जन्म विवरणं पूरयतु",
+            lbl_fullname: "पूर्णं नाम",
+            lbl_dob: "जन्म तिथिः",
+            lbl_time: "जन्म समयः",
+            lbl_place: "जन्म स्थानम्",
+            btn_gen_kundli: "कुण्डलीं रचयतु",
+            kundli_chart_title: "लग्नं तथा ग्रह स्थितिः",
+            badge_astrology: "वैदिक ज्योतिषम्",
+            tarot_title: "३-पत्र टैरो वाचनम्",
+            tarot_desc: "भूत-वर्तमान-भविष्याणां कृते ३ पत्राणि चिनोतु",
+            num_title: "अङ्कशास्त्रम्",
+            num_desc: "जन्मतिथिना मूलाङ्कं गणयतु",
+            btn_calc: "गणनां करोतु",
+            num_result_title: "अङ्कशास्त्र फलम्",
+            mulank: "मूलाङ्कः",
+            bhagyank: "भाग्याङ्कः",
+            history_title: "सुरक्षित फलानि",
+            btn_clear_history: "इतिहासं मार्जयतु",
+            footer_text: "© 2026 AI Palmistry Pro. १००% प्रमाणिक वैदिक ज्योतिषम्।"
+        },
+        mr: {
+            sub_logo: "वैदिक सामुद्रिक शास्त्र आणि हस्तरेखा",
+            nav_palmistry: "हस्तरेखा",
+            nav_kundli: "कुंडली",
+            nav_tarot: "टॅरो",
+            nav_numerology: "अंकशास्त्र",
+            nav_history: "इतिहास",
+            pwa_title: "AI Palmistry Pro ॲप",
+            pwa_subtitle: "मोबाईल होम स्क्रीनवर इन्स्टॉल करा",
+            pwa_btn: "इन्स्टॉल करा",
+            scanner_title: "लाइव्ह हस्तरेखा स्कॅन",
+            scanner_desc: "हाताचा फोटो कॅमेऱ्याने घ्या किंवा अपलोड करा",
+            scanner_placeholder: "स्कॅनिंग सुरू करण्यासाठी कॅमेरा सुरू करा किंवा फोटो अपलोड करा",
+            btn_camera: "कॅमेरा सुरू करा",
+            btn_upload: "फोटो अपलोड करा",
+            btn_analyze: "विश्लेषण करा",
+            result_title: "शास्त्र-आधारित फलादेश",
+            badge_shastra: "४ प्राचीन ग्रंथांद्वारे प्रमाणित",
+            loading_text: "सामुद्रिक शास्त्राशी जुळणी केली जात आहे...",
+            accuracy: "अचूकता",
+            line_heart: "हृदय रेषा",
+            line_head: "मस्तिष्क रेषा",
+            line_life: "जीवन रेषा",
+            line_fate: "भाग्य रेषा",
+            btn_save: "जतन करा",
+            btn_pdf: "PDF डाउनलोड",
+            empty_result: "स्कॅन केल्यानंतर इथे सविस्तर फलादेश दिसेल.",
+            invalid_palm_error: "⚠️ हाताची तळहात ओळखली गेली नाही! कृपया कागदपत्रांऐवजी हाताचा स्पष्ट फोटो अपलोड करा.",
+            kundli_title: "जन्म माहिती",
+            kundli_desc: "सटीक कुंडलीसाठी जन्म माहिती भरा",
+            lbl_fullname: "पूर्ण नाव",
+            lbl_dob: "जन्म तारीख",
+            lbl_time: "जन्म वेळ",
+            lbl_place: "जन्म ठिकाण",
+            btn_gen_kundli: "कुंडली तयार करा",
+            kundli_chart_title: "लग्न व ग्रह स्थिती",
+            badge_astrology: "वैदिक ज्योतिष",
+            tarot_title: "३-कार्ड टॅरो वाचन",
+            tarot_desc: "भूत, वर्तमान व भविष्यासाठी ३ कार्ड निवडा",
+            num_title: "अंकशास्त्र",
+            num_desc: "जन्मतारखेवरून मूलांक व भाग्यांक शोधा",
+            btn_calc: "गणना करा",
+            num_result_title: "अंकशास्त्र फलादेश",
+            mulank: "मूलांक",
+            bhagyank: "भाग्यांक",
+            history_title: "साठवलेला इतिहास",
+            btn_clear_history: "इतिहास साफ करा",
+            footer_text: "© 2026 AI Palmistry Pro. १००% अस्सल वैदिक ज्योतिष."
+        },
+        gu: {
+            sub_logo: "વૈદિક સામુદ્રિક શાસ્ત્ર અને હસ્તરેખા",
+            nav_palmistry: "હસ્તરેખા",
+            nav_kundli: "કુંડળી",
+            nav_tarot: "ટેરોટ",
+            nav_numerology: "અંકશાસ્ત્ર",
+            nav_history: "ઇતિહાસ",
+            pwa_title: "AI Palmistry Pro એપ",
+            pwa_subtitle: "મોબાઇલ હોમ સ્ક્રીન પર ઇન્સ્ટોલ કરો",
+            pwa_btn: "ઇન્સ્ટોલ કરો",
+            scanner_title: "લાઇવ હસ્તરેખા સ્કેન",
+            scanner_desc: "કેમેરાથી હાથનો ફોટો લો અથવા અપલોડ કરો",
+            scanner_placeholder: "સ્કેનિંગ શરૂ કરવા કેમેરા ચાલુ કરો અથવા ફોટો અપલોડ કરો",
+            btn_camera: "કેમેરા ચાલુ કરો",
+            btn_upload: "ફોટો અપલોડ કરો",
+            btn_analyze: "વિશ્લેષણ કરો",
+            result_title: "શાસ્ત્ર-આધારિત ફળાદેશ",
+            badge_shastra: "૪ પ્રાચીન ગ્રંથો દ્વારા પ્રમાણિત",
+            loading_text: "સામુદ્રિક શાસ્ત્ર સાથે સરખામણી થઈ રહી છે...",
+            accuracy: "ચોકસાઈ",
+            line_heart: "હૃદય રેખા",
+            line_head: "મસ્તિષ્ક રેખા",
+            line_life: "જીવન રેખા",
+            line_fate: "ભાગ્ય રેખા",
+            btn_save: "સાચવો",
+            btn_pdf: "PDF ડાઉનલોડ",
+            empty_result: "સ્કેન કર્યા પછી અહીં વિગતવાર અહેવાલ દેખાશે.",
+            invalid_palm_error: "⚠️ હાથની હથેળી ઓળખાઈ નથી! કૃપા કરીને દસ્તાવેજને બદલે માત્ર હાથનો સ્પષ્ટ ફોટો અપલોડ કરો.",
+            kundli_title: "જન્મ વિગત",
+            kundli_desc: "કુંડળી માટે જન્મ માહિતી ભરો",
+            lbl_fullname: "પૂરું નામ",
+            lbl_dob: "જન્મ તારીખ",
+            lbl_time: "જન્મ સમય",
+            lbl_place: "જન્મ સ્થળ",
+            btn_gen_kundli: "કુંડળી બનાવો",
+            kundli_chart_title: "લગ્ન અને ગ્રહ સ્થિતિ",
+            badge_astrology: "વૈદિક જ્યોતિષ",
+            tarot_title: "૩-કાર્ડ ટેરોટ",
+            tarot_desc: "ભૂતકાળ, વર્તમાન અને ભવિષ્ય માટે ૩ કાર્ડ પસંદ કરો",
+            num_title: "અંકશાસ્ત્ર",
+            num_desc: "મૂળાંક અને ભાગ્યાંક ગણો",
+            btn_calc: "ગણતરી કરો",
+            num_result_title: "અંકશાસ્ત્ર ફળાદેશ",
+            mulank: "મૂળાંક",
+            bhagyank: "ભાગ્યાંક",
+            history_title: "સાચવેલ ઇતિહાસ",
+            btn_clear_history: "ઇતિહાસ સાફ કરો",
+            footer_text: "© 2026 AI Palmistry Pro. ૧૦૦% સાચું વૈદિક જ્યોતિષ."
+        },
+        ta: {
+            sub_logo: "வேத சாமுத்திரிகா சாஸ்திரம் & கைரேகை",
+            nav_palmistry: "கைரேகை",
+            nav_kundli: "ஜாதகம்",
+            nav_tarot: "டாரோட்",
+            nav_numerology: "எண் கணிதம்",
+            nav_history: "வரலாறு",
+            pwa_title: "AI Palmistry Pro ஆப்",
+            pwa_subtitle: "மொபைல் முகப்புத் திரையில் நிறுவவும்",
+            pwa_btn: "நிறுவு",
+            scanner_title: "லைவ் கைரேகை ஸ்கேன்",
+            scanner_desc: "கேமரா மூலம் உங்கள் உள்ளங்கையை ஸ்கேன் செய்யவும்",
+            scanner_placeholder: "ஸ்கேன் செய்ய கேமராவைத் தொடங்கவும் அல்லது புகைப்படத்தைப் பதிவேற்றவும்",
+            btn_camera: "கேமராவைத் தொடங்கு",
+            btn_upload: "புகைப்படம் பதிவேற்று",
+            btn_analyze: "ஆராய்ச்சி செய்",
+            result_title: "சாஸ்திர பலன்கள்",
+            badge_shastra: "4 பழமையான நூல்களின் சான்றளிக்கப்பட்டது",
+            loading_text: "சாமுத்திரிகா சாஸ்திரத்துடன் ஒப்பிடப்படுகிறது...",
+            accuracy: "துல்லியம்",
+            line_heart: "இதய ரேகை",
+            line_head: "புத்தி ரேகை",
+            line_life: "ஆயுள் ரேகை",
+            line_fate: "விதி ரேகை",
+            btn_save: "சேமி",
+            btn_pdf: "PDF பதிவிறக்கு",
+            empty_result: "ஸ்கேன் செய்த பிறகு இங்கே விரிவான ஜோதிட பலன்கள் தோன்றும்.",
+            invalid_palm_error: "⚠️ மனித உள்ளங்கை கண்டறியப்படவில்லை! தயவுசெய்து உங்கள் கையின் தெளிவான புகைப்படத்தைப் பதிவேற்றவும்.",
+            kundli_title: "பிறப்பு விவரங்கள்",
+            kundli_desc: "ஜாதகம் தயாரிக்க விவரங்களை உள்ளிடவும்",
+            lbl_fullname: "முழு பெயர்",
+            lbl_dob: "பிறந்த தேதி",
+            lbl_time: "பிறந்த நேரம்",
+            lbl_place: "பிறந்த இடம்",
+            btn_gen_kundli: "ஜாதகம் உருவாக்கு",
+            kundli_chart_title: "லக்னம் & கிரக நிலைகள்",
+            badge_astrology: "வேத ஜோதிடம்",
+            tarot_title: "3-கார்டு டாரோட்",
+            tarot_desc: "கடந்த காலம், நிகழ்காலம் & எதிர்காலத்திற்கு 3 கார்டுகளைத் தேர்ந்தெடுக்கவும்",
+            num_title: "எண் கணிதம்",
+            num_desc: "உங்கள் அதிர்ஷ்ட எண்களைக் கணக்கிடுங்கள்",
+            btn_calc: "கணக்கிடு",
+            num_result_title: "எண் கணித பலன்கள்",
+            mulank: "மூலாங்கம்",
+            bhagyank: "பாக்கியாங்கம்",
+            history_title: "சேமிக்கப்பட்ட வரலாறு",
+            btn_clear_history: "வரலாற்றை அழி",
+            footer_text: "© 2026 AI Palmistry Pro. 100% உண்மையான வேத ஜோதிடம்."
         }
     };
 
     let currentLang = localStorage.getItem('selectedLang') || 'hi';
     const langSelect = document.getElementById('langSelect');
+    const readingTextContent = document.getElementById('readingTextContent');
 
     function applyLanguage(lang) {
         currentLang = lang;
@@ -123,6 +320,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 el.innerText = langDict[key];
             }
         });
+
+        // DYNAMIC RE-TRANSLATION OF READING RESULT BOX
+        if (window.latestScores && readingTextContent) {
+            const updatedReading = generateShastraReading(lang, window.latestScores);
+            readingTextContent.innerHTML = updatedReading;
+            window.latestReadingText = updatedReading;
+        }
     }
 
     if (langSelect) {
@@ -131,8 +335,6 @@ document.addEventListener('DOMContentLoaded', () => {
             applyLanguage(e.target.value);
         });
     }
-
-    applyLanguage(currentLang);
 
     // ----------------------------------------------------------------------
     // 2. PWA Service Worker & Install Prompt
@@ -240,7 +442,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileNavBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
 
     // ----------------------------------------------------------------------
-    // 5. Real Palm Detection & Feature Extraction Engine
+    // 5. Real Palm Detection & Dynamic Multilingual Reading Engine
     // ----------------------------------------------------------------------
     const startCamBtn = document.getElementById('startCamBtn');
     const captureScanBtn = document.getElementById('captureScanBtn');
@@ -255,7 +457,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const readingLoading = document.getElementById('readingLoading');
     const readingResults = document.getElementById('readingResults');
     const emptyPlaceholder = document.getElementById('emptyResultPlaceholder');
-    const readingTextContent = document.getElementById('readingTextContent');
 
     let isCameraActive = false;
 
@@ -303,11 +504,6 @@ document.addEventListener('DOMContentLoaded', () => {
         palmCanvas.height = viewport.clientHeight;
     }
 
-    /**
-     * Strict Human Palm & Skin Tone Detector Algorithm
-     * Analyzes image pixel luminance and HSV/RGB skin ratios.
-     * Returns false if image is a pamphlet, text, document, or non-hand object!
-     */
     function validateHumanPalmImage() {
         const tempCanvas = document.createElement('canvas');
         const tCtx = tempCanvas.getContext('2d');
@@ -337,7 +533,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const g = data[i + 1];
                 const b = data[i + 2];
 
-                // Human Skin Color Range Condition (RGB Space)
                 const isSkin = (r > 60) && (g > 35) && (b > 20) &&
                                (r > g) && (r > b) &&
                                (Math.abs(r - g) > 12) &&
@@ -346,18 +541,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (isSkin) skinPixels++;
             }
 
-            const skinRatio = skinPixels / totalPixels;
-            // Valid palm requires at least 16% skin tone distribution
-            return skinRatio >= 0.16;
+            return (skinPixels / totalPixels) >= 0.16;
         } catch (err) {
-            // Fallback true if canvas cross-origin security blocks sampling
             return true;
         }
     }
 
-    /**
-     * Extract Real Palm Line Scores (Heart, Head, Life, Fate) based on image contrast
-     */
     function extractRealPalmLineScores() {
         const tempCanvas = document.createElement('canvas');
         const tCtx = tempCanvas.getContext('2d');
@@ -440,7 +629,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     captureScanBtn.addEventListener('click', () => {
-        // STEP 1: STRICT HUMAN PALM VALIDATION
         const isValidPalm = validateHumanPalmImage();
         if (!isValidPalm) {
             const errorMsg = translations[currentLang]?.invalid_palm_error || translations.hi.invalid_palm_error;
@@ -461,6 +649,8 @@ document.addEventListener('DOMContentLoaded', () => {
             readingResults.classList.remove('hidden');
 
             const scores = extractRealPalmLineScores();
+            window.latestScores = scores;
+
             document.getElementById('heartScore').style.width = `${scores.heart}%`;
             document.getElementById('headScore').style.width = `${scores.head}%`;
             document.getElementById('lifeScore').style.width = `${scores.life}%`;
@@ -472,11 +662,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 2200);
     });
 
+    /**
+     * Multilingual Shastra Reading Generator
+     * Supports: hi, en, sa, mr, gu, ta
+     */
     function generateShastraReading(lang, scores = { heart: 84, head: 90, life: 88, fate: 76 }) {
         if (lang === 'en') {
             return `
                 <h3>📌 Authenticated Scripture-Grounded Astrological Reading</h3>
-                <p><em>(Real Palm Line Contrast Analysis grounded in Cheiro Palmistry & Samudrik Shastra)</em></p>
+                <p><em>(Real Palm Line Analysis grounded in Cheiro Palmistry & Samudrik Shastra)</em></p>
                 <h3>✋ Extracted Palm Lines & Mounts Profile:</h3>
                 <ul>
                     <li><strong>Heart Line (${scores.heart}% Intensity):</strong> Cheiro Hast Rekha Shastra states that your Heart Line reaches Mount of Jupiter. Indicates strong emotional nobility and high integrity.</li>
@@ -490,7 +684,57 @@ document.addEventListener('DOMContentLoaded', () => {
                     <li>Recite Hanuman Chalisa on Tuesdays for Mars alignment.</li>
                 </ul>
             `;
+        } else if (lang === 'sa') {
+            return `
+                <h3>📌 शास्त्रोक्तं हस्तरेखा परीक्षणम्</h3>
+                <p><em>(सामुद्रिकशास्त्रम् तथा वृहद् हस्तरेखाशास्त्रम् आधारितम्)</em></p>
+                <h3>✋ मुख्यरेखाणां तथा पर्वतानां विश्लेषणम्:</h3>
+                <ul>
+                    <li><strong>हृदय रेखा (${scores.heart}%):</strong> कीरो हस्तरेखाशास्त्रानुसारं भवतः हृदयरेखा गुरुपर्वतं यावत् गच्छति। एषा उच्चभावनात्मकसंतुलनस्य प्रतीकम् अस्ति।</li>
+                    <li><strong>मस्तिष्क रेखा (${scores.head}%):</strong> ऋजुमस्तिष्करेखा भवतः तीक्ष्णबुद्धिं तार्किकक्षमतां च दर्शयति।</li>
+                    <li><strong>जीवन रेखा (${scores.life}%):</strong> सामुद्रिकशास्त्रानुसारं जीवनरेखायाः पूर्णता उत्तमं स्वास्थ्यं दीर्घायुषं च सूचयति।</li>
+                    <li><strong>भाग्य रेखा (${scores.fate}%):</strong> भाग्यरेखा शनिपर्वतं प्रति गच्छति, या राजयोगं धनलाभं च रचयति।</li>
+                </ul>
+            `;
+        } else if (lang === 'mr') {
+            return `
+                <h3>📌 प्रमाणिक शास्त्र-आधारित फलादेश</h3>
+                <p><em>(सामुद्रिक शास्त्र व वृहद् हस्तरेखा शास्त्रावर आधारित)</em></p>
+                <h3>✋ हाताच्या रेषांचे सविस्तर विश्लेषण:</h3>
+                <ul>
+                    <li><strong>हृदय रेषा (${scores.heart}%):</strong> हृदय रेषा गुरु पर्वतापर्यंत पोहोचत असून उच्च भावनिक संतुलन दर्शवते.</li>
+                    <li><strong>मस्तिष्क रेषा (${scores.head}%):</strong> स्पष्ट मस्तिष्क रेषा तुमची तीव्र तार्किक क्षमता आणि निर्णयक्षमता दर्शवते.</li>
+                    <li><strong>जीवन रेषा (${scores.life}%):</strong> गोलाई असलेली जीवन रेषा उत्तम आरोग्य आणि दीर्घायुष्याचे प्रतीक आहे.</li>
+                    <li><strong>भाग्य रेषा (${scores.fate}%):</strong> भाग्य रेषा शनि पर्वताकडे जात असून राजयोग निर्मिती करते.</li>
+                </ul>
+            `;
+        } else if (lang === 'gu') {
+            return `
+                <h3>📌 શાસ્ત્ર-આધારિત હસ્તરેખા વિશ્લેષણ</h3>
+                <p><em>(સામુદ્રિક શાસ્ત્ર અને બૃહદ્ હસ્તરેખા શાસ્ત્ર પર આધારિત)</em></p>
+                <h3>✋ રેખાઓનું વિગતવાર વિશ્લેષણ:</h3>
+                <ul>
+                    <li><strong>હૃદય રેખા (${scores.heart}%):</strong> ગુરુ પર્વત સુધી પહોંચતી હૃદય રેખા ઉચ્ચ ભાવનાત્મક સંતુલન દર્શાવે છે.</li>
+                    <li><strong>મસ્તિષ્ક રેખા (${scores.head}%):</strong> તીવ્ર તાર્કિક ક્ષમતા અને નિર્ણય શક્તિ દર્શાવે છે.</li>
+                    <li><strong>જીવન રેખા (${scores.life}%):</strong> જીવન રેખાનું વળાંક દીર્ઘાયુષ્ય અને ઉત્તમ આરોગ્ય દર્શાવે છે.</li>
+                    <li><strong>ભાગ્ય રેખા (${scores.fate}%):</strong> શનિ પર્વત તરફ જતી ભાગ્ય રેખા રાજયોગ રચે છે.</li>
+                </ul>
+            `;
+        } else if (lang === 'ta') {
+            return `
+                <h3>📌 சாஸ்திர அடிப்படையிலான கைரேகை பலன்கள்</h3>
+                <p><em>(சாமுத்திரிகா சாஸ்திரம் மற்றும் பிருஹத் கைரேகை சாஸ்திரத்தின் படி)</em></p>
+                <h3>✋ ரேகைகளின் பகுப்பாய்வு:</h3>
+                <ul>
+                    <li><strong>இதய ரேகை (${scores.heart}%):</strong> குரு மேட்டை அடையும் இதய ரேகை உயர் உணர்ச்சி சமநிலையைக் காட்டுகிறது.</li>
+                    <li><strong>புத்தி ரேகை (${scores.head}%):</strong> சிறந்த தர்க்கரீதியான சிந்தனையைக் காட்டுகிறது.</li>
+                    <li><strong>ஆயுள் ரேகை (${scores.life}%):</strong> சிறந்த ஆரோக்கியம் மற்றும் நீண்ட ஆயுளைக் குறிக்கிறது.</li>
+                    <li><strong>விதி ரேகை (${scores.fate}%):</strong> சனி மேட்டை நோக்கி செல்லும் விதி ரேகை ராஜயோகத்தை உருவாக்குகிறது.</li>
+                </ul>
+            `;
         }
+
+        // DEFAULT HINDI
         return `
             <h3>📌 प्रमाणिक शास्त्र-आधारित हस्तरेखा विश्लेषण</h3>
             <p><em>(आपकी हथेली की रेखाओं का वास्तविक विश्लेषण - कीरो हस्तरेखा शास्त्र, सामुद्रिक शास्त्र एवं वृहद् हस्तरेखा शास्त्र पर आधारित)</em></p>
