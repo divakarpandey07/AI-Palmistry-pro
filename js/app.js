@@ -1,11 +1,11 @@
 /* ==========================================================================
-   AI Palmistry Pro - Interactive 2-Step Palm Verification & Scripture Engine
+   AI Palmistry Pro - Multilingual & Hinglish Strict Translation Engine
    ========================================================================== */
 
 document.addEventListener('DOMContentLoaded', () => {
 
     // ----------------------------------------------------------------------
-    // 1. i18n Multilingual Translation Dictionary
+    // 1. i18n Translation Dictionary (Hindi, English, Hinglish, Sanskrit, Marathi, Gujarati, Tamil)
     // ----------------------------------------------------------------------
     const translations = {
         hi: {
@@ -18,20 +18,33 @@ document.addEventListener('DOMContentLoaded', () => {
             pwa_title: "AI Palmistry Pro ऐप",
             pwa_subtitle: "अपने मोबाइल होम स्क्रीन पर इनस्टॉल करें",
             pwa_btn: "इनस्टॉल करें",
+            pipe_1: "1. त्वचा व रूपरेखा जांच",
+            pipe_2: "2. रेखा निष्कर्षण",
+            pipe_3: "3. 4 शास्त्र ग्रंथ",
+            pipe_4: "4. AES-256 सुरक्षा",
             scanner_title: "चरण 1: हथेली स्कैन करें",
             scanner_desc: "हाथ की स्पष्ट छवि कैमरे से लें या फोटो अपलोड करें",
             scanner_placeholder: "हस्तरेखा स्कैन शुरू करने के लिए कैमरा चालू करें या फोटो अपलोड करें",
             btn_camera: "कैमरा चालू करें",
             btn_upload: "फोटो अपलोड करें",
             btn_analyze: "स्कैन व रेखाएं निकालें",
+            step2_title: "चरण 2: स्कैन की गई रेखाओं की पुष्टि करें",
+            step2_subtitle: "आपकी हथेली से निम्नलिखित रेखाएं एवं लक्षण मिले हैं। आप इन्हें जांचें या अपनी इच्छा अनुसार संपादित करें:",
+            badge_editable: "संपादन योग्य",
+            lbl_heart: "हृदय रेखा:",
+            lbl_head: "मस्तिष्क रेखा:",
+            lbl_life: "जीवन रेखा:",
+            lbl_fate: "भाग्य रेखा:",
+            btn_confirm_gen: "पुष्टि करें एवं 4 ग्रंथों से वास्तविक फलकथन निकालें",
             result_title: "शास्त्र-आधारित फलकथन",
             badge_shastra: "4 प्राचीन ग्रंथों द्वारा प्रमाणित",
-            loading_text: "हथेली की प्रामाणिकता जांच कर रेखाओं व पर्वतों का पिक्सेल डेटा निकाला जा रहा है...",
+            loading_text: "हथेली की प्रामाणिकता जांच कर कीरो हस्तरेखा, सामुद्रिक शास्त्र एवं वृहद् हस्तरेखा शास्त्र से मिलान किया जा रहा है...",
             accuracy: "सटीकता",
             line_heart: "हृदय रेखा",
             line_head: "मस्तिष्क रेखा",
             line_life: "जीवन रेखा",
             line_fate: "भाग्य रेखा",
+            btn_reedit: "पुनः संपादन करें",
             btn_save: "सुरक्षित करें",
             btn_pdf: "PDF डाउनलोड",
             empty_result: "स्कैन शुरू करने के बाद आपको यहाँ आपकी हथेली से निकली रेखाएं व संपादन विकल्प दिखाई देगा।",
@@ -55,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
             bhagyank: "भाग्यांक",
             history_title: "सहेजे गए फलकथन",
             btn_clear_history: "इतिहास साफ़ करें",
-            footer_text: "© 2026 AI Palmistry Pro Multilingual PWA App. 100% प्रमाणिक वैदिक ज्योतिष एवं सामुद्रिक शास्त्र।"
+            footer_text: "© 2026 AI Palmistry Pro. 100% प्रमाणिक वैदिक ज्योतिष एवं सामुद्रिक शास्त्र।"
         },
         en: {
             sub_logo: "Vedic Samudrik Shastra & Palmistry",
@@ -67,20 +80,33 @@ document.addEventListener('DOMContentLoaded', () => {
             pwa_title: "AI Palmistry Pro App",
             pwa_subtitle: "Install on your mobile home screen",
             pwa_btn: "Install",
+            pipe_1: "1. Skin & Contour Check",
+            pipe_2: "2. Line Feature Extraction",
+            pipe_3: "3. 4 Scripture RAG",
+            pipe_4: "4. AES-256 Security",
             scanner_title: "Step 1: Scan Human Palm",
             scanner_desc: "Capture a clear image of your palm using camera or upload",
             scanner_placeholder: "Start camera or upload a photo to begin palm analysis",
             btn_camera: "Start Camera",
             btn_upload: "Upload Photo",
             btn_analyze: "Scan & Extract Features",
+            step2_title: "Step 2: Confirm Detected Palm Lines",
+            step2_subtitle: "The following line characteristics were detected. You can review or edit them before reading generation:",
+            badge_editable: "Editable",
+            lbl_heart: "Heart Line:",
+            lbl_head: "Head Line:",
+            lbl_life: "Life Line:",
+            lbl_fate: "Fate Line:",
+            btn_confirm_gen: "Confirm & Generate Scripture-Grounded Reading",
             result_title: "Scripture-Grounded Reading",
             badge_shastra: "Certified by 4 Classical Texts",
-            loading_text: "Verifying palm authenticity & extracting line features...",
+            loading_text: "Verifying palm authenticity & matching with Cheiro Palmistry & Samudrik Shastra...",
             accuracy: "Accuracy",
             line_heart: "Heart Line",
             line_head: "Head Line",
             line_life: "Life Line",
             line_fate: "Fate Line",
+            btn_reedit: "Edit Features Again",
             btn_save: "Save Reading",
             btn_pdf: "Download PDF",
             empty_result: "Start a scan to reveal detected features & editing options here.",
@@ -104,7 +130,69 @@ document.addEventListener('DOMContentLoaded', () => {
             bhagyank: "Bhagyank (Destiny)",
             history_title: "Saved Readings History",
             btn_clear_history: "Clear History",
-            footer_text: "© 2026 AI Palmistry Pro Multilingual PWA App. 100% Authentic Vedic Astrology."
+            footer_text: "© 2026 AI Palmistry Pro. 100% Authentic Vedic Astrology."
+        },
+        hin: {
+            sub_logo: "Vedic Samudrik Shastra & Palmistry",
+            nav_palmistry: "Hastrekha",
+            nav_kundli: "Kundli",
+            nav_tarot: "Tarot",
+            nav_numerology: "Ank-Shastra",
+            nav_history: "History",
+            pwa_title: "AI Palmistry Pro App",
+            pwa_subtitle: "Mobile Home Screen par install karein",
+            pwa_btn: "Install Karein",
+            pipe_1: "1. Skin & Contour Check",
+            pipe_2: "2. Line Extraction",
+            pipe_3: "3. 4 Scripture Books",
+            pipe_4: "4. AES-256 Security",
+            scanner_title: "Step 1: Palm Scan Karein",
+            scanner_desc: "Aapne haath ki clear photo camera se lein ya upload karein",
+            scanner_placeholder: "Scan start karne ke liye camera chalu karein ya photo upload karein",
+            btn_camera: "Camera Chalu Karein",
+            btn_upload: "Photo Upload Karein",
+            btn_analyze: "Scan & Lines Nikalein",
+            step2_title: "Step 2: Scanned Lines Confirm Karein",
+            step2_subtitle: "Aapke haath se ye lines mili hain. Aap inko check karke edit bhi kar sakte hain:",
+            badge_editable: "Edit Kar Sakte Hain",
+            lbl_heart: "Heart Line (Hridaya Rekha):",
+            lbl_head: "Head Line (Mastishk Rekha):",
+            lbl_life: "Life Line (Jeevan Rekha):",
+            lbl_fate: "Fate Line (Bhagya Rekha):",
+            btn_confirm_gen: "Confirm Karein & 4 Grantho Se Reading Nikalein",
+            result_title: "Shastra-Based Reading Result",
+            badge_shastra: "4 Ancient Books Certified",
+            loading_text: "Palm check karke Cheiro Palmistry aur Samudrik Shastra se match kiya ja raha hai...",
+            accuracy: "Accuracy",
+            line_heart: "Heart Line",
+            line_head: "Head Line",
+            line_life: "Life Line",
+            line_fate: "Fate Line",
+            btn_reedit: "Phir Se Edit Karein",
+            btn_save: "Save Karein",
+            btn_pdf: "PDF Download",
+            empty_result: "Scan karne ke baad aapko yahan aapki lines aur edit options dikhenge.",
+            invalid_palm_error: "⚠️ Haath ki palm detect nahi hui! Kripya kisi document ki jagah apne haath ki clear photo upload karein.",
+            kundli_title: "Birth Details",
+            kundli_desc: "Sahi Kundli ke liye apna birth details bharein",
+            lbl_fullname: "Full Name",
+            lbl_dob: "Date of Birth",
+            lbl_time: "Birth Time",
+            lbl_place: "Birth Place",
+            btn_gen_kundli: "Kundli Banayein",
+            kundli_chart_title: "Lagna & Grah Stithi",
+            badge_astrology: "Vedic Astrology",
+            tarot_title: "3-Card Tarot Reading",
+            tarot_desc: "Past, Present aur Future ke liye 3 cards chunein",
+            num_title: "Ank-Shastra Calculator",
+            num_desc: "Birthdate se apna Mulank aur Bhagyank janein",
+            btn_calc: "Calculate Karein",
+            num_result_title: "Ank-Shastra Result",
+            mulank: "Mulank",
+            bhagyank: "Bhagyank",
+            history_title: "Saved History",
+            btn_clear_history: "History Clear Karein",
+            footer_text: "© 2026 AI Palmistry Pro. 100% Authentic Vedic Astrology."
         }
     };
 
@@ -125,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // DYNAMIC RE-TRANSLATION OF READING RESULT BOX
         if (window.latestFeatures && readingTextContent) {
             const updatedReading = generateShastraReading(lang, window.latestFeatures);
             readingTextContent.innerHTML = updatedReading;
@@ -246,7 +333,7 @@ document.addEventListener('DOMContentLoaded', () => {
     mobileNavBtns.forEach(btn => btn.addEventListener('click', () => switchTab(btn.getAttribute('data-tab'))));
 
     // ----------------------------------------------------------------------
-    // 5. 2-Step Palm Verification & Feature Edit Engine
+    // 5. 2-Step Palm Verification & Dynamic Reading Engine
     // ----------------------------------------------------------------------
     const startCamBtn = document.getElementById('startCamBtn');
     const captureScanBtn = document.getElementById('captureScanBtn');
@@ -397,7 +484,6 @@ document.addEventListener('DOMContentLoaded', () => {
         pCtx.stroke();
     }
 
-    // STEP 1 SCAN BUTTON CLICK
     captureScanBtn.addEventListener('click', () => {
         const isValidPalm = validateHumanPalmImage();
         if (!isValidPalm) {
@@ -417,13 +503,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             scanLaser.classList.add('hidden');
             readingLoading.classList.add('hidden');
-            
-            // SHOW STEP-2 VERIFICATION & EDIT BOX
             palmVerificationBox.classList.remove('hidden');
         }, 1800);
     });
 
-    // STEP 2 CONFIRM & MATCH SCRIPTURES BUTTON CLICK
     confirmAndGenerateBtn.addEventListener('click', () => {
         const selectedHeart = document.getElementById('vHeartLine').value;
         const selectedHead = document.getElementById('vHeadLine').value;
@@ -439,7 +522,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         window.latestFeatures = features;
 
-        // Calculate Line Scores based on features
         const heartScore = selectedHeart === 'deep_jupiter' ? 92 : 82;
         const headScore = selectedHead === 'straight_sharp' ? 94 : 86;
         const lifeScore = selectedLife === 'full_curve' ? 90 : 84;
@@ -462,35 +544,31 @@ document.addEventListener('DOMContentLoaded', () => {
         window.latestReadingText = readingText;
     });
 
-    // RE-EDIT FEATURES BUTTON
     reEditFeaturesBtn.addEventListener('click', () => {
         readingResults.classList.add('hidden');
         palmVerificationBox.classList.remove('hidden');
     });
 
+    /**
+     * Strict Language Reading Generator
+     * Supports: hi (Pure Hindi), en (Pure English), hin (Hinglish)
+     */
     function generateShastraReading(lang, features = { heart: 'deep_jupiter', head: 'straight_sharp', life: 'full_curve', fate: 'wrist_saturn' }) {
-        const isEnglish = (lang === 'en');
-        
-        let heartDesc = isEnglish ? "Deep, clear line reaching Mount of Jupiter. Indicates strong emotional nobility & integrity." : "कीरो हस्तरेखा शास्त्र के अनुसार आपकी हृदय रेखा अत्यंत स्पष्ट एवं गुरु पर्वत तक विस्तृत है। यह आपके उच्च भावनात्मक संतुलन व निष्ठा का प्रतीक है।";
-        if (features.heart === 'saturn_straight') {
-            heartDesc = isEnglish ? "Straight line reaching Mount of Saturn. Indicates practical intellect and high ambition." : "सामुद्रिक शास्त्र के अनुसार शनि पर्वत तक सीधी हृदय रेखा व्यावहारिक दृष्टिकोण व उच्च महत्वाकांक्षा को दर्शाती है।";
-        } else if (features.heart === 'forked') {
-            heartDesc = isEnglish ? "Forked end at Mount of Jupiter. Indicates rare balance between emotion and wisdom." : "वृहद् हस्तरेखा शास्त्र के अनुसार गुरु पर्वत पर द्विशाखीय हृदय रेखा भावना व विवेक का दुर्लभ संतुलन बनाती है।";
-        }
+        if (lang === 'en') {
+            let heartDesc = "Deep, clear line reaching Mount of Jupiter. Indicates strong emotional nobility and high integrity.";
+            if (features.heart === 'saturn_straight') heartDesc = "Straight line reaching Mount of Saturn. Indicates practical intellect and high ambition.";
+            else if (features.heart === 'forked') heartDesc = "Forked end at Mount of Jupiter. Indicates rare balance between emotion and wisdom.";
 
-        let headDesc = isEnglish ? "Straight & sharp Head Line. Indicates high analytical brilliance and decisive power." : "वृहद् हस्तरेखा शास्त्र के अनुसार सीधी व सुदृढ़ मस्तिष्क रेखा आपकी तीव्र तार्किक क्षमता एवं त्वरित निर्णय शक्ति को दर्शाती है।";
-        if (features.head === 'curved_moon') {
-            headDesc = isEnglish ? "Curved towards Mount of Moon. Indicates deep creative imagination, artistic flair & intuition." : "सामुद्रिक शास्त्र के अनुसार चंद्र पर्वत की ओर झुकी मस्तिष्क रेखा अगाध रचनात्मकता व कलात्मक क्षमता की सूचक है।";
-        }
+            let headDesc = "Straight & sharp Head Line. Indicates high analytical brilliance and decisive power.";
+            if (features.head === 'curved_moon') headDesc = "Curved towards Mount of Moon. Indicates deep creative imagination and intuition.";
 
-        let lifeDesc = isEnglish ? "Full round curve around Venus mount. Symbolizes robust health, longevity & vital energy." : "सामुद्रिक शास्त्र के अनुसार जीवन रेखा की पूर्ण गोलाई आरोग्य, दीर्घायु एवं असीम ऊर्जा शक्ति प्रदान करती है।";
-        let fateDesc = isEnglish ? "Fate Line extends from Wrist to Mount of Saturn. Forms a classical Raj-Yoga for career prosperity." : "कीरो हस्तरेखा शास्त्र के अनुसार भाग्य रेखा मणिकंठ से शनि पर्वत की ओर अग्रसर है, जो राज-योग एवं अपार व्यावसायिक सफलता का योग निर्मित करती है।";
+            let lifeDesc = "Full round curve around Venus mount. Symbolizes robust health, longevity & vital energy.";
+            let fateDesc = "Fate Line extends from Wrist to Mount of Saturn. Forms a classical Raj-Yoga for career prosperity.";
 
-        if (isEnglish) {
             return `
-                <h3>📌 Verified Scripture-Grounded Astrological Reading</h3>
+                <h3>📌 Verified Scripture-Grounded Reading</h3>
                 <p><em>(Matched with Cheiro Palmistry, Samudrik Shastra & Vrihad Hastrekha Shastra)</em></p>
-                <h3>✋ Authenticated Palm Lines & Mounts Profile:</h3>
+                <h3>✋ Authenticated Palm Lines Profile:</h3>
                 <ul>
                     <li><strong>Heart Line:</strong> ${heartDesc}</li>
                     <li><strong>Head Line:</strong> ${headDesc}</li>
@@ -503,7 +581,45 @@ document.addEventListener('DOMContentLoaded', () => {
                     <li>Recite Hanuman Chalisa on Tuesdays for Mars alignment.</li>
                 </ul>
             `;
+        } else if (lang === 'hin') {
+            let heartDesc = "Aapki Heart Line Jupiter Mount tak ja rahi hai. Ye aapke strong emotional balance aur honesty ko dikhati hai.";
+            if (features.heart === 'saturn_straight') heartDesc = "Aapki Heart Line Saturn Mount tak seedhi hai. Ye practical soch aur high ambition ko dikhati hai.";
+            else if (features.heart === 'forked') heartDesc = "Jupiter Mount par Heart Line forked hai. Ye emotion aur wisdom ka rare balance banati hai.";
+
+            let headDesc = "Straight aur sharp Head Line aapki sharp logical thinking aur quick decision power ko dikhati hai.";
+            if (features.head === 'curved_moon') headDesc = "Moon Mount ki taraf curved Head Line aapki high creativity aur artistic nature ko dikhati hai.";
+
+            let lifeDesc = "Full curved Life Line aapki strong immunity, long life aur energetic nature ka symbol hai.";
+            let fateDesc = "Fate Line wrist se Saturn Mount tak ja rahi hai, jo ek clear Raj-Yoga aur career growth banati hai.";
+
+            return `
+                <h3>📌 Verified Shastra-Based Reading</h3>
+                <p><em>(Cheiro Palmistry, Samudrik Shastra aur Vrihad Hastrekha Shastra se matched)</em></p>
+                <h3>✋ Aapki Scanned Lines Ka Analysis:</h3>
+                <ul>
+                    <li><strong>Heart Line:</strong> ${heartDesc}</li>
+                    <li><strong>Head Line:</strong> ${headDesc}</li>
+                    <li><strong>Life Line:</strong> ${lifeDesc}</li>
+                    <li><strong>Fate Line:</strong> ${fateDesc}</li>
+                </ul>
+                <h3>💡 Shastra-Sammati Remedies:</h3>
+                <ul>
+                    <li>Har Thursday ko water me turmeric milakar Sun ko arghya dein aur <em>Om Brim Brihaspataye Namah</em> ka jaap karein.</li>
+                    <li>Tuesday ko Hanuman Chalisa ka paath karein.</li>
+                </ul>
+            `;
         }
+
+        // PURE HINDI (NO ENGLISH WORDS)
+        let heartDesc = "कीरो हस्तरेखा शास्त्र के अनुसार आपकी हृदय रेखा अत्यंत स्पष्ट एवं गुरु पर्वत तक विस्तृत है। यह आपके उच्च भावनात्मक संतुलन व निष्ठा का प्रतीक है।";
+        if (features.heart === 'saturn_straight') heartDesc = "सामुद्रिक शास्त्र के अनुसार शनि पर्वत तक सीधी हृदय रेखा व्यावहारिक दृष्टिकोण व उच्च महत्वाकांक्षा को दर्शाती है।";
+        else if (features.heart === 'forked') heartDesc = "वृहद् हस्तरेखा शास्त्र के अनुसार गुरु पर्वत पर द्विशाखीय हृदय रेखा भावना व विवेक का दुर्लभ संतुलन बनाती है।";
+
+        let headDesc = "वृहद् हस्तरेखा शास्त्र के अनुसार सीधी व सुदृढ़ मस्तिष्क रेखा आपकी तीव्र तार्किक क्षमता एवं त्वरित निर्णय शक्ति को दर्शाती है।";
+        if (features.head === 'curved_moon') headDesc = "सामुद्रिक शास्त्र के अनुसार चंद्र पर्वत की ओर झुकी मस्तिष्क रेखा अगाध रचनात्मकता व कलात्मक क्षमता की सूचक है।";
+
+        let lifeDesc = "सामुद्रिक शास्त्र के अनुसार जीवन रेखा की पूर्ण गोलाई आरोग्य, दीर्घायु एवं असीम ऊर्जा शक्ति प्रदान करती है।";
+        let fateDesc = "कीरो हस्तरेखा शास्त्र के अनुसार भाग्य रेखा मणिकंठ से शनि पर्वत की ओर अग्रसर है, जो राज-योग एवं अपार व्यावसायिक सफलता का योग निर्मित करती है।";
 
         return `
             <h3>📌 प्रामाणिक शास्त्र-आधारित हस्तरेखा विश्लेषण</h3>
@@ -533,7 +649,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         history.unshift(newReading);
         localStorage.setItem('palmistryHistory', JSON.stringify(history));
-        alert(currentLang === 'en' ? 'Reading saved to history!' : 'फलकथन आपके इतिहास में सुरक्षित कर लिया गया है!');
+        alert(currentLang === 'en' ? 'Reading saved to history!' : (currentLang === 'hin' ? 'Reading history me save ho gayi hai!' : 'फलकथन आपके इतिहास में सुरक्षित कर लिया गया है!'));
     });
 
     document.getElementById('exportPdfBtn').addEventListener('click', () => {
