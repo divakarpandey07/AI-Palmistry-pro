@@ -210,35 +210,51 @@ body {
 /* 3D Camera Controls Bar */
 .hand-3d-controls-bar {
     position: absolute;
-    bottom: 12px;
+    bottom: 14px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    width: 95%;
+    max-width: 320px;
     z-index: 5;
 }
 
 .btn-3d-ctrl {
-    background: rgba(10, 6, 22, 0.88);
+    background: rgba(19, 11, 39, 0.95);
     border: 1px solid var(--gold-primary);
     color: var(--gold-light);
-    padding: 6px 14px;
-    border-radius: 30px;
-    font-size: 0.78rem;
+    padding: 7px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
     font-family: var(--font-heading);
     font-weight: 600;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    justify-content: center;
+    white-space: nowrap;
     gap: 6px;
     transition: var(--transition-smooth);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+}
+
+.btn-3d-ctrl i {
+    font-size: 0.85rem;
+    color: var(--gold-primary);
 }
 
 .btn-3d-ctrl:hover {
     background: var(--gold-primary);
     color: #0A0616;
     box-shadow: 0 0 15px var(--gold-glow);
+}
+
+.btn-3d-ctrl:hover i {
+    color: #0A0616;
 }
 
 /* Step-2 Form Color Badges */
