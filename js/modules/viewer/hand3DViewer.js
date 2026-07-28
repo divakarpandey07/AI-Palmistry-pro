@@ -1,8 +1,8 @@
 /* ==========================================================================
-   AI Palmistry Pro - AAA Photorealistic 3D Human Hand Visualization Engine
+   AI Palmistry Pro - High-Fidelity 3D Human Hand Model Engine
    Integrated with RGBELoader HDRI Lighting, PMREMGenerator Environment,
    ACES Filmic Tone Mapping, PBR Subsurface Skin Shader, Surface Crease Grooves,
-   Dynamic AI Feature Region Highlighting & KTX2/DRACO Loader Support
+   Dynamic AI Feature Region Highlighting & DRACO/KTX2 Loader Support
    ========================================================================== */
 
 export class Hand3DViewer {
@@ -88,19 +88,21 @@ export class Hand3DViewer {
         };
         window.addEventListener('resize', this.resizeListener);
 
-        // HDRI RGBELoader Environment Setup
+        // HDRI RGBELoader Environment Setup with Graceful Fallback
         if (typeof THREE.RGBELoader !== 'undefined') {
             const rgbeLoader = new THREE.RGBELoader();
             rgbeLoader.load('./assets/env/studio.hdr', (texture) => {
-                const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
-                this.scene.environment = envMap;
-                texture.dispose();
+                if (this.pmremGenerator) {
+                    const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
+                    this.scene.environment = envMap;
+                    texture.dispose();
+                }
             }, undefined, () => {
-                console.log("HDRI Studio fallback light setup");
+                console.log("HDRI Studio fallback ambient light active");
             });
         }
 
-        // Studio Directional Lighting Architecture
+        // Directional Studio Lighting Architecture
         const ambient = new THREE.AmbientLight(0xFFE4CE, 1.25);
         this.scene.add(ambient);
 
@@ -194,7 +196,6 @@ export class Hand3DViewer {
     }
 
     buildPBRAnatomicalHand() {
-        // Complete Advanced MeshPhysicalMaterial Skin Shader
         const skinMat = new THREE.MeshPhysicalMaterial({
             color: 0xE8B896,
             roughness: 0.48,
@@ -345,15 +346,13 @@ export class Hand3DViewer {
     }
 
     /**
-     * Synchronizes AI Detection by Highlighting & Pulsing the specific 3D Hand Region
+     * Highlights & Pulses specific 3D Hand Region (Mount Sphere or Crease Line)
      */
     highlightRegion(keyName) {
         this.mountObjects.forEach(obj => {
-            if (obj.userData && obj.userData.key === keyName) {
-                obj.scale.set(1.4, 1.4, 1.4);
-            } else {
-                obj.scale.set(1.0, 1.0, 1.0);
-            }
+            const isMatch = obj.userData && obj.userData.key === keyName;
+            const targetScale = isMatch ? 1.45 : 1.0;
+            obj.scale.set(targetScale, targetScale, targetScale);
         });
     }
 
@@ -381,8 +380,7 @@ export class Hand3DViewer {
         this.isHeatmapMode = !this.isHeatmapMode;
         if (this.mainSkinMesh && this.mainSkinMesh.material) {
             if (this.isHeatmapMode) {
-                // Data-driven AI Confidence Heatmap Color Gradient
-                this.mainSkinMesh.material.color.setHex(0xFF4500); // Orange Red High Confidence Gradient
+                this.mainSkinMesh.material.color.setHex(0xFF4500); // Heatmap confidence gradient
             } else {
                 this.mainSkinMesh.material.color.setHex(0xE8B896); // Original PBR Skin tone
             }
@@ -405,6 +403,10 @@ export class Hand3DViewer {
     dispose3D() {
         if (this.resizeListener) {
             window.removeEventListener('resize', this.resizeListener);
+        }
+        if (this.pmremGenerator) {
+            this.pmremGenerator.dispose();
+            this.pmremGenerator = null;
         }
         if (this.scene) {
             this.scene.traverse(obj => {
