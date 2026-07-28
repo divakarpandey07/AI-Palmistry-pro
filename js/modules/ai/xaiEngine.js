@@ -1,7 +1,7 @@
 /* ==========================================================================
-   AI Palmistry Pro - Dynamic Explainable AI (XAI) & Evidence Chain Engine
+   Palmistry Pro - Scriptural Precision & Evidence Chain Engine
    Integrates Quantitative Measurements (Finger Ratios, Thumb Angles),
-   Dynamic AI Confidence Scoring & Classical Manuscript Citations
+   Scriptural Confidence Scoring & Classical Manuscript Citations
    ========================================================================== */
 
 export class XAIEngine {
@@ -25,7 +25,6 @@ export class XAIEngine {
         const indexRingRatio = measurements.indexRingRatio || "0.96";
         const thumbAngle = measurements.thumbAngle || "45.0°";
 
-        // Dynamic confidence score calculation based on landmark alignment
         let score = 92.0;
         if (heart === 'deep_jupiter') score += 1.8;
         if (head === 'straight_sharp') score += 1.5;
@@ -49,8 +48,8 @@ export class XAIEngine {
 
             return `
                 <div class="xai-header-banner" style="background: rgba(109, 40, 217, 0.15); border: 1.5px solid #6D28D9; padding: 14px; border-radius: 12px; margin-bottom: 16px;">
-                    <h4 style="color: #F7E2BD;"><i class="fa-solid fa-microscope"></i> Explainable AI (XAI) Precision Certificate</h4>
-                    <p style="font-size: 0.85rem; color: #94A3B8;">Dynamic AI Confidence: <strong>${confidenceScore}%</strong> | MediaPipe 21 Landmarks Verified</p>
+                    <h4 style="color: #F7E2BD;"><i class="fa-solid fa-microscope"></i> Scriptural Precision Certificate</h4>
+                    <p style="font-size: 0.85rem; color: #94A3B8;">Confidence Score: <strong>${confidenceScore}%</strong> | MediaPipe 21 Landmarks Verified</p>
                 </div>
 
                 <h3>📐 1. Quantitative Measurements & Geometry:</h3>
@@ -92,8 +91,8 @@ export class XAIEngine {
 
             return `
                 <div class="xai-header-banner" style="background: rgba(223, 172, 108, 0.15); border: 1.5px solid #DFAC6C; padding: 14px; border-radius: 12px; margin-bottom: 16px;">
-                    <h4 style="color: #DFAC6C;"><i class="fa-solid fa-microscope"></i> Explainable AI Precision Certificate</h4>
-                    <p style="font-size: 0.85rem; color: #F8FAFC;">Dynamic AI Confidence: <strong>${confidenceScore}%</strong> | MediaPipe Landmarks Verified</p>
+                    <h4 style="color: #DFAC6C;"><i class="fa-solid fa-microscope"></i> Scriptural Precision Certificate</h4>
+                    <p style="font-size: 0.85rem; color: #F8FAFC;">Confidence Score: <strong>${confidenceScore}%</strong> | MediaPipe Landmarks Verified</p>
                 </div>
 
                 <h3>📐 1. Quantitative Geometry:</h3>
@@ -136,8 +135,8 @@ export class XAIEngine {
 
         return `
             <div class="xai-header-banner" style="background: rgba(223, 172, 108, 0.15); border: 1.5px solid #DFAC6C; padding: 14px; border-radius: 12px; margin-bottom: 16px;">
-                <h4 style="color: #DFAC6C; font-family: 'Playfair Display', serif;"><i class="fa-solid fa-microscope"></i> व्याख्यात्मक एआई (Explainable AI) प्रामाणिकता प्रमाण-पत्र</h4>
-                <p style="font-size: 0.85rem; color: #F8FAFC;">गतिशील एआई सटीकता अंक: <strong>${confidenceScore}%</strong> | 21 लैंडमार्क मीडियापाइप द्वारा सत्यापित</p>
+                <h4 style="color: #DFAC6C; font-family: 'Playfair Display', serif;"><i class="fa-solid fa-microscope"></i> शास्त्रीय प्रामाणिकता प्रमाण-पत्र</h4>
+                <p style="font-size: 0.85rem; color: #F8FAFC;">सटीकता अंक: <strong>${confidenceScore}%</strong> | 21 लैंडमार्क मीडियापाइप द्वारा सत्यापित</p>
             </div>
 
             <h3>📐 1. गणितीय मापन एवं अनुपात (Quantitative Measurements):</h3>
@@ -167,4 +166,8 @@ export class XAIEngine {
             </div>
         `;
     }
+}
+
+if (typeof window !== 'undefined') {
+    window.XAIEngine = XAIEngine;
 }
