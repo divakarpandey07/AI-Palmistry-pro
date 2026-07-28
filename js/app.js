@@ -1,6 +1,7 @@
 /* ==========================================================================
    AI Palmistry Pro - Production ES6 Main Entry Point
-   Wires MediaPipe Vision Detector, GLTF/PBR 3D Hand Viewer, XAI Engine & UI
+   Wires MediaPipe Vision Detector, GLTF/PBR 3D Hand Viewer, X-Ray Mode,
+   AI Heatmap Mode, XAI Engine & Complete UI Controllers
    ========================================================================== */
 
 import { PalmDetector } from './modules/vision/palmDetector.js';
@@ -30,8 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const xai = new XAIEngine();
     let currentMeasurements = {};
 
+    // 3D Viewport Controls
     const resetBtn = document.getElementById('reset3DCamBtn');
     const rotateBtn = document.getElementById('toggle3DRotateBtn');
+    const xrayBtn = document.getElementById('toggleXRayBtn');
+    const heatmapBtn = document.getElementById('toggleHeatmapBtn');
 
     if (resetBtn) resetBtn.addEventListener('click', () => hand3D && hand3D.resetCamera());
     if (rotateBtn) {
@@ -44,6 +48,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (xrayBtn) {
+        xrayBtn.addEventListener('click', () => {
+            if (!hand3D) return;
+            const isXRay = hand3D.toggleXRayMode();
+            xrayBtn.classList.toggle('active', isXRay);
+        });
+    }
+
+    if (heatmapBtn) {
+        heatmapBtn.addEventListener('click', () => {
+            if (!hand3D) return;
+            const isHeatmap = hand3D.toggleHeatmapMode();
+            heatmapBtn.classList.toggle('active', isHeatmap);
+        });
+    }
+
+    // Capture & Scan Analysis Flow Handlers
     const captureBtn = document.getElementById('captureScanBtn');
     const confirmBtn = document.getElementById('confirmAndGenerateBtn');
     const reEditBtn = document.getElementById('reEditFeaturesBtn');
