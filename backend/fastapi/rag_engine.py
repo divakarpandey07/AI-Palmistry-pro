@@ -1,5 +1,6 @@
 # Production RAG Engine with Supabase Vector Knowledge Base & Groq Llama-3
 import os
+import re
 import logging
 from typing import Dict, List
 import httpx
@@ -11,6 +12,14 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 HF_API_KEY = os.getenv("HF_API_KEY")
+
+def sanitize_user_input(text: str) -> str:
+    """Sanitizes user input to prevent prompt injection and system prompt override attempts"""
+    if not text:
+        return ""
+    # Strip dangerous instruction override patterns
+    sanitized = re.sub(r'(?i)(ignore previous instructions|forget system prompt|you are now|system:)', '', text)
+    return sanitized.strip()[:500]
 
 def embed_text(text: str) -> List[float]:
     """Generates 384-dimensional embedding via HuggingFace Inference API"""
@@ -29,7 +38,7 @@ def embed_text(text: str) -> List[float]:
         logger.error(f"HF Embedding Error: {e}")
     return []
 
-def semantic_search_supabase(embedding: List[float], top_k: int = 5) -> List[Dict]:
+def semantic_search_supabase(embedding: List[float], top_k: int = 3) -> List[Dict]:
     """Performs cosine similarity search against Supabase match_palmistry_chunks RPC"""
     if not SUPABASE_URL or not SUPABASE_ANON_KEY or not embedding:
         return []
@@ -50,9 +59,10 @@ def semantic_search_supabase(embedding: List[float], top_k: int = 5) -> List[Dic
 
 def generate_reading(user_question: str, user_metadata: Dict) -> str:
     """
-    Generates authentic scripture-grounded palmistry reading.
+    Generates authentic scripture-grounded palmistry reading with Prompt Injection Filtering.
     Retrieves vector chunks from Supabase RPC match_palmistry_chunks if configured.
     """
+    clean_question = sanitize_user_input(user_question)
     timestamp_now = datetime.now(timezone.utc).isoformat()
     
     heart = user_metadata.get("heart", "deep_jupiter")
@@ -62,8 +72,8 @@ def generate_reading(user_question: str, user_metadata: Dict) -> str:
     skin = user_metadata.get("skin", "pink")
     finger = user_metadata.get("finger", "conical")
 
-    # 1. Generate Query Embedding & Retrieve Vector Chunks
-    embedding = embed_text(user_question or "palmistry reading")
+    # Generate Query Embedding & Retrieve Vector Chunks
+    embedding = embed_text(clean_question or "palmistry reading")
     chunks = semantic_search_supabase(embedding, top_k=3)
     
     context_passages = ""
@@ -83,7 +93,6 @@ def generate_reading(user_question: str, user_metadata: Dict) -> str:
     if context_passages:
         system_prompt += f"Retrieved Classical Manuscripts:\n{context_passages}\n"
 
-    # 2. Call Groq API if available
     if GROQ_API_KEY:
         try:
             headers = {"Authorization": f"Bearer {GROQ_API_KEY}", "Content-Type": "application/json"}
@@ -91,7 +100,7 @@ def generate_reading(user_question: str, user_metadata: Dict) -> str:
                 "model": "llama3-8b-8192",
                 "messages": [
                     {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_question or "Generate complete palm reading"}
+                    {"role": "user", "content": clean_question or "Generate complete palm reading"}
                 ],
                 "temperature": 0.3
             }
@@ -101,7 +110,6 @@ def generate_reading(user_question: str, user_metadata: Dict) -> str:
         except Exception as e:
             logger.error(f"Groq LLM Generation Error: {e}")
 
-    # Fallback Authentic Reading
     return (
         f"### 📌 प्रामाणिक शास्त्र-आधारित हस्तरेखा फलकथन\n"
         f"*(सत्यापित समय: {timestamp_now})*\n\n"
@@ -113,6 +121,7 @@ def generate_reading(user_question: str, user_metadata: Dict) -> str:
 
 def save_experience_to_memory(question: str, answer: str):
     """Saves user query and AI reading into Supabase ai_memory table or logger"""
+    clean_question = sanitize_user_input(question)
     timestamp = datetime.now(timezone.utc).isoformat()
     if SUPABASE_URL and SUPABASE_ANON_KEY:
         try:
@@ -122,7 +131,7 @@ def save_experience_to_memory(question: str, answer: str):
                 "Authorization": f"Bearer {SUPABASE_ANON_KEY}",
                 "Content-Type": "application/json"
             }
-            httpx.post(url, json={"question": question, "answer": answer, "created_at": timestamp}, headers=headers, timeout=5.0)
+            httpx.post(url, json={"question": clean_question, "answer": answer, "created_at": timestamp}, headers=headers, timeout=5.0)
         except Exception as e:
             logger.error(f"Supabase Memory Insert Error: {e}")
     logger.info(f"Saved memory log at {timestamp}")
