@@ -1,7 +1,7 @@
 /* ==========================================================================
    AI Palmistry Pro - Production ES6 Main Entry Point
    Wires MediaPipe Vision Detector, GLTF/PBR 3D Hand Viewer, X-Ray Mode,
-   AI Heatmap Mode, 3D Region Highlighting & XAI Engine
+   AI Heatmap Mode, Dynamic Sequential 3D Line Highlighting & XAI Engine
    ========================================================================== */
 
 import { PalmDetector } from './modules/vision/palmDetector.js';
@@ -121,9 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 finger: selectedFinger
             };
 
-            // Trigger AI region highlight on 3D Hand Model
+            // Dynamic Sequential 3D Region Highlighting for all 4 Palm Lines
             if (hand3D) {
-                hand3D.highlightRegion('heart');
+                const regionsToHighlight = ['heart', 'head', 'life', 'fate'];
+                regionsToHighlight.forEach((key, idx) => {
+                    setTimeout(() => hand3D.highlightRegion(key), idx * 900);
+                });
             }
 
             const currentLang = localStorage.getItem('selectedLang') || 'hi';
