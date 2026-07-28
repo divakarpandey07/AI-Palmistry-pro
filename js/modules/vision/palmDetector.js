@@ -1,5 +1,5 @@
 /* ==========================================================================
-   AI Palmistry Pro - Real MediaPipe 21 Hand Landmarks & Vector Mathematics
+   Palmistry Pro - Real MediaPipe 21 Hand Landmarks & Vector Mathematics
    Performs Real-Time Landmark Tracking, Vector Length Ratios, Real Thumb Angles,
    True Palm Symmetry Math & MediaPipe MultiHandedness Detection Confidence Score
    ========================================================================== */
@@ -63,7 +63,6 @@ export class PalmDetector {
                     if (scannerPlaceholder) scannerPlaceholder.classList.add('hidden');
                     if (captureScanBtn) captureScanBtn.classList.remove('hidden');
                     startCamBtn.classList.add('hidden');
-                    this.isCameraActive = true;
                     this.resizePalmCanvas();
                 } catch (err) {
                     alert('कैमरा शुरू करने में असमर्थ। कृपया फोटो अपलोड करें।');
@@ -151,9 +150,6 @@ export class PalmDetector {
         }
     }
 
-    /**
-     * Computes REAL quantitative measurements & TRUE palm symmetry using 21 MediaPipe coordinates
-     */
     computeRealMeasurements() {
         if (!this.landmarks || this.landmarks.length < 21) {
             return {
@@ -173,13 +169,11 @@ export class PalmDetector {
 
         const ratio = (indexLen / (ringLen || 1)).toFixed(2);
 
-        // Vector math for Thumb Angle (Landmarks 0, 1, 4)
         const thumbCMC = this.landmarks[1];
         const thumbTip = this.landmarks[4];
         const angleRad = Math.atan2(thumbTip.y - thumbCMC.y, thumbTip.x - thumbCMC.x);
         const angleDeg = Math.abs(angleRad * (180 / Math.PI)).toFixed(1);
 
-        // TRUE Palm Symmetry: Compare Left-Side Joint Pair (Index 5-8) vs Right-Side Joint Pair (Pinky 17-20)
         const pinkyTip = this.landmarks[20];
         const pinkyLen = dist(wrist, pinkyTip);
         const symmetryRatio = (1.0 - Math.abs(indexLen - pinkyLen) / (indexLen || 1)).toFixed(2);
@@ -288,4 +282,8 @@ export class PalmDetector {
             measurements: realMeasurements
         };
     }
+}
+
+if (typeof window !== 'undefined') {
+    window.PalmDetector = PalmDetector;
 }
