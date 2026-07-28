@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Palmistry Pro - Multilingual & Hinglish Vedic App</title>
-    <meta name="description" content="कीरो हस्तरेखा शास्त्र एवं सामुद्रिक शास्त्र पर आधारित बहुभाषी AI हस्तरेखा, कुंडली, टैरो, अंकशास्त्र व दैनिक राशिफल ऐप।">
+    <title>Palmistry Pro - Multilingual Vedic Samudrik Shastra App</title>
+    <meta name="description" content="कीरो हस्तरेखा शास्त्र एवं सामुद्रिक शास्त्र पर आधारित बहुभाषी हस्तरेखा, कुंडली, टैरो, अंकशास्त्र व दैनिक राशिफल ऐप।">
     
     <!-- PWA Meta Tags & Web App Manifest -->
     <link rel="manifest" href="manifest.json">
@@ -46,7 +46,7 @@
         <div class="pwa-install-info">
             <i class="fa-solid fa-mobile-screen-button pwa-icon"></i>
             <div>
-                <strong data-i18n="pwa_title">AI Palmistry Pro ऐप</strong>
+                <strong data-i18n="pwa_title">Palmistry Pro ऐप</strong>
                 <span data-i18n="pwa_subtitle">अपने मोबाइल होम स्क्रीन पर इनस्टॉल करें</span>
             </div>
         </div>
@@ -65,7 +65,7 @@
                     <i class="fa-solid fa-hand-sparkles logo-icon"></i>
                 </div>
                 <div class="logo-text">
-                    <h1>AI Palmistry Pro</h1>
+                    <h1>Palmistry Pro</h1>
                     <span class="sub-logo" data-i18n="sub_logo">वैदिक सामुद्रिक शास्त्र एवं हस्तरेखा</span>
                 </div>
             </div>
@@ -125,8 +125,8 @@
                 <!-- HERO WELCOME BANNER WITH GOLD EMBOSS -->
                 <div class="hero-welcome-card">
                     <div class="hero-text-content">
-                        <h2><i class="fa-solid fa-wand-magic-sparkles" style="color: #DFAC6C;"></i> 100% प्रामाणिक एआई हस्तरेखा एवं सामुद्रिक शास्त्र</h2>
-                        <p>अपनी हथेली की फोटो लें — एआई आपकी रेखाएं ट्रेस करके 4 प्राचीन ग्रंथों से सटीक फलादेश निकालेगा।</p>
+                        <h2><i class="fa-solid fa-wand-magic-sparkles" style="color: #DFAC6C;"></i> 100% प्रामाणिक हस्तरेखा एवं सामुद्रिक शास्त्र</h2>
+                        <p>अपनी हथेली की फोटो लें — हस्तरेखा ट्रेस करके 4 प्राचीन ग्रंथों से सटीक फलादेश निकाला जाएगा।</p>
                     </div>
                 </div>
 
@@ -150,132 +150,131 @@
                     </div>
                 </div>
 
-                <div class="section-grid">
+                <!-- MAIN SCANNER & ANALYSIS GRID -->
+                <div class="scanner-grid">
                     
-                    <!-- Left: Camera / Scanner Card -->
+                    <!-- LEFT COLUMN: CAMERA & PHOTO UPLOAD VIEWPORT -->
                     <div class="glass-card scanner-card">
                         <div class="card-header">
-                            <h2><i class="fa-solid fa-camera"></i> <span data-i18n="scanner_title">चरण 1: हथेली स्कैन करें</span></h2>
-                            <p data-i18n="scanner_desc">हाथ की स्पष्ट छवि कैमरे से लें या फोटो अपलोड करें</p>
+                            <h2><i class="fa-solid fa-camera-retro"></i> <span data-i18n="scanner_title">चरण 1: हथेली स्कैन करें</span></h2>
+                            <span class="badge-gold">MediaPipe Vision Engine</span>
                         </div>
+                        <p class="card-desc" data-i18n="scanner_desc">हाथ की स्पष्ट छवि कैमरे से लें या फोटो अपलोड करें</p>
                         
                         <div class="scanner-viewport" id="scannerViewport">
-                            <video id="webcamFeed" autoplay playsinline muted class="hidden"></video>
-                            <img id="previewImage" class="hidden" alt="Palm Preview">
-                            <canvas id="palmOverlayCanvas"></canvas>
+                            <!-- Video Stream for Live Cam -->
+                            <video id="webcamFeed" autoplay playsinline class="webcam-feed hidden"></video>
 
-                            <!-- Camera Hand Silhouette Guide Overlay -->
-                            <div class="hand-silhouette-guide" id="handSilhouetteGuide">
-                                <svg viewBox="0 0 100 140" class="silhouette-svg">
-                                    <path d="M 30,130 C 25,100 15,70 15,50 C 15,40 25,35 28,45 C 32,30 40,25 44,38 C 48,20 58,18 62,35 C 66,22 75,25 76,42 C 80,35 88,40 85,55 C 80,85 75,100 70,130 Z" fill="none" stroke="rgba(223, 172, 108, 0.4)" stroke-width="1.8" stroke-dasharray="4,3"/>
-                                </svg>
-                                <span class="guide-text-overlay">हथेली को रूपरेखा में रखें</span>
-                            </div>
+                            <!-- Preview Uploaded Image -->
+                            <img id="previewImage" class="preview-image hidden" alt="Palm Preview">
 
-                            <!-- Line Glow & Thickness Opacity Slider Control -->
-                            <div class="line-glow-control-bar" id="lineGlowControlBar">
-                                <label><i class="fa-solid fa-sliders"></i> <span>रेखा चमक (Glow):</span></label>
-                                <input type="range" id="lineGlowSlider" min="2" max="8" step="0.5" value="3.5">
-                            </div>
-                            
-                            <!-- Initial Placeholder -->
-                            <div class="scanner-placeholder" id="scannerPlaceholder">
+                            <!-- Laser Crease Overlay Canvas -->
+                            <canvas id="palmOverlayCanvas" class="overlay-canvas"></canvas>
+
+                            <!-- Laser Scanning Beam Effect -->
+                            <div id="scanLaser" class="scan-laser-beam hidden"></div>
+
+                            <!-- Placeholder Content -->
+                            <div id="scannerPlaceholder" class="scanner-placeholder">
                                 <i class="fa-solid fa-hand-holding-hand placeholder-icon"></i>
                                 <p data-i18n="scanner_placeholder">हस्तरेखा स्कैन शुरू करने के लिए कैमरा चालू करें या फोटो अपलोड करें</p>
                             </div>
-                            
-                            <!-- Glowing Scan Line Animation -->
-                            <div class="scan-laser hidden" id="scanLaser"></div>
                         </div>
 
-                        <!-- Scanner Controls -->
+                        <!-- Scanner Control Buttons -->
                         <div class="scanner-actions">
-                            <button id="startCamBtn" class="btn btn-primary">
+                            <button id="startCamBtn" class="btn btn-outline">
                                 <i class="fa-solid fa-video"></i> <span data-i18n="btn_camera">कैमरा चालू करें</span>
                             </button>
-                            <label for="uploadInput" class="btn btn-secondary">
+                            <label class="btn btn-outline upload-btn-label">
                                 <i class="fa-solid fa-upload"></i> <span data-i18n="btn_upload">फोटो अपलोड करें</span>
-                                <input type="file" id="uploadInput" accept="image/*" class="hidden-input">
+                                <input type="file" id="uploadInput" accept="image/*" class="hidden-file-input">
                             </label>
-                            <button id="captureScanBtn" class="btn btn-accent hidden">
-                                <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btn_analyze">स्कैन व रेखाएं निकालें</span>
+                            <button id="captureScanBtn" class="btn btn-primary hidden">
+                                <i class="fa-solid fa-microscope"></i> <span data-i18n="btn_analyze">स्कैन व रेखाएं निकालें</span>
                             </button>
+                        </div>
+
+                        <!-- Line Intensity Control Slider -->
+                        <div class="glow-control-box">
+                            <label for="lineGlowSlider"><i class="fa-solid fa-sliders"></i> <span>रेखा ग्लो चमक तीव्रता</span></label>
+                            <input type="range" id="lineGlowSlider" min="1" max="10" value="3.5" class="slider-control">
                         </div>
                     </div>
 
-                    <!-- Right: Step-2 Verification Form OR Final Scripture Reading -->
-                    <div class="glass-card result-card">
+                    <!-- RIGHT COLUMN: STEP-2 EDITABLE CONFIRMATION & ANALYSIS RESULTS -->
+                    <div class="glass-card analysis-card">
                         
-                        <!-- Initial Empty Result Placeholder -->
-                        <div id="emptyResultPlaceholder" class="empty-placeholder">
-                            <i class="fa-solid fa-scroll placeholder-icon"></i>
+                        <!-- EMPTY INITIAL PLACEHOLDER -->
+                        <div id="emptyResultPlaceholder" class="empty-results-box">
+                            <i class="fa-solid fa-scroll placeholder-scroll-icon"></i>
+                            <h3 data-i18n="result_title">शास्त्र-आधारित फलकथन</h3>
                             <p data-i18n="empty_result">स्कैन शुरू करने के बाद आपको यहाँ आपकी हथेली से निकली रेखाएं व संपादन विकल्प दिखाई देगा।</p>
                         </div>
 
-                        <!-- Initial Loading State -->
-                        <div id="readingLoading" class="loading-state hidden">
-                            <div class="spinner"></div>
-                            <p class="loading-text" data-i18n="loading_text">हथेली की प्रामाणिकता जांच कर पिक्सेल कंट्रास्ट द्वारा रेखाएं ट्रेस की जा रही हैं...</p>
+                        <!-- SCANNING ANIMATED LOADING -->
+                        <div id="readingLoading" class="reading-loading-box hidden">
+                            <div class="mystic-spinner"></div>
+                            <h4 data-i18n="loading_text">हथेली के कोण एवं पिक्सेल कंट्रास्ट द्वारा रेखाएं स्नैप की जा रही हैं...</h4>
                         </div>
 
-                        <!-- STEP 2: PALM LANDMARK VERIFICATION & SCRIPTURE QUESTIONNAIRE BOX -->
-                        <div id="palmVerificationBox" class="verification-box hidden">
+                        <!-- STEP-2: CONFIRM & EDIT EXTRACTED PALM LINES -->
+                        <div id="palmVerificationBox" class="palm-verification-box hidden">
                             <div class="card-header">
-                                <h2><i class="fa-solid fa-user-check"></i> <span data-i18n="step2_title">चरण 2: स्कैन की गई रेखाओं एवं लक्षणों की पुष्टि करें</span></h2>
-                                <span class="badge-shastra" data-i18n="badge_editable">संपादन योग्य</span>
+                                <h3 data-i18n="step2_title">चरण 2: स्कैन की गई रेखाओं एवं लक्षणों की पुष्टि करें</h3>
+                                <span class="badge-gold" data-i18n="badge_editable">संपादन योग्य</span>
                             </div>
                             <p class="verify-subtitle" data-i18n="step2_subtitle">आपकी हथेली से निम्नलिखित रेखाएं एवं लक्षण मिले हैं। आप इन्हें जांचें या अपनी इच्छा अनुसार संपादित करें:</p>
-
-                            <div class="verify-form-grid">
-                                <div class="verify-group">
-                                    <label><span class="line-color-badge badge-heart"><i class="fa-solid fa-heart"></i></span> <strong data-i18n="lbl_heart">हृदय रेखा:</strong></label>
-                                    <select id="vHeartLine" class="verify-select">
+                            
+                            <div class="feature-selector-form">
+                                <div class="form-group-item">
+                                    <label><span class="line-color-badge badge-heart">♥</span> <span data-i18n="lbl_heart">हृदय रेखा:</span></label>
+                                    <select id="vHeartLine" class="form-select">
                                         <option value="deep_jupiter" data-i18n="opt_h1">गुरु पर्वत तक गहरी व सुदृढ़</option>
                                         <option value="saturn_straight" data-i18n="opt_h2">शनि पर्वत तक सीधी</option>
                                         <option value="forked" data-i18n="opt_h3">अंत में द्विशाखीय</option>
                                     </select>
                                 </div>
 
-                                <div class="verify-group">
-                                    <label><span class="line-color-badge badge-head"><i class="fa-solid fa-brain"></i></span> <strong data-i18n="lbl_head">मस्तिष्क रेखा:</strong></label>
-                                    <select id="vHeadLine" class="verify-select">
+                                <div class="form-group-item">
+                                    <label><span class="line-color-badge badge-head">🧠</span> <span data-i18n="lbl_head">मस्तिष्क रेखा:</span></label>
+                                    <select id="vHeadLine" class="form-select">
                                         <option value="straight_sharp" data-i18n="opt_hd1">सीधी व तीक्ष्ण तार्किक</option>
                                         <option value="curved_moon" data-i18n="opt_hd2">चंद्र पर्वत की ओर झुकी</option>
-                                        <option value="double_head" data-i18n="opt_hd3">द्वि-मस्तिष्क रेखा</option>
+                                        <option value="double_line" data-i18n="opt_hd3">द्वि-मस्तिष्क रेखा</option>
                                     </select>
                                 </div>
 
-                                <div class="verify-group">
-                                    <label><span class="line-color-badge badge-life"><i class="fa-solid fa-shield-halved"></i></span> <strong data-i18n="lbl_life">जीवन रेखा:</strong></label>
-                                    <select id="vLifeLine" class="verify-select">
+                                <div class="form-group-item">
+                                    <label><span class="line-color-badge badge-life">🌱</span> <span data-i18n="lbl_life">जीवन रेखा:</span></label>
+                                    <select id="vLifeLine" class="form-select">
                                         <option value="full_curve" data-i18n="opt_l1">पूर्ण सुदृढ़ गोलाई व आरोग्य</option>
-                                        <option value="wrist_extended" data-i18n="opt_l2">मणिकंठ तक विस्तृत</option>
-                                        <option value="broken_chain" data-i18n="opt_l3">मध्यम गोलाई</option>
+                                        <option value="wrist_touch" data-i18n="opt_l2">मणिकंठ तक विस्तृत</option>
+                                        <option value="medium_curve" data-i18n="opt_l3">मध्यम गोलाई</option>
                                     </select>
                                 </div>
 
-                                <div class="verify-group">
-                                    <label><span class="line-color-badge badge-fate"><i class="fa-solid fa-gem"></i></span> <strong data-i18n="lbl_fate">भाग्य रेखा:</strong></label>
-                                    <select id="vFateLine" class="verify-select">
+                                <div class="form-group-item">
+                                    <label><span class="line-color-badge badge-fate">⭐</span> <span data-i18n="lbl_fate">भाग्य रेखा:</span></label>
+                                    <select id="vFateLine" class="form-select">
                                         <option value="wrist_saturn" data-i18n="opt_f1">मणिकंठ से शनि पर्वत तक</option>
-                                        <option value="center_palm" data-i18n="opt_f2">हथेली के मध्य से प्रारंभ</option>
-                                        <option value="subtle" data-i18n="opt_f3">हल्की / मध्यम रेखा</option>
+                                        <option value="palm_center" data-i18n="opt_f2">हथेली के मध्य से प्रारंभ</option>
+                                        <option value="light_line" data-i18n="opt_f3">हल्की / मध्यम रेखा</option>
                                     </select>
                                 </div>
 
-                                <!-- ADDITIONAL SCRIPTURE CLARIFICATION QUESTIONS FOR 100% ACCURACY -->
-                                <div class="verify-group">
-                                    <label><i class="fa-solid fa-palette" style="color: #F472B6;"></i> <strong data-i18n="lbl_skin_color">हथेली का रंग (सामुद्रिक शास्त्र):</strong></label>
-                                    <select id="vSkinColor" class="verify-select">
+                                <div class="form-group-item">
+                                    <label><i class="fa-solid fa-palette"></i> <span data-i18n="lbl_skin_color">हथेली का रंग (सामुद्रिक शास्त्र):</span></label>
+                                    <select id="vSkinColor" class="form-select">
                                         <option value="pink" data-i18n="opt_skin_pink">गुलाबी व स्निग्ध (सौभाग्यशाली)</option>
                                         <option value="red" data-i18n="opt_skin_red">लाल व उग्र (ऊर्जावान)</option>
                                         <option value="yellow" data-i18n="opt_skin_yellow">पीताभ व मध्यम (गंभीर)</option>
                                     </select>
                                 </div>
 
-                                <div class="verify-group">
-                                    <label><i class="fa-solid fa-hand-fist" style="color: #60A5FA;"></i> <strong data-i18n="lbl_finger_type">उंगलियों की बनावट (कीरो हस्तरेखा):</strong></label>
-                                    <select id="vFingerType" class="verify-select">
+                                <div class="form-group-item">
+                                    <label><i class="fa-solid fa-hand"></i> <span data-i18n="lbl_finger_type">उंगलियों की बनावट (कीरो हस्तरेखा):</span></label>
+                                    <select id="vFingerType" class="form-select">
                                         <option value="conical" data-i18n="opt_fing_conical">लंबी व सुडौल (कलात्मक)</option>
                                         <option value="square" data-i18n="opt_fing_square">वर्गाकार (व्यावहारिक व अनुशासित)</option>
                                         <option value="spatulate" data-i18n="opt_fing_spatulate">चमचाकार (सृजनशील)</option>
@@ -283,95 +282,41 @@
                                 </div>
                             </div>
 
-                            <button id="confirmAndGenerateBtn" class="btn btn-gold full-width" style="margin-top: 10px;">
-                                <i class="fa-solid fa-square-check"></i> <span data-i18n="btn_confirm_gen">पुष्टि करें एवं 4 ग्रंथों से विस्तृत फलकथन निकालें</span>
+                            <button id="confirmAndGenerateBtn" class="btn btn-gold full-width margin-top-md">
+                                <i class="fa-solid fa-crown"></i> <span data-i18n="btn_confirm_gen">पुष्टि करें एवं 4 ग्रंथों से विस्तृत फलकथन निकालें</span>
                             </button>
                         </div>
 
-                        <!-- STEP 3: FINAL AUTHENTICATED SCRIPTURE READING & SCRIPTURE CHATBOT -->
-                        <div id="readingResults" class="results-container hidden">
-                            <div class="card-header">
-                                <h2><i class="fa-solid fa-book-open-reader"></i> <span data-i18n="result_title">शास्त्र-आधारित फलादेश</span></h2>
-                                <div style="display: flex; gap: 8px; align-items: center;">
-                                    <button id="listenReadingBtn" class="btn btn-gold btn-sm" title="Listen Audio Narration">
-                                        <i class="fa-solid fa-volume-high"></i> <span data-i18n="btn_listen">शास्त्र वॉयस सुनें</span>
-                                    </button>
-                                    <span class="badge-shastra" data-i18n="badge_shastra">4 प्राचीन ग्रंथों द्वारा प्रमाणित</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Gauge & Line Scores Row -->
-                            <div class="scores-row">
-                                <div class="gauge-container">
-                                    <svg class="gauge-svg" viewBox="0 0 100 100">
-                                        <circle class="gauge-bg" cx="50" cy="50" r="40"></circle>
-                                        <circle class="gauge-fill" id="gaugeCircle" cx="50" cy="50" r="40"></circle>
-                                    </svg>
-                                    <div class="gauge-text">
-                                        <span id="confidencePct">94%</span>
-                                        <small data-i18n="accuracy">सटीकता</small>
-                                    </div>
-                                </div>
-
-                                <div class="line-scores-list">
-                                    <div class="score-item">
-                                        <span data-i18n="line_heart">हृदय रेखा</span>
-                                        <div class="progress-bar"><div class="progress-fill" id="heartScore" style="width: 88%;"></div></div>
-                                        <strong id="heartScorePct">88%</strong>
-                                    </div>
-                                    <div class="score-item">
-                                        <span data-i18n="line_head">मस्तिष्क रेखा</span>
-                                        <div class="progress-bar"><div class="progress-fill" id="headScore" style="width: 92%;"></div></div>
-                                        <strong id="headScorePct">92%</strong>
-                                    </div>
-                                    <div class="score-item">
-                                        <span data-i18n="line_life">जीवन रेखा</span>
-                                        <div class="progress-bar"><div class="progress-fill" id="lifeScore" style="width: 90%;"></div></div>
-                                        <strong id="lifeScorePct">90%</strong>
-                                    </div>
-                                    <div class="score-item">
-                                        <span data-i18n="line_fate">भाग्य रेखा</span>
-                                        <div class="progress-bar"><div class="progress-fill" id="fateScore" style="width: 84%;"></div></div>
-                                        <strong id="fateScorePct">84%</strong>
-                                    </div>
-                                </div>
+                        <!-- READING RESULTS DISPLAY -->
+                        <div id="readingResults" class="reading-results-box hidden">
+                            <div class="result-header">
+                                <h3 data-i18n="result_title">शास्त्र-आधारित फलकथन</h3>
+                                <span class="badge-shastra" data-i18n="badge_shastra">4 प्राचीन ग्रंथों द्वारा प्रमाणित</span>
                             </div>
 
-                            <!-- Detailed Text Output -->
-                            <div class="reading-text-box" id="readingTextContent">
-                                <!-- Populated dynamically by JS -->
+                            <!-- TTS Speech Audio Controller Button -->
+                            <div class="audio-narration-bar">
+                                <button id="ttsNarrateBtn" class="btn btn-sm btn-outline">
+                                    <i class="fa-solid fa-volume-high"></i> <span data-i18n="btn_listen">शास्त्र वॉयस सुनें</span>
+                                </button>
                             </div>
 
-                            <!-- INTERACTIVE SCRIPTURE CHATBOT BOX -->
-                            <div class="shastra-chat-container" id="shastraChatContainer">
-                                <div class="chat-header">
-                                    <i class="fa-solid fa-comments"></i>
-                                    <strong data-i18n="chat_header_title">शास्त्र सलाहकार से प्रश्न पूछें (Ask Scripture Chatbot)</strong>
-                                </div>
-                                <div class="chat-messages-box" id="chatMessagesBox">
-                                    <div class="chat-msg bot-msg">
-                                        <span data-i18n="chat_welcome">🙏 प्रणाम! आप अपनी हस्तरेखा फलादेश, करियर, विवाह या ग्रह शांति के विषय में कोई भी प्रश्न यहाँ पूछ सकते हैं।</span>
-                                    </div>
-                                </div>
-                                <div class="chat-input-row">
-                                    <input type="text" id="chatInputText" placeholder="उदा. मेरी सरकारी नौकरी या विवाह का योग कब है?" data-i18n-ph="chat_ph">
-                                    <button id="sendChatBtn" class="btn btn-gold btn-sm"><i class="fa-solid fa-paper-plane"></i></button>
-                                </div>
-                            </div>
+                            <!-- Reading HTML Content -->
+                            <div id="readingTextContent" class="reading-body-text"></div>
 
-                            <!-- Actions Row -->
-                            <div class="result-actions">
-                                <button id="reEditFeaturesBtn" class="btn btn-secondary">
+                            <!-- Social Share, Re-Edit & Save Buttons -->
+                            <div class="result-action-bar">
+                                <button id="reEditFeaturesBtn" class="btn btn-sm btn-outline">
                                     <i class="fa-solid fa-pen-to-square"></i> <span data-i18n="btn_reedit">पुनः संपादन करें</span>
                                 </button>
-                                <button id="saveReadingBtn" class="btn btn-secondary">
+                                <button id="saveReadingBtn" class="btn btn-sm btn-gold">
                                     <i class="fa-solid fa-bookmark"></i> <span data-i18n="btn_save">सुरक्षित करें</span>
                                 </button>
-                                <button id="shareStoryBtn" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); border: none;">
-                                    <i class="fa-brands fa-whatsapp"></i> <span>स्टोरी शेयर</span>
-                                </button>
-                                <button id="exportPdfBtn" class="btn btn-gold">
+                                <button id="exportPdfBtn" class="btn btn-sm btn-outline">
                                     <i class="fa-solid fa-file-pdf"></i> <span data-i18n="btn_pdf">PDF डाउनलोड</span>
+                                </button>
+                                <button id="shareWhatsappBtn" class="btn btn-sm btn-whatsapp">
+                                    <i class="fa-brands fa-whatsapp"></i> <span>शेयर करें</span>
                                 </button>
                             </div>
                         </div>
@@ -427,54 +372,44 @@
             <section id="horoscopeSection" class="tab-section hidden">
                 <div class="glass-card">
                     <div class="card-header">
-                        <h2><i class="fa-solid fa-sun"></i> <span>दैनिक राशिफल एवं ग्रह गोचर (Daily Horoscope)</span></h2>
-                        <span class="badge-shastra">वैदिक पंचांग 2026</span>
+                        <h2><i class="fa-solid fa-sun"></i> <span>दैनिक राशिफल एवं ग्रह गोचर</span></h2>
+                        <span class="badge-gold">आज का पंचांग</span>
+                    </div>
+                    
+                    <div class="rashi-selector-grid" id="rashiSelectorGrid">
+                        <!-- Dynamic Rashi buttons -->
                     </div>
 
-                    <div class="rashi-selector-grid" id="rashiGrid">
-                        <button class="rashi-btn active" data-rashi="aries">♈ मेष (Aries)</button>
-                        <button class="rashi-btn" data-rashi="taurus">♉ वृषभ (Taurus)</button>
-                        <button class="rashi-btn" data-rashi="gemini">♊ मिथुन (Gemini)</button>
-                        <button class="rashi-btn" data-rashi="cancer">♋ कर्क (Cancer)</button>
-                        <button class="rashi-btn" data-rashi="leo">♌ सिंह (Leo)</button>
-                        <button class="rashi-btn" data-rashi="virgo">♍ कन्या (Virgo)</button>
-                        <button class="rashi-btn" data-rashi="libra">♎ तुला (Libra)</button>
-                        <button class="rashi-btn" data-rashi="scorpio">♏ वृश्चिक (Scorpio)</button>
-                        <button class="rashi-btn" data-rashi="sagittarius">♐ धनु (Sagittarius)</button>
-                        <button class="rashi-btn" data-rashi="capricorn">♑ मकर (Capricorn)</button>
-                        <button class="rashi-btn" data-rashi="aquarius">♒ कुंभ (Aquarius)</button>
-                        <button class="rashi-btn" data-rashi="pisces">♓ मीन (Pisces)</button>
-                    </div>
-
-                    <div class="horoscope-content-card" id="horoscopeContent">
-                        <!-- Populated by JS -->
+                    <div class="horoscope-content-card" id="horoscopeContentCard">
+                        <h3><i class="fa-solid fa-star"></i> <span id="selectedRashiName">मेष (Aries)</span> — आज का राशिफल</h3>
+                        <p id="rashiReadingText">आज आपका भाग्य पक्ष सुदृढ़ रहेगा। व्यापार में नवीन अनुबंध होने का योग है। पारिवारिक वातावरण सुखद रहेगा।</p>
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION 3: KUNDLI & PLANETARY CHART -->
+            <!-- SECTION 3: VEDIC KUNDLI CHART -->
             <section id="kundliSection" class="tab-section hidden">
-                <div class="section-grid">
+                <div class="kundli-grid">
                     <div class="glass-card">
                         <div class="card-header">
-                            <h2><i class="fa-solid fa-user-astronaut"></i> <span data-i18n="kundli_title">जन्म विवरण</span></h2>
-                            <p data-i18n="kundli_desc">अपनी जन्म पत्रिका हेतु विवरण भरें</p>
+                            <h2><i class="fa-solid fa-dharmachakra"></i> <span data-i18n="kundli_title">जन्म विवरण</span></h2>
                         </div>
-                        <form id="kundliForm" class="form-grid">
-                            <div class="form-group">
-                                <label><i class="fa-solid fa-user"></i> <span data-i18n="lbl_fullname">पूरा नाम</span></label>
-                                <input type="text" id="kName" placeholder="उदा. दिवाकर पांडेय" required>
+                        <p class="card-desc" data-i18n="kundli_desc">अपनी जन्म पत्रिका हेतु विवरण भरें</p>
+                        <form id="kundliForm" class="kundli-form">
+                            <div class="form-group-item">
+                                <label data-i18n="lbl_fullname">पूरा नाम</label>
+                                <input type="text" id="kName" placeholder="उदा. राहुल शर्मा" required>
                             </div>
-                            <div class="form-group">
-                                <label><i class="fa-solid fa-calendar-day"></i> <span data-i18n="lbl_dob">जन्म तिथि</span></label>
+                            <div class="form-group-item">
+                                <label data-i18n="lbl_dob">जन्म तिथि</label>
                                 <input type="date" id="kDob" required>
                             </div>
-                            <div class="form-group">
-                                <label><i class="fa-solid fa-clock"></i> <span data-i18n="lbl_time">जन्म समय</span></label>
+                            <div class="form-group-item">
+                                <label data-i18n="lbl_time">जन्म समय</label>
                                 <input type="time" id="kTime" required>
                             </div>
-                            <div class="form-group">
-                                <label><i class="fa-solid fa-location-dot"></i> <span data-i18n="lbl_place">जन्म स्थान</span></label>
+                            <div class="form-group-item">
+                                <label data-i18n="lbl_place">जन्म स्थान</label>
                                 <input type="text" id="kPlace" placeholder="उदा. नई दिल्ली" required>
                             </div>
                             <button type="submit" class="btn btn-primary full-width">
@@ -516,127 +451,116 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </section>
 
-            <!-- SECTION 4: GEMSTONE & LUCKY COLOR CALCULATOR -->
+            <!-- SECTION 4: GEMSTONES REMEDY -->
             <section id="gemstonesSection" class="tab-section hidden">
                 <div class="glass-card">
                     <div class="card-header">
-                        <h2><i class="fa-solid fa-gem"></i> <span>रत्न एवं शुभ रंग सुझाव (Gemstones & Lucky Colors)</span></h2>
-                        <span class="badge-shastra">रत्न शास्त्र</span>
+                        <h2><i class="fa-solid fa-gem"></i> <span>रत्न एवं रुद्राक्ष सुझाव</span></h2>
+                        <span class="badge-gold">ग्रह शांति</span>
                     </div>
-
-                    <div class="gemstones-grid" id="gemstonesGrid">
+                    <div class="gemstones-grid">
                         <div class="gem-card">
                             <i class="fa-solid fa-ring gem-icon" style="color: #F59E0B;"></i>
                             <h3>पुखराज (Yellow Sapphire)</h3>
-                            <p><strong>स्वामी:</strong> गुरु ग्रह | <strong>उंगली:</strong> तर्जनी (Index Finger)</p>
-                            <p>ज्ञान, उच्च शिक्षा, आर्थिक समृद्धि एवं राज-योग हेतु गुरु की कृपा प्रदान करता है।</p>
+                            <p>गुरु ग्रह की शुभता हेतु। तर्जनी उंगली में गुरुवार को धारण करें।</p>
                         </div>
                         <div class="gem-card">
-                            <i class="fa-solid fa-ring gem-icon" style="color: #6D28D9;"></i>
+                            <i class="fa-solid fa-gem gem-icon" style="color: #3B82F6;"></i>
                             <h3>नीलम (Blue Sapphire)</h3>
-                            <p><strong>स्वामी:</strong> शनि ग्रह | <strong>उंगली:</strong> मध्यमा (Middle Finger)</p>
-                            <p>अनुशासन, त्वरित धन-धान्य लाभ एवं शनि दोष शांति हेतु अत्यंत प्रभावशाली।</p>
+                            <p>शनि देव की कृपा व राज-योग हेतु। मध्यमा उंगली में शनिवार धारण करें।</p>
                         </div>
                         <div class="gem-card">
-                            <i class="fa-solid fa-ring gem-icon" style="color: #10B981;"></i>
-                            <h3>पन्ना (Emerald)</h3>
-                            <p><strong>स्वामी:</strong> बुध ग्रह | <strong>उंगली:</strong> कनिष्ठिका (Little Finger)</p>
-                            <p>व्यापारिक उन्नति, वाक्-पटुता, तार्किक निर्णय शक्ति व स्वास्थ्य लाभ हेतु।</p>
-                        </div>
-                        <div class="gem-card">
-                            <i class="fa-solid fa-ring gem-icon" style="color: #EF4444;"></i>
+                            <i class="fa-solid fa-circle-dot gem-icon" style="color: #EF4444;"></i>
                             <h3>माणिक्य (Ruby)</h3>
-                            <p><strong>स्वामी:</strong> सूर्य ग्रह | <strong>उंगली:</strong> अनामिका (Ring Finger)</p>
-                            <p>सरकारी नौकरी, उच्च सामाजिक मान-सम्मान एवं नेतृत्व क्षमता में वृद्धि।</p>
+                            <p>सूर्य ग्रह की मजबूती व सरकारी सफलता हेतु। अनामिका उंगली में धारण करें।</p>
+                        </div>
+                        <div class="gem-card">
+                            <i class="fa-solid fa-diamond gem-icon" style="color: #EC4899;"></i>
+                            <h3>हीरा / ओपल (Diamond/Opal)</h3>
+                            <p>शुक्र ग्रह की कृपा, भौतिक सुख व आकर्षण हेतु अंगूठे या अनामिका में धारण करें।</p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION 5: TAROT CARD READING -->
+            <!-- SECTION 5: 3-CARD TAROT DIVINATION -->
             <section id="tarotSection" class="tab-section hidden">
-                <div class="glass-card tarot-wrapper">
-                    <div class="card-header center-header">
+                <div class="glass-card">
+                    <div class="card-header">
                         <h2><i class="fa-solid fa-cards"></i> <span data-i18n="tarot_title">3-कार्ड टैरो दिव्य वाचन</span></h2>
-                        <p data-i18n="tarot_desc">अपने अतीत, वर्तमान एवं भविष्य हेतु 3 कार्ड चुनें</p>
+                    </div>
+                    <p class="card-desc" data-i18n="tarot_desc">अपने अतीत, वर्तमान एवं भविष्य हेतु 3 कार्ड चुनें</p>
+                    
+                    <div class="tarot-cards-row" id="tarotCardsRow">
+                        <div class="tarot-card-back" data-index="0">
+                            <i class="fa-solid fa-moon"></i>
+                            <span>अतीत (Past)</span>
+                        </div>
+                        <div class="tarot-card-back" data-index="1">
+                            <i class="fa-solid fa-sun"></i>
+                            <span>वर्तमान (Present)</span>
+                        </div>
+                        <div class="tarot-card-back" data-index="2">
+                            <i class="fa-solid fa-star"></i>
+                            <span>भविष्य (Future)</span>
+                        </div>
                     </div>
 
-                    <div class="tarot-deck-container" id="tarotDeck">
-                        <!-- Cards generated dynamically -->
-                    </div>
-
-                    <div class="tarot-reading-output hidden" id="tarotOutput">
-                        <div class="tarot-cards-spread" id="selectedCardsSpread"></div>
-                        <div class="tarot-interpretation-box" id="tarotTextResult"></div>
+                    <div id="tarotReadingOutput" class="tarot-output-box hidden">
+                        <!-- Dynamic Tarot reading output -->
                     </div>
                 </div>
             </section>
 
             <!-- SECTION 6: NUMEROLOGY CALCULATOR -->
             <section id="numerologySection" class="tab-section hidden">
-                <div class="section-grid">
-                    <div class="glass-card">
-                        <div class="card-header">
-                            <h2><i class="fa-solid fa-calculator"></i> <span data-i18n="num_title">अंकशास्त्र मूलांक व भाग्यांक</span></h2>
-                            <p data-i18n="num_desc">अपनी जन्मतिथि दर्ज करके लकी नंबर जानें</p>
-                        </div>
-                        <div class="form-group">
-                            <label><i class="fa-solid fa-calendar"></i> <span data-i18n="lbl_dob">जनम्तिथि चुनें</span></label>
-                            <input type="date" id="numDobInput" value="1998-07-14">
-                        </div>
-                        <button id="calcNumerologyBtn" class="btn btn-primary full-width">
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> <span data-i18n="btn_calc">गणना करें</span>
-                        </button>
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h2><i class="fa-solid fa-calculator"></i> <span data-i18n="num_title">अंकशास्त्र मूलांक व भाग्यांक</span></h2>
                     </div>
+                    <p class="card-desc" data-i18n="num_desc">अपनी जन्मतिथि दर्ज करके लकी नंबर जानें</p>
+                    
+                    <div class="form-group-item max-w-md">
+                        <label data-i18n="lbl_dob">जन्म तिथि</label>
+                        <input type="date" id="numDobInput" class="form-input">
+                    </div>
+                    <button id="calcNumerologyBtn" class="btn btn-gold margin-top-sm">
+                        <i class="fa-solid fa-calculator"></i> <span data-i18n="btn_calc">गणना करें</span>
+                    </button>
 
-                    <div class="glass-card" id="numerologyResultsCard">
-                        <div class="card-header">
-                            <h2><i class="fa-solid fa-chart-pie"></i> <span data-i18n="num_result_title">अंकशास्त्र फलादेश</span></h2>
-                        </div>
-                        <div class="num-badges-row">
-                            <div class="num-badge-card">
-                                <h3 data-i18n="mulank">मूलांक</h3>
-                                <div class="num-circle" id="mulankVal">5</div>
-                                <span id="mulankPlanet">स्वामी: बुध</span>
-                            </div>
-                            <div class="num-badge-card">
-                                <h3 data-i18n="bhagyank">भाग्यांक</h3>
-                                <div class="num-circle gold" id="bhagyankVal">3</div>
-                                <span id="bhagyankPlanet">स्वामी: गुरु</span>
-                            </div>
-                        </div>
-
-                        <div class="numerology-text" id="numerologyText">
-                            <!-- Populated dynamically -->
-                        </div>
+                    <div id="numerologyOutput" class="numerology-output-box hidden margin-top-md">
+                        <!-- Dynamic Numerology result -->
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION 7: HISTORY & PERSISTENCE -->
+            <!-- SECTION 7: SAVED READINGS HISTORY -->
             <section id="historySection" class="tab-section hidden">
                 <div class="glass-card">
                     <div class="card-header">
                         <h2><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="history_title">सहेजे गए फलकथन</span></h2>
-                        <button id="clearHistoryBtn" class="btn btn-danger-sm">
+                        <button id="clearHistoryBtn" class="btn btn-sm btn-outline">
                             <i class="fa-solid fa-trash"></i> <span data-i18n="btn_clear_history">इतिहास साफ़ करें</span>
                         </button>
                     </div>
-
-                    <div id="historyList" class="history-grid">
-                        <!-- Populated dynamically -->
+                    <div id="historyListContainer" class="history-list-box">
+                        <p class="empty-history-text">अभी तक कोई फलकथन सुरक्षित नहीं किया गया है।</p>
                     </div>
                 </div>
             </section>
 
         </main>
 
-        <!-- Mobile Bottom Navigation Bar -->
-        <nav class="mobile-bottom-nav" id="mobileNav">
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p data-i18n="footer_text">© 2026 Palmistry Pro. 100% प्रमाणिक वैदिक ज्योतिष एवं सामुद्रिक शास्त्र।</p>
+        </footer>
+
+        <!-- Mobile Bottom Tab Bar -->
+        <nav class="mobile-bottom-nav">
             <button class="mobile-nav-btn active" data-tab="palmistry">
                 <i class="fa-solid fa-hand"></i>
                 <span data-i18n="nav_palmistry">हस्तरेखा</span>
@@ -649,35 +573,16 @@
                 <i class="fa-solid fa-dharmachakra"></i>
                 <span data-i18n="nav_kundli">कुंडली</span>
             </button>
-            <button class="mobile-nav-btn" data-tab="gemstones">
-                <i class="fa-solid fa-gem"></i>
-                <span data-i18n="nav_gemstones">रत्न</span>
-            </button>
-            <button class="mobile-nav-btn" data-tab="tarot">
-                <i class="fa-solid fa-cards"></i>
-                <span data-i18n="nav_tarot">टैरो</span>
-            </button>
-            <button class="mobile-nav-btn" data-tab="numerology">
-                <i class="fa-solid fa-calculator"></i>
-                <span data-i18n="nav_numerology">अंकशास्त्र</span>
-            </button>
             <button class="mobile-nav-btn" data-tab="history">
                 <i class="fa-solid fa-clock-rotate-left"></i>
                 <span data-i18n="nav_history">इतिहास</span>
             </button>
         </nav>
 
-        <!-- Footer -->
-        <footer class="app-footer">
-            <p data-i18n="footer_text">© 2026 AI Palmistry Pro Multilingual & Hinglish PWA App. 100% प्रमाणिक वैदिक ज्योतिष एवं सामुद्रिक शास्त्र।</p>
-        </footer>
-
     </div>
 
-    <!-- html2pdf Library for Client-side PDF Generation -->
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-    <!-- Main JavaScript App ES6 Module Entry Point -->
     <script type="module" src="js/app.js"></script>
 </body>
 </html>
