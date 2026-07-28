@@ -1,7 +1,7 @@
 /* ==========================================================================
-   AI Palmistry Pro - Production ES6 Main Entry Point
+   Palmistry Pro - Production Main Entry Point
    Wires MediaPipe Vision Detector, GLTF/PBR 3D Hand Viewer, X-Ray Mode,
-   AI Heatmap Mode, Dynamic Sequential 3D Line Highlighting & XAI Engine
+   Heatmap Mode, Dynamic Sequential 3D Line Highlighting & Precision Engine
    ========================================================================== */
 
 import { PalmDetector } from './modules/vision/palmDetector.js';
@@ -9,18 +9,23 @@ import { Hand3DViewer } from './modules/viewer/hand3DViewer.js';
 import { XAIEngine } from './modules/ai/xaiEngine.js';
 import { MainUIController } from './modules/ui/mainUI.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    const ui = new MainUIController();
+export function initPalmistryApp() {
+    const UIClass = window.MainUIController || MainUIController;
+    const DetectorClass = window.PalmDetector || PalmDetector;
+    const Viewer3DClass = window.Hand3DViewer || Hand3DViewer;
+    const XAIClass = window.XAIEngine || XAIEngine;
+
+    const ui = new UIClass();
     ui.initUI();
 
-    const detector = new PalmDetector();
+    const detector = new DetectorClass();
     detector.setupCameraAndUploadHandlers();
 
     let hand3D = null;
     function initWhenReady() {
         const container = document.getElementById('hand3DCanvas');
         if (container && container.clientWidth > 0) {
-            hand3D = new Hand3DViewer('hand3DCanvas', 'gTitle', 'gDesc');
+            hand3D = new Viewer3DClass('hand3DCanvas', 'gTitle', 'gDesc');
             hand3D.init();
         } else {
             requestAnimationFrame(initWhenReady);
@@ -28,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     initWhenReady();
 
-    const xai = new XAIEngine();
+    const xai = new XAIClass();
     let currentMeasurements = {};
 
     // 3D Viewport Controls
@@ -43,8 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!hand3D) return;
             const isRotating = hand3D.toggleRotation();
             rotateBtn.innerHTML = isRotating ?
-                '<i class="fa-solid fa-pause"></i> <span>घूमना रोकें</span>' :
-                '<i class="fa-solid fa-play"></i> <span>घूमना शुरू करें</span>';
+                '<i class="fa-solid fa-pause"></i> <span id="rotateBtnLabel" data-i18n="btn_3d_rotate">घूमना रोकें</span>' :
+                '<i class="fa-solid fa-play"></i> <span id="rotateBtnLabel" data-i18n="btn_3d_rotate">घूमना शुरू करें</span>';
+            ui.applyTranslations(ui.currentLang);
         });
     }
 
@@ -144,4 +150,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (palmVerificationBox) palmVerificationBox.classList.remove('hidden');
         });
     }
-});
+}
+
+document.addEventListener('DOMContentLoaded', initPalmistryApp);
