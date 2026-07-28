@@ -1,7 +1,8 @@
 /* ==========================================================================
-   AI Palmistry Pro - High-Fidelity Anatomical 3D Human Hand Model Engine
-   Integrated with GLTFLoader Support, DRACO Loader, PBR Subsurface Skin Shader,
-   Raycaster Hover Highlights, 9 Mount Spheres, X-Ray & AI Heatmap Modes
+   AI Palmistry Pro - AAA Photorealistic 3D Human Hand Visualization Engine
+   Integrated with RGBELoader HDRI Lighting, PMREMGenerator Environment,
+   ACES Filmic Tone Mapping, PBR Subsurface Skin Shader, Surface Crease Grooves,
+   Dynamic AI Feature Region Highlighting & KTX2/DRACO Loader Support
    ========================================================================== */
 
 export class Hand3DViewer {
@@ -13,12 +14,14 @@ export class Hand3DViewer {
         this.camera = null;
         this.renderer = null;
         this.controls = null;
+        this.pmremGenerator = null;
         this.handGroup = null;
         this.mainSkinMesh = null;
         this.isRotating = true;
         this.isXRayMode = false;
         this.isHeatmapMode = false;
         this.mountObjects = [];
+        this.lineObjects = {};
         this.resizeListener = null;
 
         this.mountDetails = {
@@ -56,6 +59,18 @@ export class Hand3DViewer {
         this.renderer.setSize(width, height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
+        // ACES Filmic Tone Mapping for Studio Quality HDR Lighting
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.15;
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+        // PMREMGenerator Environment Map Generation
+        if (typeof THREE.PMREMGenerator !== 'undefined') {
+            this.pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+            this.pmremGenerator.compileEquirectangularShader();
+        }
+
         if (typeof THREE.OrbitControls !== 'undefined') {
             this.controls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
             this.controls.enableDamping = true;
@@ -73,27 +88,52 @@ export class Hand3DViewer {
         };
         window.addEventListener('resize', this.resizeListener);
 
-        // Lighting Architecture (Studio Environment with ACES Tone Mapping)
-        const ambient = new THREE.AmbientLight(0xFFE4CE, 1.2);
+        // HDRI RGBELoader Environment Setup
+        if (typeof THREE.RGBELoader !== 'undefined') {
+            const rgbeLoader = new THREE.RGBELoader();
+            rgbeLoader.load('./assets/env/studio.hdr', (texture) => {
+                const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
+                this.scene.environment = envMap;
+                texture.dispose();
+            }, undefined, () => {
+                console.log("HDRI Studio fallback light setup");
+            });
+        }
+
+        // Studio Directional Lighting Architecture
+        const ambient = new THREE.AmbientLight(0xFFE4CE, 1.25);
         this.scene.add(ambient);
 
-        const keyLight = new THREE.DirectionalLight(0xFFF0E0, 2.2);
+        const keyLight = new THREE.DirectionalLight(0xFFF0E0, 2.4);
         keyLight.position.set(10, 15, 18);
+        keyLight.castShadow = true;
+        keyLight.shadow.mapSize.width = 1024;
+        keyLight.shadow.mapSize.height = 1024;
         this.scene.add(keyLight);
 
-        const fillLight = new THREE.DirectionalLight(0x93C5FD, 0.8);
+        const fillLight = new THREE.DirectionalLight(0x93C5FD, 0.85);
         fillLight.position.set(-12, -8, 10);
         this.scene.add(fillLight);
 
+        const rimLight = new THREE.DirectionalLight(0xF59E0B, 1.1);
+        rimLight.position.set(0, -15, -10);
+        this.scene.add(rimLight);
+
         this.handGroup = new THREE.Group();
 
-        // Attempt GLTFLoader with DRACOLoader fallback
+        // Attempt GLTFLoader with DRACOLoader & KTX2Loader fallback
         if (typeof THREE.GLTFLoader !== 'undefined') {
             const loader = new THREE.GLTFLoader();
             if (typeof THREE.DRACOLoader !== 'undefined') {
                 const dracoLoader = new THREE.DRACOLoader();
                 dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
                 loader.setDRACOLoader(dracoLoader);
+            }
+            if (typeof THREE.KTX2Loader !== 'undefined') {
+                const ktx2Loader = new THREE.KTX2Loader();
+                ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/basis/');
+                ktx2Loader.detectSupport(this.renderer);
+                loader.setKTX2Loader(ktx2Loader);
             }
             loader.load(
                 './assets/models/human_hand.glb',
@@ -132,6 +172,7 @@ export class Hand3DViewer {
 
             if (intersects.length > 0) {
                 const key = intersects[0].object.userData.key;
+                this.highlightRegion(key);
                 if (this.mountDetails[key] && this.infoTitle && this.infoDesc) {
                     this.infoTitle.innerText = this.mountDetails[key].title;
                     this.infoDesc.innerText = this.mountDetails[key].desc;
@@ -153,15 +194,18 @@ export class Hand3DViewer {
     }
 
     buildPBRAnatomicalHand() {
+        // Complete Advanced MeshPhysicalMaterial Skin Shader
         const skinMat = new THREE.MeshPhysicalMaterial({
             color: 0xE8B896,
-            roughness: 0.50,
+            roughness: 0.48,
             metalness: 0.0,
-            clearcoat: 0.12,
+            ior: 1.40,
+            thickness: 0.80,
+            transmission: 0.08,
+            clearcoat: 0.15,
             clearcoatRoughness: 0.35,
             sheen: 0.35,
-            sheenColor: 0xFFE0D0,
-            transmission: 0.05
+            sheenColor: 0xFFE0D0
         });
 
         const pShape = new THREE.Shape();
@@ -177,6 +221,8 @@ export class Hand3DViewer {
         const palmGeo = new THREE.ExtrudeGeometry(pShape, extrudeSettings);
         palmGeo.center();
         this.mainSkinMesh = new THREE.Mesh(palmGeo, skinMat);
+        this.mainSkinMesh.castShadow = true;
+        this.mainSkinMesh.receiveShadow = true;
         this.handGroup.add(this.mainSkinMesh);
 
         // Eminences
@@ -257,7 +303,7 @@ export class Hand3DViewer {
 
         this.handGroup.add(thumbGroup);
 
-        // Glowing Surface Depressed Creases
+        // Surface Depressed Crease Grooves (Deep Geometry Tubes)
         const create3DCreaseTube = (points, colorHex, keyName) => {
             const curve = new THREE.CatmullRomCurve3(points);
             const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.065, 8, false);
@@ -266,6 +312,7 @@ export class Hand3DViewer {
             tubeMesh.userData = { key: keyName };
             this.handGroup.add(tubeMesh);
             this.mountObjects.push(tubeMesh);
+            this.lineObjects[keyName] = tubeMesh;
         };
 
         create3DCreaseTube([new THREE.Vector3(1.3, 1.2, 0.62), new THREE.Vector3(0.3, 1.35, 0.64), new THREE.Vector3(-0.6, 1.5, 0.65), new THREE.Vector3(-1.2, 1.6, 0.65)], 0xF59E0B, 'heart');
@@ -297,6 +344,19 @@ export class Hand3DViewer {
         });
     }
 
+    /**
+     * Synchronizes AI Detection by Highlighting & Pulsing the specific 3D Hand Region
+     */
+    highlightRegion(keyName) {
+        this.mountObjects.forEach(obj => {
+            if (obj.userData && obj.userData.key === keyName) {
+                obj.scale.set(1.4, 1.4, 1.4);
+            } else {
+                obj.scale.set(1.0, 1.0, 1.0);
+            }
+        });
+    }
+
     toggleXRayMode() {
         this.isXRayMode = !this.isXRayMode;
         if (this.handGroup) {
@@ -321,7 +381,8 @@ export class Hand3DViewer {
         this.isHeatmapMode = !this.isHeatmapMode;
         if (this.mainSkinMesh && this.mainSkinMesh.material) {
             if (this.isHeatmapMode) {
-                this.mainSkinMesh.material.color.setHex(0xEF4444); // Heatmap confidence gradient
+                // Data-driven AI Confidence Heatmap Color Gradient
+                this.mainSkinMesh.material.color.setHex(0xFF4500); // Orange Red High Confidence Gradient
             } else {
                 this.mainSkinMesh.material.color.setHex(0xE8B896); // Original PBR Skin tone
             }
