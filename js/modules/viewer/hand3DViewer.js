@@ -59,13 +59,11 @@ export class Hand3DViewer {
         this.renderer.setSize(width, height);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-        // ACES Filmic Tone Mapping for Studio Quality HDR Lighting
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1.15;
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        // PMREMGenerator Environment Map Generation Guard
         if (typeof THREE.PMREMGenerator !== 'undefined') {
             try {
                 this.pmremGenerator = new THREE.PMREMGenerator(this.renderer);
@@ -92,7 +90,6 @@ export class Hand3DViewer {
         };
         window.addEventListener('resize', this.resizeListener);
 
-        // Directional Studio Lighting Architecture
         const ambient = new THREE.AmbientLight(0xFFE4CE, 1.25);
         this.scene.add(ambient);
 
@@ -110,12 +107,9 @@ export class Hand3DViewer {
         this.scene.add(rimLight);
 
         this.handGroup = new THREE.Group();
-
-        // BUILD PBR ANATOMICAL HAND MODEL SYNCHRONOUSLY IMMEDIATELY
         this.buildPBRAnatomicalHand();
         this.scene.add(this.handGroup);
 
-        // Safe Resilient HDRI Loader with Try-Catch Protection
         if (typeof THREE.RGBELoader !== 'undefined') {
             try {
                 const rgbeLoader = new THREE.RGBELoader();
@@ -125,15 +119,10 @@ export class Hand3DViewer {
                         this.scene.environment = envMap;
                         texture.dispose();
                     }
-                }, undefined, (err) => {
-                    // Fail silently and keep studio directional lighting
-                });
-            } catch (e) {
-                // Ignore HDRI error
-            }
+                }, undefined, () => {});
+            } catch (e) {}
         }
 
-        // Raycasting Mouse Hover/Click Listener
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
 
@@ -277,7 +266,6 @@ export class Hand3DViewer {
 
         this.handGroup.add(thumbGroup);
 
-        // Surface Depressed Crease Grooves (Deep Geometry Tubes)
         const create3DCreaseTube = (points, colorHex, keyName) => {
             const curve = new THREE.CatmullRomCurve3(points);
             const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.065, 8, false);
@@ -294,7 +282,6 @@ export class Hand3DViewer {
         create3DCreaseTube([new THREE.Vector3(-1.3, 0.9, 0.65), new THREE.Vector3(-0.7, -0.4, 0.64), new THREE.Vector3(-0.9, -1.6, 0.63), new THREE.Vector3(-1.1, -2.1, 0.60)], 0x10B981, 'life');
         create3DCreaseTube([new THREE.Vector3(0.0, -2.1, 0.61), new THREE.Vector3(-0.15, -0.6, 0.63), new THREE.Vector3(-0.35, 0.8, 0.64), new THREE.Vector3(-0.45, 1.9, 0.65)], 0xF7E2BD, 'fate');
 
-        // 9 Mount Spheres
         const mounts = [
             { key: 'jupiter', x: -1.15, y: 1.7, z: 0.65, color: 0x6D28D9 },
             { key: 'saturn', x: -0.38, y: 1.85, z: 0.66, color: 0xDFAC6C },
@@ -391,4 +378,8 @@ export class Hand3DViewer {
             this.renderer.dispose();
         }
     }
+}
+
+if (typeof window !== 'undefined') {
+    window.Hand3DViewer = Hand3DViewer;
 }
