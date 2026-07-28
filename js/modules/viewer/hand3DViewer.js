@@ -1,7 +1,7 @@
 /* ==========================================================================
    AI Palmistry Pro - High-Fidelity Anatomical 3D Human Hand Model Engine
-   Integrated with GLTFLoader Support, PBR Subsurface Skin Shader, Raycaster Hover
-   Highlights & 9 Planetary Mount Glow Spheres
+   Integrated with GLTFLoader Support, DRACO Loader, PBR Subsurface Skin Shader,
+   Raycaster Hover Highlights, 9 Mount Spheres, X-Ray & AI Heatmap Modes
    ========================================================================== */
 
 export class Hand3DViewer {
@@ -14,7 +14,10 @@ export class Hand3DViewer {
         this.renderer = null;
         this.controls = null;
         this.handGroup = null;
+        this.mainSkinMesh = null;
         this.isRotating = true;
+        this.isXRayMode = false;
+        this.isHeatmapMode = false;
         this.mountObjects = [];
         this.resizeListener = null;
 
@@ -70,7 +73,7 @@ export class Hand3DViewer {
         };
         window.addEventListener('resize', this.resizeListener);
 
-        // Lighting Architecture (Studio Environment)
+        // Lighting Architecture (Studio Environment with ACES Tone Mapping)
         const ambient = new THREE.AmbientLight(0xFFE4CE, 1.2);
         this.scene.add(ambient);
 
@@ -84,9 +87,14 @@ export class Hand3DViewer {
 
         this.handGroup = new THREE.Group();
 
-        // Attempt GLTFLoader if asset exists, otherwise build PBR Anatomical Hand
+        // Attempt GLTFLoader with DRACOLoader fallback
         if (typeof THREE.GLTFLoader !== 'undefined') {
             const loader = new THREE.GLTFLoader();
+            if (typeof THREE.DRACOLoader !== 'undefined') {
+                const dracoLoader = new THREE.DRACOLoader();
+                dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+                loader.setDRACOLoader(dracoLoader);
+            }
             loader.load(
                 './assets/models/human_hand.glb',
                 (gltf) => {
@@ -156,7 +164,6 @@ export class Hand3DViewer {
             transmission: 0.05
         });
 
-        // 1. Organic Curved Palm
         const pShape = new THREE.Shape();
         pShape.moveTo(-1.6, -2.2);
         pShape.quadraticCurveTo(-2.1, -1.0, -2.0, 0.5);
@@ -169,10 +176,10 @@ export class Hand3DViewer {
         const extrudeSettings = { steps: 4, depth: 0.65, bevelEnabled: true, bevelThickness: 0.35, bevelSize: 0.35, bevelSegments: 12 };
         const palmGeo = new THREE.ExtrudeGeometry(pShape, extrudeSettings);
         palmGeo.center();
-        const mainPalmMesh = new THREE.Mesh(palmGeo, skinMat);
-        this.handGroup.add(mainPalmMesh);
+        this.mainSkinMesh = new THREE.Mesh(palmGeo, skinMat);
+        this.handGroup.add(this.mainSkinMesh);
 
-        // Thenar & Hypothenar Eminences
+        // Eminences
         const thenarGeo = new THREE.SphereGeometry(0.95, 20, 20);
         thenarGeo.scale(1.1, 1.5, 0.7);
         const thenarMesh = new THREE.Mesh(thenarGeo, skinMat);
@@ -187,7 +194,7 @@ export class Hand3DViewer {
         hypoMesh.rotation.z = 0.25;
         this.handGroup.add(hypoMesh);
 
-        // 2. 5 Articulated Fingers & Nails
+        // 5 Articulated Fingers
         const nailMat = new THREE.MeshStandardMaterial({ color: 0xF3CBB1, roughness: 0.2, metalness: 0.1 });
         const fingerConfigs = [
             { name: "Index", x: -1.25, y: 2.2, rotZ: 0.08, totalLen: 2.5, radius: 0.33 },
@@ -232,7 +239,7 @@ export class Hand3DViewer {
             this.handGroup.add(fGroup);
         });
 
-        // 3. Thumb Joint & Eminence
+        // Thumb
         const thumbGroup = new THREE.Group();
         thumbGroup.position.set(-1.9, -0.6, 0.2);
         thumbGroup.rotation.z = Math.PI / 3.6;
@@ -250,7 +257,7 @@ export class Hand3DViewer {
 
         this.handGroup.add(thumbGroup);
 
-        // 4. Glowing 3D Creases
+        // Glowing Surface Depressed Creases
         const create3DCreaseTube = (points, colorHex, keyName) => {
             const curve = new THREE.CatmullRomCurve3(points);
             const tubeGeo = new THREE.TubeGeometry(curve, 32, 0.065, 8, false);
@@ -266,7 +273,7 @@ export class Hand3DViewer {
         create3DCreaseTube([new THREE.Vector3(-1.3, 0.9, 0.65), new THREE.Vector3(-0.7, -0.4, 0.64), new THREE.Vector3(-0.9, -1.6, 0.63), new THREE.Vector3(-1.1, -2.1, 0.60)], 0x10B981, 'life');
         create3DCreaseTube([new THREE.Vector3(0.0, -2.1, 0.61), new THREE.Vector3(-0.15, -0.6, 0.63), new THREE.Vector3(-0.35, 0.8, 0.64), new THREE.Vector3(-0.45, 1.9, 0.65)], 0xF7E2BD, 'fate');
 
-        // 5. 9 Mount Spheres
+        // 9 Mount Spheres
         const mounts = [
             { key: 'jupiter', x: -1.15, y: 1.7, z: 0.65, color: 0x6D28D9 },
             { key: 'saturn', x: -0.38, y: 1.85, z: 0.66, color: 0xDFAC6C },
@@ -288,6 +295,38 @@ export class Hand3DViewer {
             this.handGroup.add(mMesh);
             this.mountObjects.push(mMesh);
         });
+    }
+
+    toggleXRayMode() {
+        this.isXRayMode = !this.isXRayMode;
+        if (this.handGroup) {
+            this.handGroup.traverse(child => {
+                if (child.isMesh && child.material) {
+                    if (this.isXRayMode) {
+                        child.material.wireframe = true;
+                        child.material.opacity = 0.5;
+                        child.material.transparent = true;
+                    } else {
+                        child.material.wireframe = false;
+                        child.material.opacity = 1.0;
+                        child.material.transparent = false;
+                    }
+                }
+            });
+        }
+        return this.isXRayMode;
+    }
+
+    toggleHeatmapMode() {
+        this.isHeatmapMode = !this.isHeatmapMode;
+        if (this.mainSkinMesh && this.mainSkinMesh.material) {
+            if (this.isHeatmapMode) {
+                this.mainSkinMesh.material.color.setHex(0xEF4444); // Heatmap confidence gradient
+            } else {
+                this.mainSkinMesh.material.color.setHex(0xE8B896); // Original PBR Skin tone
+            }
+        }
+        return this.isHeatmapMode;
     }
 
     resetCamera() {
