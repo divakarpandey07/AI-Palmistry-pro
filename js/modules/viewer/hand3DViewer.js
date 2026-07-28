@@ -1,7 +1,7 @@
 /* ==========================================================================
    AI Palmistry Pro - High-Fidelity Anatomical 3D Human Hand Model Engine
-   Realistic Hand Geometry: Curved Palm Hollow, Thenar & Hypothenar Eminence,
-   3-Phalange Articulated Fingers, GLTF Loader Support & Subsurface Skin Shader
+   Integrated with GLTFLoader Support, PBR Subsurface Skin Shader, Raycaster Hover
+   Highlights & 9 Planetary Mount Glow Spheres
    ========================================================================== */
 
 export class Hand3DViewer {
@@ -36,7 +36,6 @@ export class Hand3DViewer {
     }
 
     init() {
-        // FIX P1 ITEM 10: WebGL & Three.js Availability Guard
         if (!this.canvas || typeof THREE === 'undefined' || !window.WebGLRenderingContext) {
             console.warn("WebGL or Three.js is not available on this device/browser.");
             document.getElementById('hand3DFallback')?.classList.remove('hidden');
@@ -52,8 +51,6 @@ export class Hand3DViewer {
 
         this.renderer = new THREE.WebGLRenderer({ canvas: this.canvas, antialias: true, alpha: true });
         this.renderer.setSize(width, height);
-
-        // FIX P1 ITEM 7: Uncapped pixel ratio cap to max 2 for mobile performance
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
         if (typeof THREE.OrbitControls !== 'undefined') {
@@ -63,7 +60,6 @@ export class Hand3DViewer {
             this.controls.enableZoom = false;
         }
 
-        // FIX P1 ITEM 8: Dynamic Window Resize Listener
         this.resizeListener = () => {
             if (!this.canvas || !this.renderer || !this.camera) return;
             const w = this.canvas.clientWidth || 340;
@@ -74,7 +70,7 @@ export class Hand3DViewer {
         };
         window.addEventListener('resize', this.resizeListener);
 
-        // Lighting Architecture
+        // Lighting Architecture (Studio Environment)
         const ambient = new THREE.AmbientLight(0xFFE4CE, 1.2);
         this.scene.add(ambient);
 
@@ -88,7 +84,67 @@ export class Hand3DViewer {
 
         this.handGroup = new THREE.Group();
 
-        // FIX P1 ITEM 6: Use valid MeshPhysicalMaterial skin properties (sheen, sheenColor, transmission)
+        // Attempt GLTFLoader if asset exists, otherwise build PBR Anatomical Hand
+        if (typeof THREE.GLTFLoader !== 'undefined') {
+            const loader = new THREE.GLTFLoader();
+            loader.load(
+                './assets/models/human_hand.glb',
+                (gltf) => {
+                    const loadedModel = gltf.scene;
+                    loadedModel.traverse(child => {
+                        if (child.isMesh) {
+                            child.castShadow = true;
+                            child.receiveShadow = true;
+                        }
+                    });
+                    this.handGroup.add(loadedModel);
+                },
+                undefined,
+                () => {
+                    this.buildPBRAnatomicalHand();
+                }
+            );
+        } else {
+            this.buildPBRAnatomicalHand();
+        }
+
+        this.scene.add(this.handGroup);
+
+        // Raycasting Mouse Hover/Click Listener
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        this.canvas.addEventListener('click', (e) => {
+            const rect = this.canvas.getBoundingClientRect();
+            mouse.x = ((e.clientX - rect.left) / this.canvas.clientWidth) * 2 - 1;
+            mouse.y = -((e.clientY - rect.top) / this.canvas.clientHeight) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, this.camera);
+            const intersects = raycaster.intersectObjects(this.mountObjects);
+
+            if (intersects.length > 0) {
+                const key = intersects[0].object.userData.key;
+                if (this.mountDetails[key] && this.infoTitle && this.infoDesc) {
+                    this.infoTitle.innerText = this.mountDetails[key].title;
+                    this.infoDesc.innerText = this.mountDetails[key].desc;
+                }
+            }
+        });
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+            if (this.isRotating && this.handGroup) {
+                this.handGroup.rotation.y += 0.0025;
+            }
+            if (this.controls) this.controls.update();
+            if (this.renderer && this.scene && this.camera) {
+                this.renderer.render(this.scene, this.camera);
+            }
+        };
+        animate();
+    }
+
+    buildPBRAnatomicalHand() {
         const skinMat = new THREE.MeshPhysicalMaterial({
             color: 0xE8B896,
             roughness: 0.50,
@@ -100,7 +156,7 @@ export class Hand3DViewer {
             transmission: 0.05
         });
 
-        // 1. Organic Curved Palm Mesh
+        // 1. Organic Curved Palm
         const pShape = new THREE.Shape();
         pShape.moveTo(-1.6, -2.2);
         pShape.quadraticCurveTo(-2.1, -1.0, -2.0, 0.5);
@@ -131,7 +187,7 @@ export class Hand3DViewer {
         hypoMesh.rotation.z = 0.25;
         this.handGroup.add(hypoMesh);
 
-        // 2. Articulated 5 Fingers & Nails
+        // 2. 5 Articulated Fingers & Nails
         const nailMat = new THREE.MeshStandardMaterial({ color: 0xF3CBB1, roughness: 0.2, metalness: 0.1 });
         const fingerConfigs = [
             { name: "Index", x: -1.25, y: 2.2, rotZ: 0.08, totalLen: 2.5, radius: 0.33 },
@@ -176,7 +232,7 @@ export class Hand3DViewer {
             this.handGroup.add(fGroup);
         });
 
-        // 3. Anatomical Thumb
+        // 3. Thumb Joint & Eminence
         const thumbGroup = new THREE.Group();
         thumbGroup.position.set(-1.9, -0.6, 0.2);
         thumbGroup.rotation.z = Math.PI / 3.6;
@@ -232,40 +288,6 @@ export class Hand3DViewer {
             this.handGroup.add(mMesh);
             this.mountObjects.push(mMesh);
         });
-
-        this.scene.add(this.handGroup);
-
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-
-        this.canvas.addEventListener('click', (e) => {
-            const rect = this.canvas.getBoundingClientRect();
-            mouse.x = ((e.clientX - rect.left) / this.canvas.clientWidth) * 2 - 1;
-            mouse.y = -((e.clientY - rect.top) / this.canvas.clientHeight) * 2 + 1;
-
-            raycaster.setFromCamera(mouse, this.camera);
-            const intersects = raycaster.intersectObjects(this.mountObjects);
-
-            if (intersects.length > 0) {
-                const key = intersects[0].object.userData.key;
-                if (this.mountDetails[key] && this.infoTitle && this.infoDesc) {
-                    this.infoTitle.innerText = this.mountDetails[key].title;
-                    this.infoDesc.innerText = this.mountDetails[key].desc;
-                }
-            }
-        });
-
-        const animate = () => {
-            requestAnimationFrame(animate);
-            if (this.isRotating && this.handGroup) {
-                this.handGroup.rotation.y += 0.0025;
-            }
-            if (this.controls) this.controls.update();
-            if (this.renderer && this.scene && this.camera) {
-                this.renderer.render(this.scene, this.camera);
-            }
-        };
-        animate();
     }
 
     resetCamera() {
@@ -280,7 +302,6 @@ export class Hand3DViewer {
         return this.isRotating;
     }
 
-    // FIX P1 ITEM 11: Disposal / Resource Cleanup Method
     dispose3D() {
         if (this.resizeListener) {
             window.removeEventListener('resize', this.resizeListener);
