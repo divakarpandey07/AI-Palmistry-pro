@@ -1,6 +1,6 @@
 /* ==========================================================================
    AI Palmistry Pro - Production ES6 Main Entry Point
-   Wires Vision Detector, 3D PBR Hand Viewer, XAI Engine & Complete UI Controllers
+   Wires MediaPipe Vision Detector, GLTF/PBR 3D Hand Viewer, XAI Engine & UI
    ========================================================================== */
 
 import { PalmDetector } from './modules/vision/palmDetector.js';
@@ -9,15 +9,12 @@ import { XAIEngine } from './modules/ai/xaiEngine.js';
 import { MainUIController } from './modules/ui/mainUI.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initialize Main UI Controller & Restored UI Listeners
     const ui = new MainUIController();
     ui.initUI();
 
-    // 2. Initialize Computer Vision Landmark Detector & Camera/Upload Event Handlers
     const detector = new PalmDetector();
     detector.setupCameraAndUploadHandlers();
 
-    // 3. Initialize Photorealistic 3D PBR Hand Viewer with DOM Readiness Guard
     let hand3D = null;
     function initWhenReady() {
         const container = document.getElementById('hand3DCanvas');
@@ -30,10 +27,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     initWhenReady();
 
-    // 4. Initialize Explainable AI (XAI) Engine
     const xai = new XAIEngine();
+    let currentMeasurements = {};
 
-    // Setup 3D Control Buttons
     const resetBtn = document.getElementById('reset3DCamBtn');
     const rotateBtn = document.getElementById('toggle3DRotateBtn');
 
@@ -48,7 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Capture & Scan Analysis Flow Handlers
     const captureBtn = document.getElementById('captureScanBtn');
     const confirmBtn = document.getElementById('confirmAndGenerateBtn');
     const reEditBtn = document.getElementById('reEditFeaturesBtn');
@@ -75,7 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (palmVerificationBox) palmVerificationBox.classList.add('hidden');
             if (readingLoading) readingLoading.classList.remove('hidden');
 
-            await detector.detectLandmarks();
+            const scanRes = await detector.detectLandmarks();
+            currentMeasurements = scanRes.measurements || {};
 
             setTimeout(() => {
                 if (scanLaser) scanLaser.classList.add('hidden');
@@ -105,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
             };
 
             const currentLang = localStorage.getItem('selectedLang') || 'hi';
-            const readingHTML = xai.generateExplainableReading(currentLang, features);
+            const readingHTML = xai.generateExplainableReading(currentLang, features, currentMeasurements);
 
             if (palmVerificationBox) palmVerificationBox.classList.add('hidden');
             if (readingResults) readingResults.classList.remove('hidden');
