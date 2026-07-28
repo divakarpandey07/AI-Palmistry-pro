@@ -1,8 +1,8 @@
 /* ==========================================================================
-   AI Palmistry Pro - High-Fidelity 3D Human Hand Model Engine
+   Palmistry Pro - High-Fidelity 3D Human Hand Model Engine
    Integrated with RGBELoader HDRI Lighting, PMREMGenerator Environment,
    ACES Filmic Tone Mapping, PBR Subsurface Skin Shader, Surface Crease Grooves,
-   Dynamic AI Feature Region Highlighting & DRACO/KTX2 Loader Support
+   Dynamic Region Highlighting & Resilient WebGL Renderer
    ========================================================================== */
 
 export class Hand3DViewer {
@@ -42,7 +42,7 @@ export class Hand3DViewer {
     }
 
     init() {
-        if (!this.canvas || typeof THREE === 'undefined' || !window.WebGLRenderingContext) {
+        if (!this.canvas || typeof THREE === 'undefined') {
             console.warn("WebGL or Three.js is not available on this device/browser.");
             document.getElementById('hand3DFallback')?.classList.remove('hidden');
             return;
@@ -65,10 +65,14 @@ export class Hand3DViewer {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-        // PMREMGenerator Environment Map Generation
+        // PMREMGenerator Environment Map Generation Guard
         if (typeof THREE.PMREMGenerator !== 'undefined') {
-            this.pmremGenerator = new THREE.PMREMGenerator(this.renderer);
-            this.pmremGenerator.compileEquirectangularShader();
+            try {
+                this.pmremGenerator = new THREE.PMREMGenerator(this.renderer);
+                this.pmremGenerator.compileEquirectangularShader();
+            } catch (e) {
+                console.warn("PMREMGenerator fallback", e);
+            }
         }
 
         if (typeof THREE.OrbitControls !== 'undefined') {
@@ -88,20 +92,6 @@ export class Hand3DViewer {
         };
         window.addEventListener('resize', this.resizeListener);
 
-        // HDRI RGBELoader Environment Setup with Graceful Fallback
-        if (typeof THREE.RGBELoader !== 'undefined') {
-            const rgbeLoader = new THREE.RGBELoader();
-            rgbeLoader.load('./assets/env/studio.hdr', (texture) => {
-                if (this.pmremGenerator) {
-                    const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
-                    this.scene.environment = envMap;
-                    texture.dispose();
-                }
-            }, undefined, () => {
-                console.log("HDRI Studio fallback ambient light active");
-            });
-        }
-
         // Directional Studio Lighting Architecture
         const ambient = new THREE.AmbientLight(0xFFE4CE, 1.25);
         this.scene.add(ambient);
@@ -109,8 +99,6 @@ export class Hand3DViewer {
         const keyLight = new THREE.DirectionalLight(0xFFF0E0, 2.4);
         keyLight.position.set(10, 15, 18);
         keyLight.castShadow = true;
-        keyLight.shadow.mapSize.width = 1024;
-        keyLight.shadow.mapSize.height = 1024;
         this.scene.add(keyLight);
 
         const fillLight = new THREE.DirectionalLight(0x93C5FD, 0.85);
@@ -123,42 +111,27 @@ export class Hand3DViewer {
 
         this.handGroup = new THREE.Group();
 
-        // Attempt GLTFLoader with DRACOLoader & KTX2Loader fallback
-        if (typeof THREE.GLTFLoader !== 'undefined') {
-            const loader = new THREE.GLTFLoader();
-            if (typeof THREE.DRACOLoader !== 'undefined') {
-                const dracoLoader = new THREE.DRACOLoader();
-                dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
-                loader.setDRACOLoader(dracoLoader);
-            }
-            if (typeof THREE.KTX2Loader !== 'undefined') {
-                const ktx2Loader = new THREE.KTX2Loader();
-                ktx2Loader.setTranscoderPath('https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/libs/basis/');
-                ktx2Loader.detectSupport(this.renderer);
-                loader.setKTX2Loader(ktx2Loader);
-            }
-            loader.load(
-                './assets/models/human_hand.glb',
-                (gltf) => {
-                    const loadedModel = gltf.scene;
-                    loadedModel.traverse(child => {
-                        if (child.isMesh) {
-                            child.castShadow = true;
-                            child.receiveShadow = true;
-                        }
-                    });
-                    this.handGroup.add(loadedModel);
-                },
-                undefined,
-                () => {
-                    this.buildPBRAnatomicalHand();
-                }
-            );
-        } else {
-            this.buildPBRAnatomicalHand();
-        }
-
+        // BUILD PBR ANATOMICAL HAND MODEL SYNCHRONOUSLY IMMEDIATELY
+        this.buildPBRAnatomicalHand();
         this.scene.add(this.handGroup);
+
+        // Safe Resilient HDRI Loader with Try-Catch Protection
+        if (typeof THREE.RGBELoader !== 'undefined') {
+            try {
+                const rgbeLoader = new THREE.RGBELoader();
+                rgbeLoader.load('./assets/env/studio.hdr', (texture) => {
+                    if (this.pmremGenerator && this.scene) {
+                        const envMap = this.pmremGenerator.fromEquirectangular(texture).texture;
+                        this.scene.environment = envMap;
+                        texture.dispose();
+                    }
+                }, undefined, (err) => {
+                    // Fail silently and keep studio directional lighting
+                });
+            } catch (e) {
+                // Ignore HDRI error
+            }
+        }
 
         // Raycasting Mouse Hover/Click Listener
         const raycaster = new THREE.Raycaster();
@@ -345,9 +318,6 @@ export class Hand3DViewer {
         });
     }
 
-    /**
-     * Highlights & Pulses specific 3D Hand Region (Mount Sphere or Crease Line)
-     */
     highlightRegion(keyName) {
         this.mountObjects.forEach(obj => {
             const isMatch = obj.userData && obj.userData.key === keyName;
@@ -380,9 +350,9 @@ export class Hand3DViewer {
         this.isHeatmapMode = !this.isHeatmapMode;
         if (this.mainSkinMesh && this.mainSkinMesh.material) {
             if (this.isHeatmapMode) {
-                this.mainSkinMesh.material.color.setHex(0xFF4500); // Heatmap confidence gradient
+                this.mainSkinMesh.material.color.setHex(0xFF4500);
             } else {
-                this.mainSkinMesh.material.color.setHex(0xE8B896); // Original PBR Skin tone
+                this.mainSkinMesh.material.color.setHex(0xE8B896);
             }
         }
         return this.isHeatmapMode;
